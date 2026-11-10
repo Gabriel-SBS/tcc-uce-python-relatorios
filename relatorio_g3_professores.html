@@ -2,7 +2,10 @@
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Questionário dos Docentes (G3) — Itens por bloco</title><style>
 :root{--bg-body:#f8fafc;--bg-card:#fff;--bg-subtle:#f1f5f9;--text-title:#0f172a;--text-body:#334155;
---text-muted:#64748b;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0284c7}
+--text-muted:#64748b;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0284c7;
+--row-height:34px;--bar-height:20px;--font-size-row:13px;--font-size-bar:11px}
+body.density-ultracompact{--row-height:25px;--bar-height:15px;--font-size-row:11.5px;--font-size-bar:9.5px}
+body.density-comfortable{--row-height:46px;--bar-height:26px;--font-size-row:14px;--font-size-bar:12px}
 *{box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg-body);
 color:var(--text-body);margin:0;padding:20px;line-height:1.4}
@@ -17,6 +20,29 @@ background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border)}
 .stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:700}
 .stat-val{font-size:15px;font-weight:800;color:var(--text-title)}
 .stat-val span{font-size:12px;font-weight:500;color:var(--text-muted)}
+.controls-toolbar{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin-bottom:20px;
+display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 4px rgba(0,0,0,.02)}
+.toolbar-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.ctrl-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ctrl-label{font-size:12px;font-weight:700;color:var(--text-title);text-transform:uppercase;letter-spacing:.4px;margin-right:4px}
+.btn-group{display:inline-flex;border:1px solid var(--border-subtle);border-radius:6px;overflow:hidden;background:var(--bg-subtle)}
+.btn-toggle{background:transparent;border:none;padding:6px 12px;font-size:12px;font-weight:600;color:var(--text-body);cursor:pointer}
+.btn-toggle:not(:last-child){border-right:1px solid var(--border-subtle)}
+.btn-toggle:hover{background:#e2e8f0}
+.btn-toggle.active{background:#0f172a;color:#fff}
+.btn-action{background:#fff;border:1px solid var(--border-subtle);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;
+color:var(--text-title);cursor:pointer;text-decoration:none}
+.btn-action:hover{background:#f1f5f9;border-color:#94a3b8}
+.tabs-theme-container{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #f1f5f9;padding-top:12px}
+.tab-btn{background:#f8fafc;border:1px solid var(--border);padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;
+color:var(--text-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.tab-btn span{background:#e2e8f0;color:#475569;font-size:10.5px;padding:1px 6px;border-radius:10px;font-weight:700}
+.tab-btn:hover{background:#e2e8f0}
+.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tab-btn.active span{background:rgba(255,255,255,.25);color:#fff}
+.search-box{display:flex;align-items:center;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:6px;
+padding:5px 10px;max-width:320px}
+.search-box input{border:none;background:transparent;outline:none;font-size:12.5px;color:var(--text-title);width:100%}
 .legend-bar{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:16px;
 display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px}
 .legend-title{font-weight:700;color:var(--text-title);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
@@ -24,9 +50,10 @@ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap
 .legend-pill{display:flex;align-items:center;gap:6px}
 .color-box{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.15)}
 .section-title{font-size:15px;font-weight:800;color:var(--text-title);margin:26px 0 10px}
-.table-container{background:#fff;border:1px solid var(--border);border-radius:12px;
-box-shadow:0 4px 6px -1px rgba(0,0,0,.03);margin-bottom:24px;overflow-x:auto}
-.compact-table{width:100%;min-width:640px;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:13px}
+.note{font-size:12.5px;color:var(--text-muted);margin:-4px 0 12px}
+.table-container{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 6px -1px rgba(0,0,0,.03);
+margin-bottom:24px;overflow-x:auto}
+.compact-table{width:100%;min-width:640px;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:var(--font-size-row)}
 .compact-table thead th{background:#0f172a;color:#fff;padding:11px 14px;text-align:left;font-weight:700;font-size:12px;
 letter-spacing:.3px;border-bottom:2px solid #334155}
 .compact-table thead th:first-child{border-top-left-radius:11px}
@@ -36,27 +63,24 @@ letter-spacing:.3px;border-bottom:2px solid #334155}
 .compact-table thead th.col-num{width:70px;text-align:center;border-left:1px solid #334155}
 .th-sub-meta{display:block;font-size:11px;font-weight:400;color:#94a3b8;margin-top:2px}
 .theme-separator-row td{background:#f1f5f9;padding:10px 16px;font-weight:800;font-size:13px;color:#0f172a;
-border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1;letter-spacing:.3px}
+border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
 .theme-tag{background:var(--primary);color:#fff;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;margin-right:8px}
-.question-row{height:34px;border-bottom:1px solid #f1f5f9}
+.question-row{height:var(--row-height)}
 .question-row:nth-child(odd){background:#fafbfc}
 .question-row:hover{background:#f0f7ff}
-.td-question{padding:4px 12px;border-right:1px solid var(--border);vertical-align:middle}
+.td-question{padding:4px 12px;border-right:1px solid var(--border);border-bottom:1px solid #f1f5f9;vertical-align:middle}
 .question-cell-wrap{display:flex;align-items:center;gap:8px;overflow:hidden}
 .q-badge{font-size:10.5px;font-weight:800;background:#e2e8f0;color:#1e293b;padding:2px 6px;border-radius:4px;flex-shrink:0}
 .q-keyword{font-weight:600;color:var(--text-title);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.td-bar{padding:4px 10px;border-right:1px solid var(--border);vertical-align:middle}
+.td-bar{padding:4px 10px;border-right:1px solid var(--border);border-bottom:1px solid #f1f5f9;vertical-align:middle}
 .td-num{text-align:center;font-weight:700;color:var(--text-title);font-size:12.5px}
-.bar-container{display:flex;width:100%;height:20px;border-radius:4px;overflow:hidden;background:#e2e8f0;
+.bar-container{display:flex;width:100%;height:var(--bar-height);border-radius:4px;overflow:hidden;background:#e2e8f0;
 box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
-.bar-slice{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
-.bar-slice.dark{color:#1a1a1a}
+.bar-slice{display:flex;align-items:center;justify-content:center;font-size:var(--font-size-bar);font-weight:700;white-space:nowrap;overflow:hidden}
+.empty{padding:18px;text-align:center;color:var(--text-muted)}
 .png-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;
 justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:600;margin-bottom:10px}
-.nav-link{background:var(--bg-subtle);color:var(--text-title);border:1px solid var(--border);padding:7px 13px;
-border-radius:8px;font-size:12.5px;font-weight:600;text-decoration:none}
-.nav-link:hover{background:#0f172a;color:#fff}
-.note{font-size:12.5px;color:var(--text-muted);margin:-4px 0 12px}
+@media print{.controls-toolbar,.navtcc,.png-card,.png{display:none}body{padding:0}}
 </style></head>
 <body>
 <!-- NAV-TCC:inicio -->
@@ -74,5 +98,108 @@ border-radius:8px;font-size:12.5px;font-weight:600;text-decoration:none}
 <!-- NAV-TCC:fim --><div class="wrapper">
 <div class="header-panel"><div class="header-title-box"><h1>Questionário dos Docentes (G3) — Itens por bloco</h1><p>Respostas dos docentes de Algoritmos e Programação I. A cor segue o sentido da resposta: <strong>verde</strong> é percepção favorável à UCE, <strong>vermelho</strong> desfavorável e <strong>amarelo</strong> neutro.</p></div>
 <div class="stats-strip"><div class="stat-item"><span class="stat-label">Amostra</span><span class="stat-val">2 <span>docentes</span></span></div><div class="stat-item"><span class="stat-label">Itens Likert</span><span class="stat-val">15 <span>em 4 blocos</span></span></div><div class="stat-item"><span class="stat-label">Itens (−)</span><span class="stat-val">5 <span>enunciado negativo</span></span></div></div></div>
-<div class="legend-bar"><span class="legend-title">Itens (+): concordar é favorável  |  Itens (−): concordar é desfavorável</span><div class="legend-items"><div class="legend-pill"><span class="color-box" style="background:#e53935"></span><strong>Desfavorável</strong></div><div class="legend-pill"><span class="color-box" style="background:#fbc02d"></span><strong>Neutro (3)</strong></div><div class="legend-pill"><span class="color-box" style="background:#2e7d32"></span><strong>Favorável</strong></div></div></div><p class="note">Com dois respondentes, cada barra mostra a contagem e o percentual.</p><div class="table-container"><table class="compact-table"><thead><tr><th class="col-question">Item <span class="th-sub-meta">passe o mouse para ver o enunciado completo</span></th><th class="col-bar">Distribuição das respostas<span class="th-sub-meta">discorda (1–2) · neutro (3) · concorda (4–5)</span></th><th class="col-num">Média</th></tr></thead><tbody><tr class="theme-separator-row"><td colspan="3"><span class="theme-tag">6 itens</span>Desempenho e raciocínio</td></tr><tr class="question-row"><td class="td-question" title="2. Os alunos que participaram da UCE demonstram maior facilidade em compreender conceitos teóricos da programação."><div class="question-cell-wrap"><span class="q-badge">P01</span><span class="q-keyword">Facilidade com conceitos teóricos da programação (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">4,00</td></tr><tr class="question-row"><td class="td-question" title="3. A formação na UCE NÃO parece influenciar significativamente o desempenho prático dos alunos em programação."><div class="question-cell-wrap"><span class="q-badge">P02</span><span class="q-keyword">Formação na UCE NÃO parece influenciar prática (−)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Discorda: 1 (50.0%)">1 (50%)</div><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">2,00</td></tr><tr class="question-row"><td class="td-question" title="4. Os alunos com formação prévia na UCE demonstram maior autonomia na resolução de problemas computacionais."><div class="question-cell-wrap"><span class="q-badge">P03</span><span class="q-keyword">Autonomia na resolução de problemas (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:100.00%;background:#2e7d32" title="Concorda: 2 (100.0%)">2 (100%)</div></div></td><td class="td-bar td-num">4,00</td></tr><tr class="question-row"><td class="td-question" title="5. A experiência na UCE contribui para o desenvolvimento de raciocínio lógico e pensamento computacional."><div class="question-cell-wrap"><span class="q-badge">P04</span><span class="q-keyword">Desenvolvimento de raciocínio lógico e PC (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:100.00%;background:#2e7d32" title="Concorda: 2 (100.0%)">2 (100%)</div></div></td><td class="td-bar td-num">4,50</td></tr><tr class="question-row"><td class="td-question" title="11. Há uma diferença significativa de desempenho entre alunos que cursaram e não cursaram a UCE."><div class="question-cell-wrap"><span class="q-badge">P05</span><span class="q-keyword">Diferença significativa de desempenho (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="question-row"><td class="td-question" title="15. Os resultados acadêmicos (notas, aprovação, entrega de atividades) confirmam os benefícios da UCE."><div class="question-cell-wrap"><span class="q-badge">P06</span><span class="q-keyword">Resultados acadêmicos confirmam benefícios (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:50.00%;background:#e53935" title="Discorda: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="theme-separator-row"><td colspan="3"><span class="theme-tag">4 itens</span>Adaptação e metodologia</td></tr><tr class="question-row"><td class="td-question" title="6. O tempo que os alunos egressos da UCE levam para se adaptar à disciplina é o mesmo que os demais (não há vantagem na adaptação)"><div class="question-cell-wrap"><span class="q-badge">P07</span><span class="q-keyword">Tempo de adaptação igual aos demais (sem vantagem) (−)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Discorda: 1 (50.0%)">1 (50%)</div><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">2,00</td></tr><tr class="question-row"><td class="td-question" title="10. A familiaridade prévia com a metodologia PBL faz com que esses alunos liderem grupos de trabalho com mais frequência."><div class="question-cell-wrap"><span class="q-badge">P08</span><span class="q-keyword">Familiaridade com PBL favorece liderança (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="question-row"><td class="td-question" title="13. O tempo de adaptação dos alunos egressos da UCE à disciplina é visivelmente menor do que o dos demais alunos."><div class="question-cell-wrap"><span class="q-badge">P09</span><span class="q-keyword">Tempo de adaptação visivelmente menor (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:50.00%;background:#e53935" title="Discorda: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="question-row"><td class="td-question" title="16. A UCE é pouco efetiva para preparar os alunos para as exigências reais de “Algoritmos e Programação I”."><div class="question-cell-wrap"><span class="q-badge">P10</span><span class="q-keyword">Pouco efetiva para exigências de Algoritmos I (−)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Discorda: 1 (50.0%)">1 (50%)</div><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">2,00</td></tr><tr class="theme-separator-row"><td colspan="3"><span class="theme-tag">3 itens</span>Engajamento e colaboração</td></tr><tr class="question-row"><td class="td-question" title="7. Os alunos egressos da UCE demonstram mais interesse e engajamento durante as aulas."><div class="question-cell-wrap"><span class="q-badge">P11</span><span class="q-keyword">Mais interesse e engajamento nas aulas (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="question-row"><td class="td-question" title="8. Os alunos com experiência na UCE apresentam melhor postura (resiliência) frente a desafios e erros de programação."><div class="question-cell-wrap"><span class="q-badge">P12</span><span class="q-keyword">Melhor postura/resiliência frente a desafios e erros (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#2e7d32" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr><tr class="question-row"><td class="td-question" title="9. Os alunos que passaram pela UCE demonstram maior colaboração e disposição para ajudar os colegas."><div class="question-cell-wrap"><span class="q-badge">P13</span><span class="q-keyword">Disposição para ajudar colegas e colaborar (+)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:100.00%;background:#2e7d32" title="Concorda: 2 (100.0%)">2 (100%)</div></div></td><td class="td-bar td-num">4,00</td></tr><tr class="theme-separator-row"><td colspan="3"><span class="theme-tag">2 itens</span>Impacto global</td></tr><tr class="question-row"><td class="td-question" title="12. A UCE NÃO agrega valor significativo à formação inicial em computação (o impacto é neutro)."><div class="question-cell-wrap"><span class="q-badge">P14</span><span class="q-keyword">UCE NÃO agrega valor / impacto neutro (−)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice" style="width:100.00%;background:#2e7d32" title="Discorda: 2 (100.0%)">2 (100%)</div></div></td><td class="td-bar td-num">1,50</td></tr><tr class="question-row"><td class="td-question" title="14. A UCE NÃO tem impacto relevante no rendimento global da turma (as médias não mudam)."><div class="question-cell-wrap"><span class="q-badge">P15</span><span class="q-keyword">UCE NÃO altera rendimento global da turma (−)</span></div></td><td class="td-bar"><div class="bar-container"><div class="bar-slice dark" style="width:50.00%;background:#fbc02d" title="Neutro: 1 (50.0%)">1 (50%)</div><div class="bar-slice" style="width:50.00%;background:#e53935" title="Concorda: 1 (50.0%)">1 (50%)</div></div></td><td class="td-bar td-num">3,50</td></tr></tbody></table></div><div class="section-title">Gráfico em imagem</div><div class="png-card"><span>Itens Likert por bloco</span><a class="nav-link" href="Graficos_PNG/G1_G3/G3_Professores.png" target="_blank">Abrir PNG</a></div>
-</div></body></html>
+<div class="controls-toolbar">
+<div class="toolbar-row">
+ <div class="ctrl-group"><span class="ctrl-label">Visualização da escala:</span><div class="btn-group" id="g-escala">
+  <button class="btn-toggle active" data-v="3cat" onclick="setEscala('3cat')">3 Categorias (Discordo / Neutro / Concordo)</button>
+  <button class="btn-toggle" data-v="5scale" onclick="setEscala('5scale')">Escala Likert (1 a 5)</button></div></div>
+ <div class="ctrl-group"><span class="ctrl-label">Densidade das linhas:</span><div class="btn-group" id="g-dens">
+  <button class="btn-toggle" data-v="ultracompact" onclick="setDensidade('ultracompact')">Ultra-compacto</button>
+  <button class="btn-toggle active" data-v="compact" onclick="setDensidade('compact')">Compacto</button>
+  <button class="btn-toggle" data-v="comfortable" onclick="setDensidade('comfortable')">Confortável</button></div></div>
+</div>
+<div class="toolbar-row">
+ <div class="ctrl-group"><span class="ctrl-label">Rótulos:</span><div class="btn-group" id="g-rotulo">
+  <button class="btn-toggle active" data-v="pct" onclick="setRotulo('pct')">% (Percentual)</button>
+  <button class="btn-toggle" data-v="n" onclick="setRotulo('n')">N (Contagem)</button>
+  <button class="btn-toggle" data-v="ambos" onclick="setRotulo('ambos')">Ambos</button></div></div>
+ <div class="ctrl-group"><button class="btn-action" onclick="window.print()">Imprimir / PDF</button>
+  <button class="btn-action" onclick="baixarCSV()">Baixar dados (CSV)</button></div>
+</div>
+<div class="tabs-theme-container" id="tabs"><button class="tab-btn active" data-v="Todos" onclick="setBloco('Todos')">Todos os blocos <span>15</span></button><button class="tab-btn" data-v="Desempenho e raciocínio" onclick="setBloco(this.dataset.v)">Desempenho e raciocínio <span>6</span></button><button class="tab-btn" data-v="Adaptação e metodologia" onclick="setBloco(this.dataset.v)">Adaptação e metodologia <span>4</span></button><button class="tab-btn" data-v="Engajamento e colaboração" onclick="setBloco(this.dataset.v)">Engajamento e colaboração <span>3</span></button><button class="tab-btn" data-v="Impacto global" onclick="setBloco(this.dataset.v)">Impacto global <span>2</span></button></div>
+<div class="search-box"><input type="search" placeholder="Filtrar por palavra-chave..." oninput="setBusca(this.value)"></div>
+</div><p class="note">Com dois respondentes, use os rótulos "N" ou "Ambos" para ver as contagens.</p><div class="legend-bar" id="legend"></div><div class="table-container"><table class="compact-table"><thead><tr><th class="col-question">Item <span class="th-sub-meta">passe o mouse para ver o enunciado completo</span></th><th class="col-bar">Distribuição das respostas</th><th class="col-num">Média</th></tr></thead><tbody id="tbody"></tbody></table></div><div class="section-title png">Gráfico em imagem</div><div class="png-card"><span>Itens Likert por bloco</span><a class="btn-action" href="Graficos_PNG/G1_G3/G3_Professores.png" target="_blank">Abrir PNG</a></div>
+</div>
+<script>const DADOS = {"itens": [{"id": "P01", "bloco": "Desempenho e raciocínio", "rotulo": "Facilidade com conceitos teóricos da programação", "enunciado": "2. Os alunos que participaram da UCE demonstram maior facilidade em compreender conceitos teóricos da programação.", "neg": false, "n": 2, "v": [0, 0, 1, 0, 1]}, {"id": "P02", "bloco": "Desempenho e raciocínio", "rotulo": "Formação na UCE NÃO parece influenciar prática", "enunciado": "3. A formação na UCE NÃO parece influenciar significativamente o desempenho prático dos alunos em programação.", "neg": true, "n": 2, "v": [1, 0, 1, 0, 0]}, {"id": "P03", "bloco": "Desempenho e raciocínio", "rotulo": "Autonomia na resolução de problemas", "enunciado": "4. Os alunos com formação prévia na UCE demonstram maior autonomia na resolução de problemas computacionais.", "neg": false, "n": 2, "v": [0, 0, 0, 2, 0]}, {"id": "P04", "bloco": "Desempenho e raciocínio", "rotulo": "Desenvolvimento de raciocínio lógico e PC", "enunciado": "5. A experiência na UCE contribui para o desenvolvimento de raciocínio lógico e pensamento computacional.", "neg": false, "n": 2, "v": [0, 0, 0, 1, 1]}, {"id": "P05", "bloco": "Desempenho e raciocínio", "rotulo": "Diferença significativa de desempenho", "enunciado": "11. Há uma diferença significativa de desempenho entre alunos que cursaram e não cursaram a UCE.", "neg": false, "n": 2, "v": [0, 0, 1, 1, 0]}, {"id": "P06", "bloco": "Desempenho e raciocínio", "rotulo": "Resultados acadêmicos confirmam benefícios", "enunciado": "15. Os resultados acadêmicos (notas, aprovação, entrega de atividades) confirmam os benefícios da UCE.", "neg": false, "n": 2, "v": [0, 1, 0, 0, 1]}, {"id": "P07", "bloco": "Adaptação e metodologia", "rotulo": "Tempo de adaptação igual aos demais (sem vantagem)", "enunciado": "6. O tempo que os alunos egressos da UCE levam para se adaptar à disciplina é o mesmo que os demais (não há vantagem na adaptação)", "neg": true, "n": 2, "v": [1, 0, 1, 0, 0]}, {"id": "P08", "bloco": "Adaptação e metodologia", "rotulo": "Familiaridade com PBL favorece liderança", "enunciado": "10. A familiaridade prévia com a metodologia PBL faz com que esses alunos liderem grupos de trabalho com mais frequência.", "neg": false, "n": 2, "v": [0, 0, 1, 1, 0]}, {"id": "P09", "bloco": "Adaptação e metodologia", "rotulo": "Tempo de adaptação visivelmente menor", "enunciado": "13. O tempo de adaptação dos alunos egressos da UCE à disciplina é visivelmente menor do que o dos demais alunos.", "neg": false, "n": 2, "v": [0, 1, 0, 0, 1]}, {"id": "P10", "bloco": "Adaptação e metodologia", "rotulo": "Pouco efetiva para exigências de Algoritmos I", "enunciado": "16. A UCE é pouco efetiva para preparar os alunos para as exigências reais de “Algoritmos e Programação I”.", "neg": true, "n": 2, "v": [1, 0, 1, 0, 0]}, {"id": "P11", "bloco": "Engajamento e colaboração", "rotulo": "Mais interesse e engajamento nas aulas", "enunciado": "7. Os alunos egressos da UCE demonstram mais interesse e engajamento durante as aulas.", "neg": false, "n": 2, "v": [0, 0, 1, 1, 0]}, {"id": "P12", "bloco": "Engajamento e colaboração", "rotulo": "Melhor postura/resiliência frente a desafios e erros", "enunciado": "8. Os alunos com experiência na UCE apresentam melhor postura (resiliência) frente a desafios e erros de programação.", "neg": false, "n": 2, "v": [0, 0, 1, 1, 0]}, {"id": "P13", "bloco": "Engajamento e colaboração", "rotulo": "Disposição para ajudar colegas e colaborar", "enunciado": "9. Os alunos que passaram pela UCE demonstram maior colaboração e disposição para ajudar os colegas.", "neg": false, "n": 2, "v": [0, 0, 0, 2, 0]}, {"id": "P14", "bloco": "Impacto global", "rotulo": "UCE NÃO agrega valor / impacto neutro", "enunciado": "12. A UCE NÃO agrega valor significativo à formação inicial em computação (o impacto é neutro).", "neg": true, "n": 2, "v": [1, 1, 0, 0, 0]}, {"id": "P15", "bloco": "Impacto global", "rotulo": "UCE NÃO altera rendimento global da turma", "enunciado": "14. A UCE NÃO tem impacto relevante no rendimento global da turma (as médias não mudam).", "neg": true, "n": 2, "v": [0, 0, 1, 1, 0]}], "ia": [], "arquivo": "g3_professores_distribuicao.csv"};
+
+const C3 = {d:'#e53935', n:'#fbc02d', c:'#2e7d32'};
+const C5 = ['#b71c1c','#fb8c00','#fdd835','#81c784','#2e7d32'];
+const IA3 = {d:'#64748b', n:'#fbc02d', c:'#1d4ed8'};
+const IA5 = ['#334155','#94a3b8','#fbc02d','#93c5fd','#1d4ed8'];
+const CLAROS = ['#fbc02d','#fdd835','#81c784','#93c5fd','#94a3b8'];
+const ROT5 = ['1: Discordo totalmente','2: Discordo parcialmente','3: Neutro','4: Concordo parcialmente','5: Concordo totalmente'];
+const est = {escala:'3cat', rotulo:'pct', bloco:'Todos', busca:''};
+
+function texto(k, n){ const p = n ? 100*k/n : 0;
+  if (est.rotulo==='n') return p>=6 ? String(k) : '';
+  if (est.rotulo==='ambos') return p>=15 ? `${k} (${p.toFixed(0)}%)` : (p>=6 ? String(k) : '');
+  return p>=9 ? p.toFixed(0)+'%' : ''; }
+function fatia(k, n, cor, rot){ if (!k) return ''; const p = 100*k/n;
+  return `<div class="bar-slice" style="width:${p.toFixed(2)}%;background:${cor};color:${CLAROS.includes(cor)?'#1a1a1a':'#fff'}" title="${rot}: ${k} de ${n} (${p.toFixed(1)}%)">${texto(k,n)}</div>`; }
+function barra(v, n, neg, ia){
+  let h = '';
+  if (est.escala==='3cat'){
+    const d=v[0]+v[1], ne=v[2], c=v[3]+v[4];
+    const P = ia ? IA3 : C3;
+    const cd = ia ? P.d : (neg ? P.c : P.d), cc = ia ? P.c : (neg ? P.d : P.c);
+    const rd = ia ? 'Discorda' : (neg ? 'Discorda (favorável)' : 'Discorda (desfavorável)');
+    const rc = ia ? 'Concorda' : (neg ? 'Concorda (desfavorável)' : 'Concorda (favorável)');
+    h = fatia(d,n,cd,rd)+fatia(ne,n,P.n,'Neutro')+fatia(c,n,cc,rc);
+  } else {
+    for (let i=0;i<5;i++){ const cor = ia ? IA5[i] : C5[neg ? 4-i : i]; h += fatia(v[i], n, cor, ROT5[i]); }
+  }
+  return `<div class="bar-container">${h}</div>`;
+}
+function bate(it){ const b = est.busca; return !b || (it.rotulo+' '+it.enunciado+' '+it.id).toLowerCase().includes(b); }
+function media(v,n){ let s=0; for(let i=0;i<5;i++) s+=(i+1)*v[i]; return n ? (s/n).toFixed(2).replace('.',',') : '--'; }
+function pills(cores, rotulos){ return rotulos.map((r,i)=>`<div class="legend-pill"><span class="color-box" style="background:${cores[i]}"></span><strong>${r}</strong></div>`).join(''); }
+
+function renderLegenda(){
+  const el = document.getElementById('legend');
+  el.innerHTML = est.escala==='3cat'
+    ? `<span class="legend-title">Itens (+): concordar é favorável | Itens (−): concordar é desfavorável</span><div class="legend-items">${pills([C3.d,C3.n,C3.c],['Desfavorável','Neutro (3)','Favorável'])}</div>`
+    : `<span class="legend-title">Escala Likert · nos itens (−) as cores são espelhadas</span><div class="legend-items">${pills(C5,ROT5)}</div>`;
+  const ia = document.getElementById('legend-ia');
+  if (ia) ia.innerHTML = est.escala==='3cat'
+    ? `<span class="legend-title">Bloco de opinião: as cores indicam concordância</span><div class="legend-items">${pills([IA3.d,IA3.n,IA3.c],['Discorda (1–2)','Neutro (3)','Concorda (4–5)'])}</div>`
+    : `<span class="legend-title">Bloco de opinião · escala Likert</span><div class="legend-items">${pills(IA5,ROT5)}</div>`;
+}
+
+function linhaItem(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo} (${it.neg?'−':'+'})</span></div></td><td class="td-bar">${barra(it.v,it.n,it.neg,false)}</td><td class="td-bar td-num">${media(it.v,it.n)}</td></tr>`; }
+function linhaIA(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo}</span></div></td><td class="td-bar">${barra(it.antes.v,it.antes.n,false,true)}</td><td class="td-bar">${barra(it.depois.v,it.depois.n,false,true)}</td></tr>`; }
+const VAZIO = '<tr><td colspan="3" class="empty">Nenhum item encontrado.</td></tr>';
+
+function renderTabela(){
+  let html = '', ultimo = null, total = 0;
+  for (const it of DADOS.itens){
+    if (est.bloco!=='Todos' && it.bloco!==est.bloco) continue;
+    if (!bate(it)) continue;
+    if (it.bloco!==ultimo){ const nb = DADOS.itens.filter(x=>x.bloco===it.bloco).length;
+      html += `<tr class="theme-separator-row"><td colspan="3"><span class="theme-tag">${nb} itens</span>${it.bloco}</td></tr>`; ultimo = it.bloco; }
+    total++; html += linhaItem(it);
+  }
+  document.getElementById('tbody').innerHTML = total ? html : VAZIO;
+  const tia = document.getElementById('tbody-ia');
+  if (tia){ const lst = DADOS.ia.filter(bate); tia.innerHTML = lst.length ? lst.map(linhaIA).join('') : VAZIO; }
+}
+
+function ativa(grupo, val){ document.querySelectorAll(grupo+' .btn-toggle').forEach(b=>b.classList.toggle('active', b.dataset.v===val)); }
+function setEscala(v){ est.escala=v; ativa('#g-escala',v); renderLegenda(); renderTabela(); }
+function setRotulo(v){ est.rotulo=v; ativa('#g-rotulo',v); renderTabela(); }
+function setDensidade(v){ document.body.classList.remove('density-ultracompact','density-comfortable');
+  if (v!=='compact') document.body.classList.add('density-'+v); ativa('#g-dens',v); }
+function setBloco(v){ est.bloco=v; document.querySelectorAll('#tabs .tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.v===v)); renderTabela(); }
+function setBusca(v){ est.busca=v.toLowerCase().trim(); renderTabela(); }
+
+function baixarCSV(){
+  const L = [['codigo','bloco','item','sinal','n','r1','r2','r3','r4','r5','media','enunciado']];
+  for (const it of DADOS.itens) L.push([it.id,it.bloco,it.rotulo,it.neg?'-':'+',it.n,...it.v,media(it.v,it.n),it.enunciado]);
+  for (const it of DADOS.ia){
+    L.push([it.id+'-antes','IA (antes)',it.rotulo,'',it.antes.n,...it.antes.v,media(it.antes.v,it.antes.n),it.enunciado]);
+    L.push([it.id+'-depois','IA (depois)',it.rotulo,'',it.depois.n,...it.depois.v,media(it.depois.v,it.depois.n),it.enunciado]); }
+  const csv = String.fromCharCode(0xFEFF) + L.map(l=>l.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download = DADOS.arquivo; a.click();
+}
+renderLegenda(); renderTabela();
+</script></body></html>
