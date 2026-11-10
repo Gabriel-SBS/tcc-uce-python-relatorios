@@ -21,17 +21,32 @@
 </style>
 </head>
 <body>
+<!-- NAV-TCC:inicio -->
+<style>
+.navtcc{position:sticky;top:0;z-index:9999;background:#0f172a;padding:8px 16px;
+  font:600 13.5px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.navtcc ul{list-style:none;margin:0 auto;padding:0;max-width:1200px;display:flex;flex-wrap:wrap;gap:6px}
+.navtcc li{margin:0;padding:0;border:0;background:none}
+.navtcc a{display:block;color:#e2e8f0;text-decoration:none;padding:6px 11px;border-radius:6px;border:0;
+  background:none;box-shadow:none;margin:0;font-weight:600}
+.navtcc a:hover{background:#1e293b}
+.navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
+</style>
+<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html" aria-current="page">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li></ul></nav>
+<!-- NAV-TCC:fim -->
 <main>
-  <h1>Relatórios do Questionário 2 (G2)</h1>
+  <h1>Relatórios dos questionários</h1>
   <p>Material complementar do artigo “Análise Trilateral do Impacto da UCE ‘Ensino de Programação em Python’:
-  Percepções de Mentores, Alunos Egressos e Professores” (Engenharia de Computação, UEFS). Respostas de 38
-  discentes, agregadas por subgrupo: egressos da UCE (EG, n = 8), com conhecimento prévio (CP, n = 11) e sem
-  conhecimento prévio (SC, n = 19).</p>
+  Percepções de Mentores, Alunos Egressos e Professores” (Engenharia de Computação, UEFS). Respostas de 43
+  mentores (G1), 38 discentes (G2) e 2 docentes (G3). No G2, as respostas são agregadas por subgrupo: egressos
+  da UCE (EG, n = 8), com conhecimento prévio (CP, n = 11) e sem conhecimento prévio (SC, n = 19).</p>
   <ul>
-    <li><a href="relatorio_graficos_barras_resumido.html">Gráficos por tema<span>Os 50 itens Likert em seis temas, com sinal (+/−) e cores por sentido da resposta</span></a></li>
+    <li><a href="relatorio_g1_mentores.html">G1 · Mentores<span>Itens Likert por bloco e percepção sobre IA antes e depois da mentoria</span></a></li>
+    <li><a href="relatorio_graficos_barras_resumido.html">G2 · Gráficos por tema<span>Os 50 itens Likert em seis temas, com sinal (+/−) e cores por sentido da resposta</span></a></li>
     <li><a href="relatorio_graficos_barras.html">Gráficos de barras por item<span>Distribuição de cada item por subgrupo</span></a></li>
     <li><a href="relatorio_graficos_pizza.html">Gráficos de pizza por item<span>A mesma distribuição em formato de pizza</span></a></li>
     <li><a href="graficos_egressos.html">Egressos da UCE<span>Recorte do subgrupo EG</span></a></li>
+    <li><a href="relatorio_g3_professores.html">G3 · Professores<span>Respostas dos docentes de Algoritmos e Programação I</span></a></li>
     <li><a href="Anexo_Questoes_G2_Dicionario.csv">Dicionário das questões (CSV)<span>Enunciado integral de cada item e o tema a que pertence</span></a></li>
   </ul>
   <footer>Gabriel Sena Barbosa Silva e Pâmela Michele Cândida Cortez — UEFS, 2026. Dados anonimizados e agregados, conforme protocolo aprovado pelo CEP/UEFS.</footer>
