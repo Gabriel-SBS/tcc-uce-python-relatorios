@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário dos Discentes (G2) — Visão Resumida e Consolidada (Barras Empilhadas)</title>
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --row-height: 34px;
+            --bar-height: 20px;
+            --font-size-row: 13px;
+            --font-size-bar: 11px;
+        }
+
+        body.density-ultracompact {
+            --row-height: 25px;
+            --bar-height: 15px;
+            --font-size-row: 11.5px;
+            --font-size-bar: 9.5px;
+        }
+
+        body.density-comfortable {
+            --row-height: 46px;
+            --bar-height: 26px;
+            --font-size-row: 14px;
+            --font-size-bar: 12px;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.4;
+        }
+
+        .wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Executivo */
+        .header-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 30px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .header-title-box h1 {
+            margin: 0 0 6px 0;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.3px;
+        }
+        .header-title-box p {
+            margin: 0;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            background: var(--bg-subtle);
+            color: var(--text-title);
+            border: 1px solid var(--border);
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .nav-link:hover {
+            background: var(--text-title);
+            color: white;
+            border-color: var(--text-title);
+        }
+        .nav-link.active {
+            background: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+
+        /* Estatísticas Rápidas */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            background: var(--bg-subtle);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .stat-val {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+        .stat-val span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* Toolbar de Controles Interativos */
+        .controls-toolbar {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+        }
+        .toolbar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .ctrl-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-title);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-right: 4px;
+        }
+        .btn-group {
+            display: inline-flex;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--bg-subtle);
+        }
+        .btn-toggle {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-toggle:not(:last-child) {
+            border-right: 1px solid var(--border-subtle);
+        }
+        .btn-toggle:hover {
+            background: #e2e8f0;
+        }
+        .btn-toggle.active {
+            background: #0f172a;
+            color: white;
+        }
+        .btn-action {
+            background: white;
+            border: 1px solid var(--border-subtle);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-title);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .btn-action:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 5px 10px;
+            min-width: 260px;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 12.5px;
+            color: var(--text-title);
+            width: 100%;
+        }
+        .search-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Filtro de Abas por Tema */
+        .tabs-theme-container {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 12px;
+        }
+        .tab-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tab-btn span.badge-count {
+            background: #e2e8f0;
+            color: #475569;
+            font-size: 10.5px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .tab-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-title);
+        }
+        .tab-btn.active {
+            background: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+        .tab-btn.active span.badge-count {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        /* Legenda de Cores */
+        .legend-bar {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+        }
+        .legend-title {
+            font-weight: 700;
+            color: var(--text-title);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.4px;
+        }
+        .legend-items {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .legend-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .color-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        /* Tabela Principal Consolidada (1 linha por pergunta) */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+            background: #ffffff;
+        }
+        .compact-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: var(--font-size-row);
+        }
+
+        /* Cabeçalho da Tabela com Fixação Suave no Topo */
+        .compact-table thead th {
+            background: #0f172a;
+            color: white;
+            padding: 11px 14px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            border-bottom: 2px solid #334155;
+        }
+        .compact-table thead th:first-child {
+            border-top-left-radius: 11px;
+        }
+        .compact-table thead th:last-child {
+            border-top-right-radius: 11px;
+        }
+        .compact-table thead th.col-question {
+            width: 31%;
+            min-width: 280px;
+        }
+        .compact-table thead th.col-subgroup {
+            width: 23%;
+            text-align: center;
+            border-left: 1px solid #334155;
+        }
+        .th-sub-meta {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Linhas Temáticas (Separadores de Bloco) */
+        .theme-separator-row td {
+            background: #f1f5f9;
+            padding: 10px 16px;
+            font-weight: 800;
+            font-size: 13px;
+            color: #0f172a;
+            border-top: 2px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+            letter-spacing: 0.3px;
+        }
+        .theme-separator-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .theme-separator-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .theme-tag {
+            background: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .theme-desc {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 12px;
+        }
+
+        /* Linhas das Perguntas (Cada Pergunta = 1 Linha) */
+        .question-row {
+            height: var(--row-height);
+            transition: background 0.1s ease;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+        }
+        .question-row:nth-child(even) {
+            background: #ffffff;
+        }
+        .question-row:nth-child(odd) {
+            background: #fafbfc;
+        }
+        .question-row:hover {
+            background: #f0f7ff !important;
+        }
+
+        .td-question {
+            padding: 4px 12px;
+            border-right: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .question-cell-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .q-badge {
+            font-size: 10.5px;
+            font-weight: 800;
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+        .q-keyword {
+            font-weight: 600;
+            color: var(--text-title);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+        }
+        .info-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 2px;
+            font-size: 13px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            transition: color 0.15s;
+        }
+        .info-btn:hover {
+            color: #0284c7;
+        }
+
+        /* Células dos Subgrupos (Barras Empilhadas) */
+        .td-subgroup {
+            padding: 4px 10px;
+            border-right: 1px solid var(--border);
+            vertical-align: middle;
+            text-align: center;
+        }
+        .bar-container {
+            display: flex;
+            width: 100%;
+            height: var(--bar-height);
+            border-radius: 4px;
+            overflow: hidden;
+            background: #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .bar-slice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-bar);
+            font-weight: 700;
+            color: white;
+            transition: filter 0.15s ease;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            border-right: 1px solid rgba(255,255,255,0.4);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: clip;
+            padding: 0 1px;
+            box-sizing: border-box;
+        }
+        .floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: white;
+            border: 1px solid #334155;
+            padding: 9px 15px;
+            border-radius: 24px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .floating-btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+        .bar-slice:last-child {
+            border-right: none;
+        }
+        .bar-slice.dark-text {
+            color: #1e293b !important;
+        }
+        .bar-slice:hover {
+            filter: brightness(1.15) contrast(1.05);
+            z-index: 5;
+        }
+
+        /* Gaveta Retrátil de Detalhes da Pergunta (ao clicar na linha) */
+        .drawer-detail-row {
+            background: #f8fafc;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .drawer-content {
+            padding: 16px 24px;
+            font-size: 13px;
+        }
+        .drawer-header {
+            margin-bottom: 12px;
+        }
+        .drawer-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 4px 0;
+        }
+        .drawer-statement {
+            color: #1e293b;
+            font-style: italic;
+            background: #ffffff;
+            border-left: 3px solid #0284c7;
+            padding: 8px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 6px;
+        }
+        .mini-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .mini-stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+        .mini-card-title {
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 8px;
+            color: var(--text-title);
+        }
+
+        /* Tooltip Flutuante Dinâmico */
+        #interactive-tooltip {
+            position: fixed;
+            display: none;
+            z-index: 9999;
+            background: #0f172a;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 320px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            pointer-events: none;
+            transition: opacity 0.1s ease;
+        }
+        #interactive-tooltip .tt-header {
+            font-weight: 700;
+            font-size: 12.5px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            color: #38bdf8;
+        }
+        #interactive-tooltip .tt-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 3px;
+        }
+        #interactive-tooltip .tt-statement {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-top: 6px;
+            border-top: 1px solid #334155;
+            padding-top: 6px;
+            font-style: italic;
+        }
+
+        /* Seção Anexo: Dicionário Completo de Questões */
+        .appendix-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-top: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            scroll-margin-top: 80px;
+        }
+        .appendix-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .appendix-title-box h2 {
+            margin: 0 0 6px 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+        .appendix-title-box p {
+            margin: 0;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+        .appendix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+        .appendix-table th, .appendix-table td {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .appendix-table th {
+            background: #f8fafc;
+            color: var(--text-title);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .appendix-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Links para Imagens PNG dos Temas */
+        .png-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .png-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ESTILOS DE IMPRESSÃO (Compactar em poucas páginas / PDF) */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 10mm;
+            }
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                color: #000000 !important;
+                font-size: 10.5px !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .wrapper {
+                max-width: 100% !important;
+            }
+            .controls-toolbar, .nav-links, .btn-action, .search-box, .btn-group, .info-btn, .tab-btn {
+                display: none !important;
+            }
+            .header-panel {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 0 10px 0 !important;
+                margin-bottom: 10px !important;
+            }
+            .stats-strip {
+                padding: 6px 10px !important;
+                gap: 8px !important;
+            }
+            .compact-table thead th {
+                position: static !important;
+                background: #1e293b !important;
+                color: #ffffff !important;
+                padding: 6px 8px !important;
+                font-size: 10px !important;
+            }
+            .theme-separator-row td {
+                padding: 6px 10px !important;
+                font-size: 11px !important;
+                page-break-after: avoid;
+            }
+            .question-row {
+                height: 22px !important;
+                page-break-inside: avoid;
+            }
+            .td-question {
+                padding: 2px 6px !important;
+                font-size: 9.5px !important;
+            }
+            .bar-container {
+                height: 14px !important;
+            }
+            .bar-slice {
+                font-size: 8.5px !important;
+            }
+            .appendix-section {
+                page-break-before: always;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            .appendix-table th, .appendix-table td {
+                padding: 4px 6px !important;
+                font-size: 9px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Header Executivo -->
+    <div class="header-panel">
+        <div class="header-top-row">
+            <div class="header-title-box">
+                <h1>Questionário dos Discentes (G2) — Visão Resumida e Consolidada</h1>
+                <p>Distribuição de percepções em <strong>1 linha por pergunta</strong> e <strong>3 colunas de subgrupos lado a lado</strong>. Compactação visual em 1/3 para visão panorâmica e impressão sintética.</p>
+            </div>
+            <div class="nav-links">
+                <a class="nav-link active" href="#">📊 Versão Resumida (Linhas)</a>
+                <a class="nav-link" href="relatorio_graficos_barras.html">📑 Versão Detalhada (Cards Verticais)</a>
+                <a class="nav-link" href="relatorio_graficos_pizza.html">🥧 Gráficos de Pizza</a>
+                <a class="nav-link" href="#anexo_questoes">📖 Anexo de Questões</a>
+            </div>
+        </div>
+
+        <div class="stats-strip">
+            <div class="stat-item">
+                <span class="stat-label">Amostra Total</span>
+                <span class="stat-val">38 <span>Discentes Válidos</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">1º Subgrupo (EG)</span>
+                <span class="stat-val">8 <span>Egressos UCE (21,1%)</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">2º Subgrupo (CP)</span>
+                <span class="stat-val">11 <span>Conhec. Prévio (28,9%)</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">3º Subgrupo (SC)</span>
+                <span class="stat-val">19 <span>Sem Conhec. (50,0%)</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Itens Likert</span>
+                <span class="stat-val">50 <span>Perguntas em 6 Temas</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de Controles Interativos -->
+    <div class="controls-toolbar">
+        <div class="toolbar-row">
+            <!-- Alternador de Escala (3 Categorias vs Escala 1 a 5) -->
+            <div class="ctrl-group">
+                <span class="ctrl-label">Visualização da Escala:</span>
+                <div class="btn-group" id="scale-toggle-group">
+                    <button class="btn-toggle active" data-scale="3cat" onclick="setEscala('3cat')">3 Categorias (Discordo / Neutro / Concordo)</button>
+                    <button class="btn-toggle" data-scale="5scale" onclick="setEscala('5scale')">Escala Likert (1 a 5)</button>
+                </div>
+            </div>
+
+            <!-- Densidade Visual / Achatar Linhas -->
+            <div class="ctrl-group">
+                <span class="ctrl-label">Densidade das Linhas:</span>
+                <div class="btn-group" id="density-toggle-group">
+                    <button class="btn-toggle" data-density="ultracompact" onclick="setDensidade('ultracompact')">Ultra-compacto (25px)</button>
+                    <button class="btn-toggle active" data-density="compact" onclick="setDensidade('compact')">Compacto (34px - 1/3)</button>
+                    <button class="btn-toggle" data-density="comfortable" onclick="setDensidade('comfortable')">Confortável (46px)</button>
+                </div>
+            </div>
+
+            <!-- Formato dos Valores -->
+            <div class="ctrl-group">
+                <span class="ctrl-label">Rótulos:</span>
+                <div class="btn-group" id="label-toggle-group">
+                    <button class="btn-toggle active" data-label="pct" onclick="setRotulo('pct')">% (Percentual)</button>
+                    <button class="btn-toggle" data-label="n" onclick="setRotulo('n')">N (Contagem)</button>
+                    <button class="btn-toggle" data-label="both" onclick="setRotulo('both')">Ambos</button>
+                </div>
+            </div>
+
+            <!-- Botões de Ação Rápida -->
+            <div class="ctrl-group">
+                <button class="btn-action" onclick="window.print()">🖨️ Imprimir / PDF</button>
+                <a class="btn-action" href="Anexo_Questoes_G2_Dicionario.xlsx" download>📥 Baixar Excel (XLSX)</a>
+            </div>
+        </div>
+
+        <!-- Abas por Tema e Busca -->
+        <div class="toolbar-row" style="margin-top: 6px;">
+            <div class="tabs-theme-container" id="theme-tabs">
+                <button class="tab-btn active" data-theme="ALL" onclick="filtrarTema('ALL')">Todos os Temas <span class="badge-count">50</span></button>
+                <button class="tab-btn" data-theme="Adaptação" onclick="filtrarTema('Adaptação')">Adaptação <span class="badge-count">10</span></button>
+                <button class="tab-btn" data-theme="Dinâmica de grupo" onclick="filtrarTema('Dinâmica de grupo')">Dinâmica de Grupo <span class="badge-count">9</span></button>
+                <button class="tab-btn" data-theme="Gestão do tempo" onclick="filtrarTema('Gestão do tempo')">Gestão do Tempo <span class="badge-count">6</span></button>
+                <button class="tab-btn" data-theme="Uso de IA" onclick="filtrarTema('Uso de IA')">Uso de IA <span class="badge-count">12</span></button>
+                <button class="tab-btn" data-theme="Competências" onclick="filtrarTema('Competências')">Competências <span class="badge-count">8</span></button>
+                <button class="tab-btn" data-theme="Integração social" onclick="filtrarTema('Integração social')">Integração Social <span class="badge-count">5</span></button>
+            </div>
+
+            <div class="search-box">
+                <span style="margin-right:6px;">🔍</span>
+                <input type="text" id="filter-input" placeholder="Filtrar por palavra-chave..." oninput="filtrarTexto(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de Legenda Dinâmica -->
+    <div class="legend-bar" id="legend-container">
+        <!-- Renderizado dinamicamente via JS de acordo com a escala ativa -->
+    </div>
+
+    <!-- Tabela Principal de Linhas Resumidas -->
+    <div class="table-container">
+        <table class="compact-table" id="main-table">
+            <thead>
+                <tr>
+                    <th class="col-question">Questão / Conceito-Chave</th>
+                    <th class="col-subgroup">
+                        1º Subgrupo: Egressos UCE (EG)
+                        <span class="th-sub-meta">n = 8 discentes</span>
+                    </th>
+                    <th class="col-subgroup">
+                        2º Subgrupo: Conhec. Prévio Externo (CP)
+                        <span class="th-sub-meta">n = 11 discentes</span>
+                    </th>
+                    <th class="col-subgroup">
+                        3º Subgrupo: Sem Conhecimento (SC)
+                        <span class="th-sub-meta">n = 19 discentes</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Inserido dinamicamente via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Galeria de Imagens PNG de Alta Resolução por Tema -->
+    <div class="header-panel">
+        <h3 style="margin: 0 0 8px 0; font-size: 16px; color: var(--text-title);">📊 Gráficos PNG Individuais por Tema (Alta Resolução p/ Slides e Artigos)</h3>
+        <p style="margin: 0 0 14px 0; font-size: 13px; color: var(--text-muted);">Imagens estáticas compactadas (1 linha por pergunta, 3 colunas de subgrupos) geradas automaticamente em 250 DPI:</p>
+        <div class="png-gallery">
+            <div class="png-card"><span>1. Adaptação (10 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_01_Adaptacao.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card"><span>2. Dinâmica de Grupo (9 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_02_Dinamica_Grupo.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card"><span>3. Gestão do Tempo (6 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_03_Gestao_Tempo.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card"><span>4. Uso de IA (12 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_04_Uso_IA.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card"><span>5. Competências (8 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_05_Competencias.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card"><span>6. Integração Social (5 itens)</span> <a class="nav-link" href="Graficos_PNG/Barras_Resumidas_Temas/Tema_06_Integracao_Social.png" target="_blank">Abrir PNG</a></div>
+            <div class="png-card" style="background:#e0f2fe; border-color:#bae6fd;"><span style="color:#0369a1; font-weight:700;">🌟 Consolidado Geral (50 itens)</span> <a class="nav-link active" href="Graficos_PNG/Barras_Resumidas_Temas/Consolidado_G2_Todos_Temas.png" target="_blank">Abrir PNG</a></div>
+        </div>
+    </div>
+
+    <!-- Seção Anexo: Dicionário Completo de Questões -->
+    <div class="appendix-section" id="anexo_questoes">
+        <div class="appendix-header">
+            <div class="appendix-title-box">
+                <h2>Anexo: Dicionário das 50 Questões do Questionário Discente (G2)</h2>
+                <p>Relação completa com palavras-chave sintéticas, afirmação específica do item e texto integral verbatim.</p>
+            </div>
+            <div class="ctrl-group">
+                <a class="btn-action" href="Anexo_Questoes_G2_Dicionario.xlsx" download>📥 Baixar Planilha Completa (Excel .XLSX)</a>
+                <a class="btn-action" href="Anexo_Questoes_G2_Dicionario.csv" download>📋 Baixar Dicionário (CSV)</a>
+            </div>
+        </div>
+
+        <table class="appendix-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 7%;">Coluna</th>
+                    <th style="width: 14%;">Bloco Temático</th>
+                    <th style="width: 22%;">Palavra-Chave Sintética</th>
+                    <th style="width: 26%;">Afirmação do Item (Colchetes)</th>
+                    <th style="width: 26%;">Texto Integral da Pergunta</th>
+                </tr>
+            </thead>
+            <tbody id="appendix-body">
+                <!-- Preenchido dinamicamente via JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Elemento Tooltip Flutuante -->
+<div id="interactive-tooltip"></div>
+
+<script>
+const PERGUNTAS = [{"seq": 1, "col": 7, "id": "Q01", "bloco": "Adaptação", "keyword": "Ritmo acelerado (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Senti que o ritmo da disciplina Algoritmos 1 era rápido demais.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Senti que o ritmo da disciplina Algoritmos 1 era rápido demais.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 3, "concordo": 3, "p_discordo": 25.0, "p_neutro": 37.5, "p_concordo": 37.5, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 3, "p_s3": 37.5, "s4": 1, "p_s4": 12.5, "s5": 2, "p_s5": 25.0, "media": 3.375, "stdev": 1.1877349391654208}, "CP": {"total": 11, "discordo": 4, "neutro": 3, "concordo": 4, "p_discordo": 36.36363636363637, "p_neutro": 27.27272727272727, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 3, "p_s3": 27.27272727272727, "s4": 4, "p_s4": 36.36363636363637, "s5": 0, "p_s5": 0.0, "media": 3, "stdev": 0.8944271909999159}, "SC": {"total": 19, "discordo": 7, "neutro": 7, "concordo": 5, "p_discordo": 36.84210526315789, "p_neutro": 36.84210526315789, "p_concordo": 26.31578947368421, "s1": 2, "p_s1": 10.526315789473683, "s2": 5, "p_s2": 26.31578947368421, "s3": 7, "p_s3": 36.84210526315789, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 2.8421052631578947, "stdev": 1.067872125861979}}}, {"seq": 2, "col": 8, "id": "Q02", "bloco": "Adaptação", "keyword": "Hábito de estudo (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Meu desempenho poderia ter sido muito melhor se eu estivesse acostumado a estudar com afinco desde o Ensino Médio.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Meu desempenho poderia ter sido muito melhor se eu estivesse acostumado a estudar com afinco desde o Ensino Médio.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 3, "concordo": 3, "p_discordo": 25.0, "p_neutro": 37.5, "p_concordo": 37.5, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 3, "p_s3": 37.5, "s4": 3, "p_s4": 37.5, "s5": 0, "p_s5": 0.0, "media": 3.125, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 5, "neutro": 3, "concordo": 3, "p_discordo": 45.45454545454545, "p_neutro": 27.27272727272727, "p_concordo": 27.27272727272727, "s1": 2, "p_s1": 18.181818181818183, "s2": 3, "p_s2": 27.27272727272727, "s3": 3, "p_s3": 27.27272727272727, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 2.6363636363636362, "stdev": 1.1200649331826502}, "SC": {"total": 19, "discordo": 7, "neutro": 6, "concordo": 6, "p_discordo": 36.84210526315789, "p_neutro": 31.57894736842105, "p_concordo": 31.57894736842105, "s1": 2, "p_s1": 10.526315789473683, "s2": 5, "p_s2": 26.31578947368421, "s3": 6, "p_s3": 31.57894736842105, "s4": 3, "p_s4": 15.789473684210526, "s5": 3, "p_s5": 15.789473684210526, "media": 3, "stdev": 1.247219128924647}}}, {"seq": 3, "col": 9, "id": "Q03", "bloco": "Adaptação", "keyword": "Negligência teórica (−)", "sentido": "−", "nao_aplica": ["SC"], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Sinto que meu nível de conhecimento prévio me levou a negligenciar a disciplina teórica de Algoritmos 1.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Sinto que meu nível de conhecimento prévio me levou a negligenciar a disciplina teórica de Algoritmos 1.]", "stats": {"EG": {"total": 8, "discordo": 3, "neutro": 4, "concordo": 1, "p_discordo": 37.5, "p_neutro": 50.0, "p_concordo": 12.5, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 37.5, "s3": 4, "p_s3": 50.0, "s4": 1, "p_s4": 12.5, "s5": 0, "p_s5": 0.0, "media": 2.75, "stdev": 0.7071067811865476}, "CP": {"total": 11, "discordo": 3, "neutro": 6, "concordo": 2, "p_discordo": 27.27272727272727, "p_neutro": 54.54545454545454, "p_concordo": 18.181818181818183, "s1": 1, "p_s1": 9.090909090909092, "s2": 2, "p_s2": 18.181818181818183, "s3": 6, "p_s3": 54.54545454545454, "s4": 1, "p_s4": 9.090909090909092, "s5": 1, "p_s5": 9.090909090909092, "media": 2.909090909090909, "stdev": 1.044465935734187}, "SC": {"total": 19, "discordo": 19, "neutro": 0, "concordo": 0, "p_discordo": 100.0, "p_neutro": 0.0, "p_concordo": 0.0, "s1": 19, "p_s1": 100.0, "s2": 0, "p_s2": 0.0, "s3": 0, "p_s3": 0.0, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1, "stdev": 0.0}}}, {"seq": 4, "col": 10, "id": "Q04", "bloco": "Adaptação", "keyword": "Bloqueio ao programar (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Eu saía das sessões tutoriais achando que entendi a lógica, mas \"travava\" ao codar sozinho(a) em casa.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Eu saía das sessões tutoriais achando que entendi a lógica, mas \"travava\" ao codar sozinho(a) em casa.]", "stats": {"EG": {"total": 8, "discordo": 5, "neutro": 1, "concordo": 2, "p_discordo": 62.5, "p_neutro": 12.5, "p_concordo": 25.0, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 62.5, "s3": 1, "p_s3": 12.5, "s4": 1, "p_s4": 12.5, "s5": 1, "p_s5": 12.5, "media": 2.75, "stdev": 1.164964745021435}, "CP": {"total": 11, "discordo": 7, "neutro": 1, "concordo": 3, "p_discordo": 63.63636363636363, "p_neutro": 9.090909090909092, "p_concordo": 27.27272727272727, "s1": 2, "p_s1": 18.181818181818183, "s2": 5, "p_s2": 45.45454545454545, "s3": 1, "p_s3": 9.090909090909092, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 2.4545454545454546, "stdev": 1.1281521496355325}, "SC": {"total": 19, "discordo": 7, "neutro": 6, "concordo": 6, "p_discordo": 36.84210526315789, "p_neutro": 31.57894736842105, "p_concordo": 31.57894736842105, "s1": 3, "p_s1": 15.789473684210526, "s2": 4, "p_s2": 21.052631578947366, "s3": 6, "p_s3": 31.57894736842105, "s4": 4, "p_s4": 21.052631578947366, "s5": 2, "p_s5": 10.526315789473683, "media": 2.8947368421052633, "stdev": 1.242521488394791}}}, {"seq": 5, "col": 11, "id": "Q05", "bloco": "Adaptação", "keyword": "Padrões de documentação (−)", "sentido": "−", "nao_aplica": ["SC"], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Tive dificuldade em seguir os padrões de documentação exigidos pelos professores devidos a \"vícios de programação\".", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Tive dificuldade em seguir os padrões de documentação exigidos pelos professores devidos a \"vícios de programação\".]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 6, "concordo": 0, "p_discordo": 25.0, "p_neutro": 75.0, "p_concordo": 0.0, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 6, "p_s3": 75.0, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 2.75, "stdev": 0.4629100498862757}, "CP": {"total": 11, "discordo": 2, "neutro": 5, "concordo": 4, "p_discordo": 18.181818181818183, "p_neutro": 45.45454545454545, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 5, "p_s3": 45.45454545454545, "s4": 4, "p_s4": 36.36363636363637, "s5": 0, "p_s5": 0.0, "media": 3.1818181818181817, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 19, "neutro": 0, "concordo": 0, "p_discordo": 100.0, "p_neutro": 0.0, "p_concordo": 0.0, "s1": 9, "p_s1": 47.368421052631575, "s2": 10, "p_s2": 52.63157894736842, "s3": 0, "p_s3": 0.0, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1.5263157894736843, "stdev": 0.5129891760425771}}}, {"seq": 6, "col": 12, "id": "Q06", "bloco": "Adaptação", "keyword": "Adaptação ao PBL (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Senti dificuldade em me adaptar ao PBL por estar acostumado(a) a métodos tradicionais (aulas expositivas ou tutoriais \"passo a passo\").", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Senti dificuldade em me adaptar ao PBL por estar acostumado(a) a métodos tradicionais (aulas expositivas ou tutoriais \"passo a passo\").]", "stats": {"EG": {"total": 8, "discordo": 3, "neutro": 3, "concordo": 2, "p_discordo": 37.5, "p_neutro": 37.5, "p_concordo": 25.0, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 37.5, "s3": 3, "p_s3": 37.5, "s4": 1, "p_s4": 12.5, "s5": 1, "p_s5": 12.5, "media": 3, "stdev": 1.0690449676496976}, "CP": {"total": 11, "discordo": 4, "neutro": 5, "concordo": 2, "p_discordo": 36.36363636363637, "p_neutro": 45.45454545454545, "p_concordo": 18.181818181818183, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 5, "p_s3": 45.45454545454545, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.8181818181818183, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 8, "neutro": 7, "concordo": 4, "p_discordo": 42.10526315789473, "p_neutro": 36.84210526315789, "p_concordo": 21.052631578947366, "s1": 2, "p_s1": 10.526315789473683, "s2": 6, "p_s2": 31.57894736842105, "s3": 7, "p_s3": 36.84210526315789, "s4": 4, "p_s4": 21.052631578947366, "s5": 0, "p_s5": 0.0, "media": 2.6842105263157894, "stdev": 0.9459053029269173}}}, {"seq": 7, "col": 13, "id": "Q07", "bloco": "Adaptação", "keyword": "Debate de soluções (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Me senti confortável em debater soluções, explicar meu código e participar ativamente das sessões tutoriais com meu grupo.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Me senti confortável em debater soluções, explicar meu código e participar ativamente das sessões tutoriais com meu grupo.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 1, "concordo": 5, "p_discordo": 25.0, "p_neutro": 12.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 3, "p_s4": 37.5, "s5": 2, "p_s5": 25.0, "media": 3.625, "stdev": 1.1877349391654208}, "CP": {"total": 11, "discordo": 2, "neutro": 4, "concordo": 5, "p_discordo": 18.181818181818183, "p_neutro": 36.36363636363637, "p_concordo": 45.45454545454545, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 4, "p_s3": 36.36363636363637, "s4": 4, "p_s4": 36.36363636363637, "s5": 1, "p_s5": 9.090909090909092, "media": 3.3636363636363638, "stdev": 0.9244162777371754}, "SC": {"total": 19, "discordo": 9, "neutro": 5, "concordo": 5, "p_discordo": 47.368421052631575, "p_neutro": 26.31578947368421, "p_concordo": 26.31578947368421, "s1": 2, "p_s1": 10.526315789473683, "s2": 7, "p_s2": 36.84210526315789, "s3": 5, "p_s3": 26.31578947368421, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 2.736842105263158, "stdev": 1.097578408394179}}}, {"seq": 8, "col": 14, "id": "Q08", "bloco": "Adaptação", "keyword": "Autonomia de estudo (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Consegui identificar rapidamente quais conteúdos eu precisava estudar por conta própria para resolver os problemas propostos no MI (Módulo Integrador).", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Consegui identificar rapidamente quais conteúdos eu precisava estudar por conta própria para resolver os problemas propostos no MI (Módulo Integrador).]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 2, "concordo": 5, "p_discordo": 12.5, "p_neutro": 25.0, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 2, "p_s3": 25.0, "s4": 2, "p_s4": 25.0, "s5": 3, "p_s5": 37.5, "media": 3.875, "stdev": 1.1259916264596033}, "CP": {"total": 11, "discordo": 1, "neutro": 3, "concordo": 7, "p_discordo": 9.090909090909092, "p_neutro": 27.27272727272727, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 9.090909090909092, "s3": 3, "p_s3": 27.27272727272727, "s4": 4, "p_s4": 36.36363636363637, "s5": 3, "p_s5": 27.27272727272727, "media": 3.8181818181818183, "stdev": 0.9816498172140428}, "SC": {"total": 19, "discordo": 5, "neutro": 5, "concordo": 9, "p_discordo": 26.31578947368421, "p_neutro": 26.31578947368421, "p_concordo": 47.368421052631575, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 26.31578947368421, "s3": 5, "p_s3": 26.31578947368421, "s4": 5, "p_s4": 26.31578947368421, "s5": 4, "p_s5": 21.052631578947366, "media": 3.4210526315789473, "stdev": 1.1212983285105118}}}, {"seq": 9, "col": 15, "id": "Q09", "bloco": "Adaptação", "keyword": "Eficácia do PBL (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "As metodologias ativas aplicadas (PBL) foram mais eficazes para o meu aprendizado do que o modelo tradicional de aulas expositivas.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [As metodologias ativas aplicadas (PBL) foram mais eficazes para o meu aprendizado do que o modelo tradicional de aulas expositivas.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 1, "concordo": 6, "p_discordo": 12.5, "p_neutro": 12.5, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 1, "p_s3": 12.5, "s4": 4, "p_s4": 50.0, "s5": 2, "p_s5": 25.0, "media": 3.875, "stdev": 0.9910312089651149}, "CP": {"total": 11, "discordo": 0, "neutro": 7, "concordo": 4, "p_discordo": 0.0, "p_neutro": 63.63636363636363, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 7, "p_s3": 63.63636363636363, "s4": 2, "p_s4": 18.181818181818183, "s5": 2, "p_s5": 18.181818181818183, "media": 3.5454545454545454, "stdev": 0.8201995322647244}, "SC": {"total": 19, "discordo": 6, "neutro": 3, "concordo": 10, "p_discordo": 31.57894736842105, "p_neutro": 15.789473684210526, "p_concordo": 52.63157894736842, "s1": 2, "p_s1": 10.526315789473683, "s2": 4, "p_s2": 21.052631578947366, "s3": 3, "p_s3": 15.789473684210526, "s4": 5, "p_s4": 26.31578947368421, "s5": 5, "p_s5": 26.31578947368421, "media": 3.3684210526315788, "stdev": 1.382852378872881}}}, {"seq": 10, "col": 16, "id": "Q10", "bloco": "Adaptação", "keyword": "Dedicação aos estudos (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Acredito que me dediquei bastante aos meus estudos neste semestre.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Acredito que me dediquei bastante aos meus estudos neste semestre.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 2, "concordo": 4, "p_discordo": 25.0, "p_neutro": 25.0, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 2, "p_s3": 25.0, "s4": 3, "p_s4": 37.5, "s5": 1, "p_s5": 12.5, "media": 3.375, "stdev": 1.0606601717798212}, "CP": {"total": 11, "discordo": 3, "neutro": 1, "concordo": 7, "p_discordo": 27.27272727272727, "p_neutro": 9.090909090909092, "p_concordo": 63.63636363636363, "s1": 1, "p_s1": 9.090909090909092, "s2": 2, "p_s2": 18.181818181818183, "s3": 1, "p_s3": 9.090909090909092, "s4": 6, "p_s4": 54.54545454545454, "s5": 1, "p_s5": 9.090909090909092, "media": 3.3636363636363638, "stdev": 1.2060453783110545}, "SC": {"total": 19, "discordo": 7, "neutro": 3, "concordo": 9, "p_discordo": 36.84210526315789, "p_neutro": 15.789473684210526, "p_concordo": 47.368421052631575, "s1": 0, "p_s1": 0.0, "s2": 7, "p_s2": 36.84210526315789, "s3": 3, "p_s3": 15.789473684210526, "s4": 8, "p_s4": 42.10526315789473, "s5": 1, "p_s5": 5.263157894736842, "media": 3.1578947368421053, "stdev": 1.0145145470035761}}}, {"seq": 11, "col": 17, "id": "Q11", "bloco": "Dinâmica de grupo", "keyword": "Troca entre colegas (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "A troca de conhecimentos com meus colegas de grupo foi essencial para meu aprendizado e aprovação na disciplina.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A troca de conhecimentos com meus colegas de grupo foi essencial para meu aprendizado e aprovação na disciplina.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 1, "concordo": 7, "p_discordo": 0.0, "p_neutro": 12.5, "p_concordo": 87.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 1, "p_s3": 12.5, "s4": 4, "p_s4": 50.0, "s5": 3, "p_s5": 37.5, "media": 4.25, "stdev": 0.7071067811865476}, "CP": {"total": 11, "discordo": 0, "neutro": 2, "concordo": 9, "p_discordo": 0.0, "p_neutro": 18.181818181818183, "p_concordo": 81.81818181818183, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 18.181818181818183, "s4": 7, "p_s4": 63.63636363636363, "s5": 2, "p_s5": 18.181818181818183, "media": 4, "stdev": 0.6324555320336759}, "SC": {"total": 19, "discordo": 5, "neutro": 3, "concordo": 11, "p_discordo": 26.31578947368421, "p_neutro": 15.789473684210526, "p_concordo": 57.89473684210527, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 26.31578947368421, "s3": 3, "p_s3": 15.789473684210526, "s4": 5, "p_s4": 26.31578947368421, "s5": 6, "p_s5": 31.57894736842105, "media": 3.6315789473684212, "stdev": 1.2115429242540032}}}, {"seq": 12, "col": 18, "id": "Q12", "bloco": "Dinâmica de grupo", "keyword": "Exigência de comunicação (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "A metodologia PBL exigiu de mim habilidades de comunicação, escuta e debate que eu ainda não dominava completamente.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A metodologia PBL exigiu de mim habilidades de comunicação, escuta e debate que eu ainda não dominava completamente.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 4, "concordo": 4, "p_discordo": 0.0, "p_neutro": 50.0, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 4, "p_s3": 50.0, "s4": 3, "p_s4": 37.5, "s5": 1, "p_s5": 12.5, "media": 3.625, "stdev": 0.7440238091428449}, "CP": {"total": 11, "discordo": 4, "neutro": 4, "concordo": 3, "p_discordo": 36.36363636363637, "p_neutro": 36.36363636363637, "p_concordo": 27.27272727272727, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 4, "p_s3": 36.36363636363637, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 2.909090909090909, "stdev": 0.8312094145936335}, "SC": {"total": 19, "discordo": 5, "neutro": 4, "concordo": 10, "p_discordo": 26.31578947368421, "p_neutro": 21.052631578947366, "p_concordo": 52.63157894736842, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 26.31578947368421, "s3": 4, "p_s3": 21.052631578947366, "s4": 7, "p_s4": 36.84210526315789, "s5": 3, "p_s5": 15.789473684210526, "media": 3.4210526315789473, "stdev": 1.0706067580626215}}}, {"seq": 13, "col": 19, "id": "Q13", "bloco": "Dinâmica de grupo", "keyword": "Equilíbrio da equipe (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Senti que o grupo funcionou de forma equilibrada, onde todos contribuíram igualmente para a solução dos problemas.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que o grupo funcionou de forma equilibrada, onde todos contribuíram igualmente para a solução dos problemas.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 6, "concordo": 0, "p_discordo": 25.0, "p_neutro": 75.0, "p_concordo": 0.0, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 6, "p_s3": 75.0, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 2.75, "stdev": 0.4629100498862757}, "CP": {"total": 11, "discordo": 4, "neutro": 6, "concordo": 1, "p_discordo": 36.36363636363637, "p_neutro": 54.54545454545454, "p_concordo": 9.090909090909092, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 6, "p_s3": 54.54545454545454, "s4": 1, "p_s4": 9.090909090909092, "s5": 0, "p_s5": 0.0, "media": 2.727272727272727, "stdev": 0.6466697906828632}, "SC": {"total": 19, "discordo": 4, "neutro": 10, "concordo": 5, "p_discordo": 21.052631578947366, "p_neutro": 52.63157894736842, "p_concordo": 26.31578947368421, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 21.052631578947366, "s3": 10, "p_s3": 52.63157894736842, "s4": 5, "p_s4": 26.31578947368421, "s5": 0, "p_s5": 0.0, "media": 3.0526315789473686, "stdev": 0.7050361858740393}}}, {"seq": 14, "col": 20, "id": "Q14", "bloco": "Dinâmica de grupo", "keyword": "Liderança técnica (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Senti que assumi naturalmente o papel de orientar, tirar dúvidas técnicas ou liderar a lógica de programação dos meus colegas.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que assumi naturalmente o papel de orientar, tirar dúvidas técnicas ou liderar a lógica de programação dos meus colegas.]", "stats": {"EG": {"total": 8, "discordo": 3, "neutro": 1, "concordo": 4, "p_discordo": 37.5, "p_neutro": 12.5, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 37.5, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 2, "p_s5": 25.0, "media": 3.375, "stdev": 1.3024701806293193}, "CP": {"total": 11, "discordo": 5, "neutro": 5, "concordo": 1, "p_discordo": 45.45454545454545, "p_neutro": 45.45454545454545, "p_concordo": 9.090909090909092, "s1": 1, "p_s1": 9.090909090909092, "s2": 4, "p_s2": 36.36363636363637, "s3": 5, "p_s3": 45.45454545454545, "s4": 1, "p_s4": 9.090909090909092, "s5": 0, "p_s5": 0.0, "media": 2.5454545454545454, "stdev": 0.8201995322647244}, "SC": {"total": 19, "discordo": 15, "neutro": 1, "concordo": 3, "p_discordo": 78.94736842105263, "p_neutro": 5.263157894736842, "p_concordo": 15.789473684210526, "s1": 6, "p_s1": 31.57894736842105, "s2": 9, "p_s2": 47.368421052631575, "s3": 1, "p_s3": 5.263157894736842, "s4": 2, "p_s4": 10.526315789473683, "s5": 1, "p_s5": 5.263157894736842, "media": 2.1052631578947367, "stdev": 1.1496249070460265}}}, {"seq": 15, "col": 21, "id": "Q15", "bloco": "Dinâmica de grupo", "keyword": "Receio de exposição (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Senti receio de expor minhas dúvidas ou erros no grupo para não parecer \"atrasado(a)\" em relação aos colegas mais experientes.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti receio de expor minhas dúvidas ou erros no grupo para não parecer \"atrasado(a)\" em relação aos colegas mais experientes.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 1, "concordo": 3, "p_discordo": 50.0, "p_neutro": 12.5, "p_concordo": 37.5, "s1": 2, "p_s1": 25.0, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 1, "p_s5": 12.5, "media": 2.75, "stdev": 1.4880476182856899}, "CP": {"total": 11, "discordo": 2, "neutro": 3, "concordo": 6, "p_discordo": 18.181818181818183, "p_neutro": 27.27272727272727, "p_concordo": 54.54545454545454, "s1": 1, "p_s1": 9.090909090909092, "s2": 1, "p_s2": 9.090909090909092, "s3": 3, "p_s3": 27.27272727272727, "s4": 6, "p_s4": 54.54545454545454, "s5": 0, "p_s5": 0.0, "media": 3.272727272727273, "stdev": 1.009049958219026}, "SC": {"total": 19, "discordo": 5, "neutro": 7, "concordo": 7, "p_discordo": 26.31578947368421, "p_neutro": 36.84210526315789, "p_concordo": 36.84210526315789, "s1": 2, "p_s1": 10.526315789473683, "s2": 3, "p_s2": 15.789473684210526, "s3": 7, "p_s3": 36.84210526315789, "s4": 4, "p_s4": 21.052631578947366, "s5": 3, "p_s5": 15.789473684210526, "media": 3.1578947368421053, "stdev": 1.213953957333768}}}, {"seq": 16, "col": 22, "id": "Q16", "bloco": "Dinâmica de grupo", "keyword": "Referência técnica (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Percebi que o grupo recorria a mim como uma \"referência técnica\" quando surgiam travamentos no código.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Percebi que o grupo recorria a mim como uma \"referência técnica\" quando surgiam travamentos no código.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 2, "concordo": 4, "p_discordo": 25.0, "p_neutro": 25.0, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 2, "p_s3": 25.0, "s4": 2, "p_s4": 25.0, "s5": 2, "p_s5": 25.0, "media": 3.5, "stdev": 1.1952286093343936}, "CP": {"total": 11, "discordo": 4, "neutro": 4, "concordo": 3, "p_discordo": 36.36363636363637, "p_neutro": 36.36363636363637, "p_concordo": 27.27272727272727, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 4, "p_s3": 36.36363636363637, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 2.909090909090909, "stdev": 0.8312094145936335}, "SC": {"total": 19, "discordo": 12, "neutro": 4, "concordo": 3, "p_discordo": 63.1578947368421, "p_neutro": 21.052631578947366, "p_concordo": 15.789473684210526, "s1": 7, "p_s1": 36.84210526315789, "s2": 5, "p_s2": 26.31578947368421, "s3": 4, "p_s3": 21.052631578947366, "s4": 1, "p_s4": 5.263157894736842, "s5": 2, "p_s5": 10.526315789473683, "media": 2.263157894736842, "stdev": 1.3267380744248862}}}, {"seq": 17, "col": 23, "id": "Q17", "bloco": "Dinâmica de grupo", "keyword": "Dependência de colegas (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Muitas vezes, preferi seguir a lógica proposta por um colega mais avançado do que tentar propor a minha própria solução por falta de confiança.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Muitas vezes, preferi seguir a lógica proposta por um colega mais avançado do que tentar propor a minha própria solução por falta de confiança.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 1, "concordo": 3, "p_discordo": 50.0, "p_neutro": 12.5, "p_concordo": 37.5, "s1": 2, "p_s1": 25.0, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 1, "p_s5": 12.5, "media": 2.75, "stdev": 1.4880476182856899}, "CP": {"total": 11, "discordo": 4, "neutro": 3, "concordo": 4, "p_discordo": 36.36363636363637, "p_neutro": 27.27272727272727, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 3, "p_s3": 27.27272727272727, "s4": 4, "p_s4": 36.36363636363637, "s5": 0, "p_s5": 0.0, "media": 3, "stdev": 0.8944271909999159}, "SC": {"total": 19, "discordo": 5, "neutro": 3, "concordo": 11, "p_discordo": 26.31578947368421, "p_neutro": 15.789473684210526, "p_concordo": 57.89473684210527, "s1": 1, "p_s1": 5.263157894736842, "s2": 4, "p_s2": 21.052631578947366, "s3": 3, "p_s3": 15.789473684210526, "s4": 6, "p_s4": 31.57894736842105, "s5": 5, "p_s5": 26.31578947368421, "media": 3.526315789473684, "stdev": 1.2635233389495326}}}, {"seq": 18, "col": 24, "id": "Q18", "bloco": "Dinâmica de grupo", "keyword": "Disparidade de conhecimento (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Senti que a disparidade de conhecimento técnico entre os membros do grupo gerou situações de desequilíbrio durante as sessões tutoriais.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que a disparidade de conhecimento técnico entre os membros do grupo gerou situações de desequilíbrio durante as sessões tutoriais.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 2, "concordo": 6, "p_discordo": 0.0, "p_neutro": 25.0, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 25.0, "s4": 5, "p_s4": 62.5, "s5": 1, "p_s5": 12.5, "media": 3.875, "stdev": 0.6408699444616558}, "CP": {"total": 11, "discordo": 0, "neutro": 2, "concordo": 9, "p_discordo": 0.0, "p_neutro": 18.181818181818183, "p_concordo": 81.81818181818183, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 18.181818181818183, "s4": 7, "p_s4": 63.63636363636363, "s5": 2, "p_s5": 18.181818181818183, "media": 4, "stdev": 0.6324555320336759}, "SC": {"total": 19, "discordo": 1, "neutro": 3, "concordo": 15, "p_discordo": 5.263157894736842, "p_neutro": 15.789473684210526, "p_concordo": 78.94736842105263, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 5.263157894736842, "s3": 3, "p_s3": 15.789473684210526, "s4": 10, "p_s4": 52.63157894736842, "s5": 5, "p_s5": 26.31578947368421, "media": 4, "stdev": 0.816496580927726}}}, {"seq": 19, "col": 25, "id": "Q19", "bloco": "Dinâmica de grupo", "keyword": "Consolidação ao ensinar (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "A necessidade de explicar conceitos para meus colegas ajudou a consolidar meu próprio entendimento sobre a lógica de programação.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A necessidade de explicar conceitos para meus colegas ajudou a consolidar meu próprio entendimento sobre a lógica de programação.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 3, "concordo": 5, "p_discordo": 0.0, "p_neutro": 37.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 37.5, "s4": 2, "p_s4": 25.0, "s5": 3, "p_s5": 37.5, "media": 4, "stdev": 0.9258200997725514}, "CP": {"total": 11, "discordo": 3, "neutro": 7, "concordo": 1, "p_discordo": 27.27272727272727, "p_neutro": 63.63636363636363, "p_concordo": 9.090909090909092, "s1": 2, "p_s1": 18.181818181818183, "s2": 1, "p_s2": 9.090909090909092, "s3": 7, "p_s3": 63.63636363636363, "s4": 1, "p_s4": 9.090909090909092, "s5": 0, "p_s5": 0.0, "media": 2.6363636363636362, "stdev": 0.9244162777371754}, "SC": {"total": 19, "discordo": 12, "neutro": 4, "concordo": 3, "p_discordo": 63.1578947368421, "p_neutro": 21.052631578947366, "p_concordo": 15.789473684210526, "s1": 7, "p_s1": 36.84210526315789, "s2": 5, "p_s2": 26.31578947368421, "s3": 4, "p_s3": 21.052631578947366, "s4": 2, "p_s4": 10.526315789473683, "s5": 1, "p_s5": 5.263157894736842, "media": 2.210526315789474, "stdev": 1.228320776436091}}}, {"seq": 20, "col": 26, "id": "Q20", "bloco": "Gestão do tempo", "keyword": "Concorrência com Cálculo (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "O tempo que dediquei à Programação impactou diretamente o tempo disponível para Introdução ao Cálculo e Eletrônica.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O tempo que dediquei à Programação impactou diretamente o tempo disponível para Introdução ao Cálculo e Eletrônica.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 3, "concordo": 5, "p_discordo": 0.0, "p_neutro": 37.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 37.5, "s4": 4, "p_s4": 50.0, "s5": 1, "p_s5": 12.5, "media": 3.75, "stdev": 0.7071067811865476}, "CP": {"total": 11, "discordo": 3, "neutro": 4, "concordo": 4, "p_discordo": 27.27272727272727, "p_neutro": 36.36363636363637, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 27.27272727272727, "s3": 4, "p_s3": 36.36363636363637, "s4": 1, "p_s4": 9.090909090909092, "s5": 3, "p_s5": 27.27272727272727, "media": 3.3636363636363638, "stdev": 1.2060453783110545}, "SC": {"total": 19, "discordo": 7, "neutro": 5, "concordo": 7, "p_discordo": 36.84210526315789, "p_neutro": 26.31578947368421, "p_concordo": 36.84210526315789, "s1": 1, "p_s1": 5.263157894736842, "s2": 6, "p_s2": 31.57894736842105, "s3": 5, "p_s3": 26.31578947368421, "s4": 7, "p_s4": 36.84210526315789, "s5": 0, "p_s5": 0.0, "media": 2.9473684210526314, "stdev": 0.9703197760719181}}}, {"seq": 21, "col": 27, "id": "Q21", "bloco": "Gestão do tempo", "keyword": "Impacto entre disciplinas (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "A dificuldade em uma disciplina impactou também meu rendimento nas demais disciplinas.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [A dificuldade em uma disciplina impactou também meu rendimento nas demais disciplinas.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 2, "concordo": 5, "p_discordo": 12.5, "p_neutro": 25.0, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 2, "p_s3": 25.0, "s4": 4, "p_s4": 50.0, "s5": 1, "p_s5": 12.5, "media": 3.625, "stdev": 0.9161253813129043}, "CP": {"total": 11, "discordo": 6, "neutro": 3, "concordo": 2, "p_discordo": 54.54545454545454, "p_neutro": 27.27272727272727, "p_concordo": 18.181818181818183, "s1": 2, "p_s1": 18.181818181818183, "s2": 4, "p_s2": 36.36363636363637, "s3": 3, "p_s3": 27.27272727272727, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.4545454545454546, "stdev": 1.0357254813546264}, "SC": {"total": 19, "discordo": 8, "neutro": 4, "concordo": 7, "p_discordo": 42.10526315789473, "p_neutro": 21.052631578947366, "p_concordo": 36.84210526315789, "s1": 3, "p_s1": 15.789473684210526, "s2": 5, "p_s2": 26.31578947368421, "s3": 4, "p_s3": 21.052631578947366, "s4": 5, "p_s4": 26.31578947368421, "s5": 2, "p_s5": 10.526315789473683, "media": 2.8947368421052633, "stdev": 1.2864566686188532}}}, {"seq": 22, "col": 28, "id": "Q22", "bloco": "Gestão do tempo", "keyword": "Volume de trabalho (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Tive a sensação de que o volume de trabalho/estudo necessário nas disciplinas de Algoritmos I e MI de Algoritmos foi excessivo.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [Tive a sensação de que o volume de trabalho/estudo necessário nas disciplinas de Algoritmos I e MI de Algoritmos foi excessivo.]", "stats": {"EG": {"total": 8, "discordo": 2, "neutro": 3, "concordo": 3, "p_discordo": 25.0, "p_neutro": 37.5, "p_concordo": 37.5, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 25.0, "s3": 3, "p_s3": 37.5, "s4": 3, "p_s4": 37.5, "s5": 0, "p_s5": 0.0, "media": 3.125, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 3, "neutro": 4, "concordo": 4, "p_discordo": 27.27272727272727, "p_neutro": 36.36363636363637, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 27.27272727272727, "s3": 4, "p_s3": 36.36363636363637, "s4": 2, "p_s4": 18.181818181818183, "s5": 2, "p_s5": 18.181818181818183, "media": 3.272727272727273, "stdev": 1.1037127426019047}, "SC": {"total": 19, "discordo": 9, "neutro": 4, "concordo": 6, "p_discordo": 47.368421052631575, "p_neutro": 21.052631578947366, "p_concordo": 31.57894736842105, "s1": 2, "p_s1": 10.526315789473683, "s2": 7, "p_s2": 36.84210526315789, "s3": 4, "p_s3": 21.052631578947366, "s4": 5, "p_s4": 26.31578947368421, "s5": 1, "p_s5": 5.263157894736842, "media": 2.789473684210526, "stdev": 1.134261745631201}}}, {"seq": 23, "col": 29, "id": "Q23", "bloco": "Gestão do tempo", "keyword": "Exigência condizente (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "O nível de exigência nas disciplinas é condizente com o que se espera para um curso de Engenharia de Computação.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O nível de exigência nas disciplinas é condizente com o que se espera para um curso de Engenharia de Computação.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 3, "concordo": 5, "p_discordo": 0.0, "p_neutro": 37.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 37.5, "s4": 3, "p_s4": 37.5, "s5": 2, "p_s5": 25.0, "media": 3.875, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 2, "neutro": 2, "concordo": 7, "p_discordo": 18.181818181818183, "p_neutro": 18.181818181818183, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 2, "p_s3": 18.181818181818183, "s4": 6, "p_s4": 54.54545454545454, "s5": 1, "p_s5": 9.090909090909092, "media": 3.5454545454545454, "stdev": 0.9341987329938276}, "SC": {"total": 19, "discordo": 6, "neutro": 7, "concordo": 6, "p_discordo": 31.57894736842105, "p_neutro": 36.84210526315789, "p_concordo": 31.57894736842105, "s1": 1, "p_s1": 5.263157894736842, "s2": 5, "p_s2": 26.31578947368421, "s3": 7, "p_s3": 36.84210526315789, "s4": 4, "p_s4": 21.052631578947366, "s5": 2, "p_s5": 10.526315789473683, "media": 3.0526315789473686, "stdev": 1.0787690624311024}}}, {"seq": 24, "col": 30, "id": "Q24", "bloco": "Gestão do tempo", "keyword": "Base prévia determinante (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Considero que ter uma base sólida de programação antes de ingressar no curso é um fator determinante para o rendimento acadêmico geral no 1º semestre.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [Considero que ter uma base sólida de programação antes de ingressar no curso é um fator determinante para o rendimento acadêmico geral no 1º semestre.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 0, "concordo": 8, "p_discordo": 0.0, "p_neutro": 0.0, "p_concordo": 100.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 0, "p_s3": 0.0, "s4": 4, "p_s4": 50.0, "s5": 4, "p_s5": 50.0, "media": 4.5, "stdev": 0.5345224838248488}, "CP": {"total": 11, "discordo": 0, "neutro": 4, "concordo": 7, "p_discordo": 0.0, "p_neutro": 36.36363636363637, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 4, "p_s3": 36.36363636363637, "s4": 4, "p_s4": 36.36363636363637, "s5": 3, "p_s5": 27.27272727272727, "media": 3.909090909090909, "stdev": 0.8312094145936335}, "SC": {"total": 19, "discordo": 1, "neutro": 0, "concordo": 18, "p_discordo": 5.263157894736842, "p_neutro": 0.0, "p_concordo": 94.73684210526315, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 5.263157894736842, "s3": 0, "p_s3": 0.0, "s4": 5, "p_s4": 26.31578947368421, "s5": 13, "p_s5": 68.42105263157895, "media": 4.578947368421052, "stdev": 0.7685331969757723}}}, {"seq": 25, "col": 31, "id": "Q25", "bloco": "Gestão do tempo", "keyword": "Dificuldade com sintaxe (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "O tempo gasto tentando entender a sintaxe da linguagem (Python) foi maior do que o tempo gasto pensando na solução lógica do problema.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O tempo gasto tentando entender a sintaxe da linguagem (Python) foi maior do que o tempo gasto pensando na solução lógica do problema.]", "stats": {"EG": {"total": 8, "discordo": 5, "neutro": 2, "concordo": 1, "p_discordo": 62.5, "p_neutro": 25.0, "p_concordo": 12.5, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 62.5, "s3": 2, "p_s3": 25.0, "s4": 1, "p_s4": 12.5, "s5": 0, "p_s5": 0.0, "media": 2.5, "stdev": 0.7559289460184545}, "CP": {"total": 11, "discordo": 10, "neutro": 1, "concordo": 0, "p_discordo": 90.9090909090909, "p_neutro": 9.090909090909092, "p_concordo": 0.0, "s1": 8, "p_s1": 72.72727272727273, "s2": 2, "p_s2": 18.181818181818183, "s3": 1, "p_s3": 9.090909090909092, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1.3636363636363635, "stdev": 0.674199862463242}, "SC": {"total": 19, "discordo": 1, "neutro": 1, "concordo": 17, "p_discordo": 5.263157894736842, "p_neutro": 5.263157894736842, "p_concordo": 89.47368421052632, "s1": 1, "p_s1": 5.263157894736842, "s2": 0, "p_s2": 0.0, "s3": 1, "p_s3": 5.263157894736842, "s4": 16, "p_s4": 84.21052631578947, "s5": 1, "p_s5": 5.263157894736842, "media": 3.8421052631578947, "stdev": 0.7647191129018726}}}, {"seq": 26, "col": 33, "id": "Q26", "bloco": "Uso de IA", "keyword": "Geração de código (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Utilizei ferramentas de IA principalmente para gerar códigos inteiros que eu não conseguia resolver por conta própria.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei ferramentas de IA principalmente para gerar códigos inteiros que eu não conseguia resolver por conta própria.]", "stats": {"EG": {"total": 8, "discordo": 7, "neutro": 0, "concordo": 1, "p_discordo": 87.5, "p_neutro": 0.0, "p_concordo": 12.5, "s1": 4, "p_s1": 50.0, "s2": 3, "p_s2": 37.5, "s3": 0, "p_s3": 0.0, "s4": 0, "p_s4": 0.0, "s5": 1, "p_s5": 12.5, "media": 1.875, "stdev": 1.3562026818605375}, "CP": {"total": 11, "discordo": 1, "neutro": 5, "concordo": 5, "p_discordo": 9.090909090909092, "p_neutro": 45.45454545454545, "p_concordo": 45.45454545454545, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 9.090909090909092, "s3": 5, "p_s3": 45.45454545454545, "s4": 5, "p_s4": 45.45454545454545, "s5": 0, "p_s5": 0.0, "media": 3.3636363636363638, "stdev": 0.674199862463242}, "SC": {"total": 19, "discordo": 8, "neutro": 6, "concordo": 5, "p_discordo": 42.10526315789473, "p_neutro": 31.57894736842105, "p_concordo": 26.31578947368421, "s1": 5, "p_s1": 26.31578947368421, "s2": 3, "p_s2": 15.789473684210526, "s3": 6, "p_s3": 31.57894736842105, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 2.6315789473684212, "stdev": 1.2565617248750864}}}, {"seq": 27, "col": 34, "id": "Q27", "bloco": "Uso de IA", "keyword": "Depuração com IA (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Utilizei a IA como um suporte para \"debugar\" (encontrar erros), explicar mensagens de erro ou realizar tarefas repetitivas, mantendo o controle da lógica.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei a IA como um suporte para \"debugar\" (encontrar erros), explicar mensagens de erro ou realizar tarefas repetitivas, mantendo o controle da lógica.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 3, "concordo": 5, "p_discordo": 0.0, "p_neutro": 37.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 37.5, "s4": 5, "p_s4": 62.5, "s5": 0, "p_s5": 0.0, "media": 3.625, "stdev": 0.5175491695067657}, "CP": {"total": 11, "discordo": 0, "neutro": 3, "concordo": 8, "p_discordo": 0.0, "p_neutro": 27.27272727272727, "p_concordo": 72.72727272727273, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 27.27272727272727, "s4": 3, "p_s4": 27.27272727272727, "s5": 5, "p_s5": 45.45454545454545, "media": 4.181818181818182, "stdev": 0.873862897505303}, "SC": {"total": 19, "discordo": 3, "neutro": 8, "concordo": 8, "p_discordo": 15.789473684210526, "p_neutro": 42.10526315789473, "p_concordo": 42.10526315789473, "s1": 2, "p_s1": 10.526315789473683, "s2": 1, "p_s2": 5.263157894736842, "s3": 8, "p_s3": 42.10526315789473, "s4": 6, "p_s4": 31.57894736842105, "s5": 2, "p_s5": 10.526315789473683, "media": 3.263157894736842, "stdev": 1.097578408394179}}}, {"seq": 28, "col": 35, "id": "Q28", "bloco": "Uso de IA", "keyword": "Validação da IA (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Me senti confiante para criticar, validar e corrigir os códigos ou sugestões gerados pela IA quando eles estavam incorretos.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Me senti confiante para criticar, validar e corrigir os códigos ou sugestões gerados pela IA quando eles estavam incorretos.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 3, "concordo": 4, "p_discordo": 12.5, "p_neutro": 37.5, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 3, "p_s3": 37.5, "s4": 2, "p_s4": 25.0, "s5": 2, "p_s5": 25.0, "media": 3.625, "stdev": 1.0606601717798212}, "CP": {"total": 11, "discordo": 4, "neutro": 2, "concordo": 5, "p_discordo": 36.36363636363637, "p_neutro": 18.181818181818183, "p_concordo": 45.45454545454545, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 2, "p_s3": 18.181818181818183, "s4": 2, "p_s4": 18.181818181818183, "s5": 3, "p_s5": 27.27272727272727, "media": 3.3636363636363638, "stdev": 1.2862913567871994}, "SC": {"total": 19, "discordo": 7, "neutro": 5, "concordo": 7, "p_discordo": 36.84210526315789, "p_neutro": 26.31578947368421, "p_concordo": 36.84210526315789, "s1": 2, "p_s1": 10.526315789473683, "s2": 5, "p_s2": 26.31578947368421, "s3": 5, "p_s3": 26.31578947368421, "s4": 6, "p_s4": 31.57894736842105, "s5": 1, "p_s5": 5.263157894736842, "media": 2.9473684210526314, "stdev": 1.1290942392774796}}}, {"seq": 29, "col": 36, "id": "Q29", "bloco": "Uso de IA", "keyword": "Acompanhamento de ritmo (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Utilizei ferramentas de IA como recurso para adequar meu ritmo de aprendizado ao nível de exigência ou ao progresso da turma.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei ferramentas de IA como recurso para adequar meu ritmo de aprendizado ao nível de exigência ou ao progresso da turma.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 2, "concordo": 2, "p_discordo": 50.0, "p_neutro": 25.0, "p_concordo": 25.0, "s1": 1, "p_s1": 12.5, "s2": 3, "p_s2": 37.5, "s3": 2, "p_s3": 25.0, "s4": 2, "p_s4": 25.0, "s5": 0, "p_s5": 0.0, "media": 2.625, "stdev": 1.0606601717798212}, "CP": {"total": 11, "discordo": 3, "neutro": 5, "concordo": 3, "p_discordo": 27.27272727272727, "p_neutro": 45.45454545454545, "p_concordo": 27.27272727272727, "s1": 1, "p_s1": 9.090909090909092, "s2": 2, "p_s2": 18.181818181818183, "s3": 5, "p_s3": 45.45454545454545, "s4": 1, "p_s4": 9.090909090909092, "s5": 2, "p_s5": 18.181818181818183, "media": 3.090909090909091, "stdev": 1.2210278829367864}, "SC": {"total": 19, "discordo": 7, "neutro": 7, "concordo": 5, "p_discordo": 36.84210526315789, "p_neutro": 36.84210526315789, "p_concordo": 26.31578947368421, "s1": 2, "p_s1": 10.526315789473683, "s2": 5, "p_s2": 26.31578947368421, "s3": 7, "p_s3": 36.84210526315789, "s4": 3, "p_s4": 15.789473684210526, "s5": 2, "p_s5": 10.526315789473683, "media": 2.8947368421052633, "stdev": 1.1496249070460265}}}, {"seq": 30, "col": 37, "id": "Q30", "bloco": "Uso de IA", "keyword": "Prejuízo da lógica (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Sinto que o uso frequente da IA acabou prejudicando meu desenvolvimento da base lógica e do raciocínio algorítmico.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Sinto que o uso frequente da IA acabou prejudicando meu desenvolvimento da base lógica e do raciocínio algorítmico.]", "stats": {"EG": {"total": 8, "discordo": 5, "neutro": 2, "concordo": 1, "p_discordo": 62.5, "p_neutro": 25.0, "p_concordo": 12.5, "s1": 2, "p_s1": 25.0, "s2": 3, "p_s2": 37.5, "s3": 2, "p_s3": 25.0, "s4": 0, "p_s4": 0.0, "s5": 1, "p_s5": 12.5, "media": 2.375, "stdev": 1.3024701806293193}, "CP": {"total": 11, "discordo": 4, "neutro": 4, "concordo": 3, "p_discordo": 36.36363636363637, "p_neutro": 36.36363636363637, "p_concordo": 27.27272727272727, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 4, "p_s3": 36.36363636363637, "s4": 2, "p_s4": 18.181818181818183, "s5": 1, "p_s5": 9.090909090909092, "media": 3, "stdev": 1.0}, "SC": {"total": 19, "discordo": 9, "neutro": 5, "concordo": 5, "p_discordo": 47.368421052631575, "p_neutro": 26.31578947368421, "p_concordo": 26.31578947368421, "s1": 2, "p_s1": 10.526315789473683, "s2": 7, "p_s2": 36.84210526315789, "s3": 5, "p_s3": 26.31578947368421, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 2.736842105263158, "stdev": 1.097578408394179}}}, {"seq": 31, "col": 38, "id": "Q31", "bloco": "Uso de IA", "keyword": "IA nas teóricas (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Utilizei mais ferramentas de IA para disciplinas teóricas (Cálculo/Eletrônica) do que para o MI de Algoritmos.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei mais ferramentas de IA para disciplinas teóricas (Cálculo/Eletrônica) do que para o MI de Algoritmos.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 5, "concordo": 2, "p_discordo": 12.5, "p_neutro": 62.5, "p_concordo": 25.0, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 5, "p_s3": 62.5, "s4": 1, "p_s4": 12.5, "s5": 1, "p_s5": 12.5, "media": 3.25, "stdev": 0.8864052604279183}, "CP": {"total": 11, "discordo": 3, "neutro": 6, "concordo": 2, "p_discordo": 27.27272727272727, "p_neutro": 54.54545454545454, "p_concordo": 18.181818181818183, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 27.27272727272727, "s3": 6, "p_s3": 54.54545454545454, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.909090909090909, "stdev": 0.7006490497453707}, "SC": {"total": 19, "discordo": 7, "neutro": 9, "concordo": 3, "p_discordo": 36.84210526315789, "p_neutro": 47.368421052631575, "p_concordo": 15.789473684210526, "s1": 1, "p_s1": 5.263157894736842, "s2": 6, "p_s2": 31.57894736842105, "s3": 9, "p_s3": 47.368421052631575, "s4": 3, "p_s4": 15.789473684210526, "s5": 0, "p_s5": 0.0, "media": 2.736842105263158, "stdev": 0.8056815791722831}}}, {"seq": 32, "col": 39, "id": "Q32", "bloco": "Uso de IA", "keyword": "Tradução sem compreensão (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Utilizei a IA para traduzir problemas escritos em linguagem natural para código, sem necessariamente compreender todas as etapas da conversão.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei a IA para traduzir problemas escritos em linguagem natural para código, sem necessariamente compreender todas as etapas da conversão.]", "stats": {"EG": {"total": 8, "discordo": 7, "neutro": 0, "concordo": 1, "p_discordo": 87.5, "p_neutro": 0.0, "p_concordo": 12.5, "s1": 4, "p_s1": 50.0, "s2": 3, "p_s2": 37.5, "s3": 0, "p_s3": 0.0, "s4": 0, "p_s4": 0.0, "s5": 1, "p_s5": 12.5, "media": 1.875, "stdev": 1.3562026818605375}, "CP": {"total": 11, "discordo": 7, "neutro": 2, "concordo": 2, "p_discordo": 63.63636363636363, "p_neutro": 18.181818181818183, "p_concordo": 18.181818181818183, "s1": 3, "p_s1": 27.27272727272727, "s2": 4, "p_s2": 36.36363636363637, "s3": 2, "p_s3": 18.181818181818183, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.272727272727273, "stdev": 1.1037127426019047}, "SC": {"total": 19, "discordo": 15, "neutro": 2, "concordo": 2, "p_discordo": 78.94736842105263, "p_neutro": 10.526315789473683, "p_concordo": 10.526315789473683, "s1": 9, "p_s1": 47.368421052631575, "s2": 6, "p_s2": 31.57894736842105, "s3": 2, "p_s3": 10.526315789473683, "s4": 2, "p_s4": 10.526315789473683, "s5": 0, "p_s5": 0.0, "media": 1.8421052631578947, "stdev": 1.0145145470035761}}}, {"seq": 33, "col": 40, "id": "Q33", "bloco": "Uso de IA", "keyword": "Conhecimento não representado (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Sinto que os códigos que entregamos no MI de Algoritmos não representam bem nosso conhecimento devido ao uso de IAs.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Sinto que os códigos que entregamos no MI de Algoritmos não representam bem nosso conhecimento devido ao uso de IAs.]", "stats": {"EG": {"total": 8, "discordo": 5, "neutro": 1, "concordo": 2, "p_discordo": 62.5, "p_neutro": 12.5, "p_concordo": 25.0, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 62.5, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 0, "p_s5": 0.0, "media": 2.625, "stdev": 0.9161253813129043}, "CP": {"total": 11, "discordo": 2, "neutro": 5, "concordo": 4, "p_discordo": 18.181818181818183, "p_neutro": 45.45454545454545, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 5, "p_s3": 45.45454545454545, "s4": 4, "p_s4": 36.36363636363637, "s5": 0, "p_s5": 0.0, "media": 3.1818181818181817, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 9, "neutro": 4, "concordo": 6, "p_discordo": 47.368421052631575, "p_neutro": 21.052631578947366, "p_concordo": 31.57894736842105, "s1": 3, "p_s1": 15.789473684210526, "s2": 6, "p_s2": 31.57894736842105, "s3": 4, "p_s3": 21.052631578947366, "s4": 5, "p_s4": 26.31578947368421, "s5": 1, "p_s5": 5.263157894736842, "media": 2.736842105263158, "stdev": 1.1945294407402949}}}, {"seq": 34, "col": 41, "id": "Q34", "bloco": "Uso de IA", "keyword": "Suficiência de IA (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Acredito que não é preciso saber tantos detalhes para ser um bom profissional, basta saber usar bem as IAs.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Acredito que não é preciso saber tantos detalhes para ser um bom profissional, basta saber usar bem as IAs.]", "stats": {"EG": {"total": 8, "discordo": 7, "neutro": 1, "concordo": 0, "p_discordo": 87.5, "p_neutro": 12.5, "p_concordo": 0.0, "s1": 5, "p_s1": 62.5, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1.5, "stdev": 0.7559289460184545}, "CP": {"total": 11, "discordo": 10, "neutro": 1, "concordo": 0, "p_discordo": 90.9090909090909, "p_neutro": 9.090909090909092, "p_concordo": 0.0, "s1": 8, "p_s1": 72.72727272727273, "s2": 2, "p_s2": 18.181818181818183, "s3": 1, "p_s3": 9.090909090909092, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1.3636363636363635, "stdev": 0.674199862463242}, "SC": {"total": 19, "discordo": 18, "neutro": 0, "concordo": 1, "p_discordo": 94.73684210526315, "p_neutro": 0.0, "p_concordo": 5.263157894736842, "s1": 13, "p_s1": 68.42105263157895, "s2": 5, "p_s2": 26.31578947368421, "s3": 0, "p_s3": 0.0, "s4": 1, "p_s4": 5.263157894736842, "s5": 0, "p_s5": 0.0, "media": 1.4210526315789473, "stdev": 0.7685331969757723}}}, {"seq": 35, "col": 42, "id": "Q35", "bloco": "Uso de IA", "keyword": "Aprendizado sem IA (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Eu teria aprendido mais se não tivesse usado IAs generativas para fazer meu MI.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Eu teria aprendido mais se não tivesse usado IAs generativas para fazer meu MI.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 3, "concordo": 1, "p_discordo": 50.0, "p_neutro": 37.5, "p_concordo": 12.5, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 50.0, "s3": 3, "p_s3": 37.5, "s4": 1, "p_s4": 12.5, "s5": 0, "p_s5": 0.0, "media": 2.625, "stdev": 0.7440238091428449}, "CP": {"total": 11, "discordo": 5, "neutro": 2, "concordo": 4, "p_discordo": 45.45454545454545, "p_neutro": 18.181818181818183, "p_concordo": 36.36363636363637, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 45.45454545454545, "s3": 2, "p_s3": 18.181818181818183, "s4": 4, "p_s4": 36.36363636363637, "s5": 0, "p_s5": 0.0, "media": 2.909090909090909, "stdev": 0.9438798074485389}, "SC": {"total": 19, "discordo": 8, "neutro": 6, "concordo": 5, "p_discordo": 42.10526315789473, "p_neutro": 31.57894736842105, "p_concordo": 26.31578947368421, "s1": 2, "p_s1": 10.526315789473683, "s2": 6, "p_s2": 31.57894736842105, "s3": 6, "p_s3": 31.57894736842105, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 2.789473684210526, "stdev": 1.0841764600337105}}}, {"seq": 36, "col": 43, "id": "Q36", "bloco": "Uso de IA", "keyword": "Procrastinação e IA (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Se eu tivesse procrastinado menos, dependeria menos das IAs.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Se eu tivesse procrastinado menos, dependeria menos das IAs.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 4, "concordo": 3, "p_discordo": 12.5, "p_neutro": 50.0, "p_concordo": 37.5, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 4, "p_s3": 50.0, "s4": 2, "p_s4": 25.0, "s5": 1, "p_s5": 12.5, "media": 3.375, "stdev": 0.9161253813129043}, "CP": {"total": 11, "discordo": 4, "neutro": 5, "concordo": 2, "p_discordo": 36.36363636363637, "p_neutro": 45.45454545454545, "p_concordo": 18.181818181818183, "s1": 1, "p_s1": 9.090909090909092, "s2": 3, "p_s2": 27.27272727272727, "s3": 5, "p_s3": 45.45454545454545, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.727272727272727, "stdev": 0.9045340337332909}, "SC": {"total": 19, "discordo": 10, "neutro": 3, "concordo": 6, "p_discordo": 52.63157894736842, "p_neutro": 15.789473684210526, "p_concordo": 31.57894736842105, "s1": 4, "p_s1": 21.052631578947366, "s2": 6, "p_s2": 31.57894736842105, "s3": 3, "p_s3": 15.789473684210526, "s4": 4, "p_s4": 21.052631578947366, "s5": 2, "p_s5": 10.526315789473683, "media": 2.6842105263157894, "stdev": 1.335524515310053}}}, {"seq": 37, "col": 44, "id": "Q37", "bloco": "Uso de IA", "keyword": "Indispensabilidade da IA (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Apenas tendo IAs como ferramenta de produtividade é possível dar conta de todo o volume de afazeres durante a graduação.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Apenas tendo IAs como ferramenta de produtividade é possível dar conta de todo o volume de afazeres durante a graduação.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 2, "concordo": 2, "p_discordo": 50.0, "p_neutro": 25.0, "p_concordo": 25.0, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 50.0, "s3": 2, "p_s3": 25.0, "s4": 2, "p_s4": 25.0, "s5": 0, "p_s5": 0.0, "media": 2.75, "stdev": 0.8864052604279183}, "CP": {"total": 11, "discordo": 3, "neutro": 2, "concordo": 6, "p_discordo": 27.27272727272727, "p_neutro": 18.181818181818183, "p_concordo": 54.54545454545454, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 27.27272727272727, "s3": 2, "p_s3": 18.181818181818183, "s4": 5, "p_s4": 45.45454545454545, "s5": 1, "p_s5": 9.090909090909092, "media": 3.3636363636363638, "stdev": 1.026910636104941}, "SC": {"total": 19, "discordo": 8, "neutro": 7, "concordo": 4, "p_discordo": 42.10526315789473, "p_neutro": 36.84210526315789, "p_concordo": 21.052631578947366, "s1": 4, "p_s1": 21.052631578947366, "s2": 4, "p_s2": 21.052631578947366, "s3": 7, "p_s3": 36.84210526315789, "s4": 2, "p_s4": 10.526315789473683, "s5": 2, "p_s5": 10.526315789473683, "media": 2.6842105263157894, "stdev": 1.2495613265350083}}}, {"seq": 38, "col": 45, "id": "Q38", "bloco": "Competências", "keyword": "Decomposição de problemas (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Sinto-me capaz de decompor um problema complexo em partes menores e resolvê-las logicamente, independentemente da linguagem de programação.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto-me capaz de decompor um problema complexo em partes menores e resolvê-las logicamente, independentemente da linguagem de programação.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 1, "concordo": 7, "p_discordo": 0.0, "p_neutro": 12.5, "p_concordo": 87.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 1, "p_s3": 12.5, "s4": 3, "p_s4": 37.5, "s5": 4, "p_s5": 50.0, "media": 4.375, "stdev": 0.7440238091428449}, "CP": {"total": 11, "discordo": 2, "neutro": 2, "concordo": 7, "p_discordo": 18.181818181818183, "p_neutro": 18.181818181818183, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 2, "p_s3": 18.181818181818183, "s4": 7, "p_s4": 63.63636363636363, "s5": 0, "p_s5": 0.0, "media": 3.4545454545454546, "stdev": 0.8201995322647244}, "SC": {"total": 19, "discordo": 4, "neutro": 8, "concordo": 7, "p_discordo": 21.052631578947366, "p_neutro": 42.10526315789473, "p_concordo": 36.84210526315789, "s1": 2, "p_s1": 10.526315789473683, "s2": 2, "p_s2": 10.526315789473683, "s3": 8, "p_s3": 42.10526315789473, "s4": 4, "p_s4": 21.052631578947366, "s5": 3, "p_s5": 15.789473684210526, "media": 3.210526315789474, "stdev": 1.1822270588653647}}}, {"seq": 39, "col": 46, "id": "Q39", "bloco": "Competências", "keyword": "Leitura de código (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Consigo ler e compreender códigos escritos por outras pessoas, identificando sua lógica e possíveis erros.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Consigo ler e compreender códigos escritos por outras pessoas, identificando sua lógica e possíveis erros.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 2, "concordo": 6, "p_discordo": 0.0, "p_neutro": 25.0, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 25.0, "s4": 3, "p_s4": 37.5, "s5": 3, "p_s5": 37.5, "media": 4.125, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 1, "neutro": 3, "concordo": 7, "p_discordo": 9.090909090909092, "p_neutro": 27.27272727272727, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 9.090909090909092, "s3": 3, "p_s3": 27.27272727272727, "s4": 7, "p_s4": 63.63636363636363, "s5": 0, "p_s5": 0.0, "media": 3.5454545454545454, "stdev": 0.6875516509523286}, "SC": {"total": 19, "discordo": 7, "neutro": 6, "concordo": 6, "p_discordo": 36.84210526315789, "p_neutro": 31.57894736842105, "p_concordo": 31.57894736842105, "s1": 2, "p_s1": 10.526315789473683, "s2": 5, "p_s2": 26.31578947368421, "s3": 6, "p_s3": 31.57894736842105, "s4": 4, "p_s4": 21.052631578947366, "s5": 2, "p_s5": 10.526315789473683, "media": 2.9473684210526314, "stdev": 1.177270110161938}}}, {"seq": 40, "col": 47, "id": "Q40", "bloco": "Competências", "keyword": "Confiança técnica (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Minha confiança para enfrentar problemas técnicos novos e desconhecidos aumentou significativamente ao longo deste semestre.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Minha confiança para enfrentar problemas técnicos novos e desconhecidos aumentou significativamente ao longo deste semestre.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 2, "concordo": 6, "p_discordo": 0.0, "p_neutro": 25.0, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 25.0, "s4": 5, "p_s4": 62.5, "s5": 1, "p_s5": 12.5, "media": 3.875, "stdev": 0.6408699444616558}, "CP": {"total": 11, "discordo": 1, "neutro": 7, "concordo": 3, "p_discordo": 9.090909090909092, "p_neutro": 63.63636363636363, "p_concordo": 27.27272727272727, "s1": 1, "p_s1": 9.090909090909092, "s2": 0, "p_s2": 0.0, "s3": 7, "p_s3": 63.63636363636363, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 3.090909090909091, "stdev": 0.8312094145936335}, "SC": {"total": 19, "discordo": 4, "neutro": 8, "concordo": 7, "p_discordo": 21.052631578947366, "p_neutro": 42.10526315789473, "p_concordo": 36.84210526315789, "s1": 1, "p_s1": 5.263157894736842, "s2": 3, "p_s2": 15.789473684210526, "s3": 8, "p_s3": 42.10526315789473, "s4": 6, "p_s4": 31.57894736842105, "s5": 1, "p_s5": 5.263157894736842, "media": 3.1578947368421053, "stdev": 0.9581903020646578}}}, {"seq": 41, "col": 48, "id": "Q41", "bloco": "Competências", "keyword": "Trabalho em equipe (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "A metodologia PBL contribuiu para que eu melhorasse minha capacidade de trabalhar em equipe e colaborar com pessoas de diferentes níveis de conhecimento.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [A metodologia PBL contribuiu para que eu melhorasse minha capacidade de trabalhar em equipe e colaborar com pessoas de diferentes níveis de conhecimento.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 1, "concordo": 6, "p_discordo": 12.5, "p_neutro": 12.5, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 1, "p_s3": 12.5, "s4": 4, "p_s4": 50.0, "s5": 2, "p_s5": 25.0, "media": 3.875, "stdev": 0.9910312089651149}, "CP": {"total": 11, "discordo": 1, "neutro": 9, "concordo": 1, "p_discordo": 9.090909090909092, "p_neutro": 81.81818181818183, "p_concordo": 9.090909090909092, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 9.090909090909092, "s3": 9, "p_s3": 81.81818181818183, "s4": 1, "p_s4": 9.090909090909092, "s5": 0, "p_s5": 0.0, "media": 3, "stdev": 0.4472135954999579}, "SC": {"total": 19, "discordo": 4, "neutro": 5, "concordo": 10, "p_discordo": 21.052631578947366, "p_neutro": 26.31578947368421, "p_concordo": 52.63157894736842, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 21.052631578947366, "s3": 5, "p_s3": 26.31578947368421, "s4": 7, "p_s4": 36.84210526315789, "s5": 3, "p_s5": 15.789473684210526, "media": 3.473684210526316, "stdev": 1.0202625507753482}}}, {"seq": 42, "col": 49, "id": "Q42", "bloco": "Competências", "keyword": "Comunicação interpessoal (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Sinto que melhorei minha comunicação interpessoal ao ter que explicar e defender minhas soluções técnicas para o grupo ou para os professores.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto que melhorei minha comunicação interpessoal ao ter que explicar e defender minhas soluções técnicas para o grupo ou para os professores.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 3, "concordo": 4, "p_discordo": 12.5, "p_neutro": 37.5, "p_concordo": 50.0, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 3, "p_s3": 37.5, "s4": 2, "p_s4": 25.0, "s5": 2, "p_s5": 25.0, "media": 3.625, "stdev": 1.0606601717798212}, "CP": {"total": 11, "discordo": 1, "neutro": 7, "concordo": 3, "p_discordo": 9.090909090909092, "p_neutro": 63.63636363636363, "p_concordo": 27.27272727272727, "s1": 1, "p_s1": 9.090909090909092, "s2": 0, "p_s2": 0.0, "s3": 7, "p_s3": 63.63636363636363, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 3.090909090909091, "stdev": 0.8312094145936335}, "SC": {"total": 19, "discordo": 5, "neutro": 9, "concordo": 5, "p_discordo": 26.31578947368421, "p_neutro": 47.368421052631575, "p_concordo": 26.31578947368421, "s1": 1, "p_s1": 5.263157894736842, "s2": 4, "p_s2": 21.052631578947366, "s3": 9, "p_s3": 47.368421052631575, "s4": 4, "p_s4": 21.052631578947366, "s5": 1, "p_s5": 5.263157894736842, "media": 3, "stdev": 0.9428090415820634}}}, {"seq": 43, "col": 50, "id": "Q43", "bloco": "Competências", "keyword": "Gestão de conflitos (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Desenvolvi uma melhor gestão de conflitos e negociação ao lidar com divergências de opiniões dentro das sessões tutoriais.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Desenvolvi uma melhor gestão de conflitos e negociação ao lidar com divergências de opiniões dentro das sessões tutoriais.]", "stats": {"EG": {"total": 8, "discordo": 1, "neutro": 4, "concordo": 3, "p_discordo": 12.5, "p_neutro": 50.0, "p_concordo": 37.5, "s1": 0, "p_s1": 0.0, "s2": 1, "p_s2": 12.5, "s3": 4, "p_s3": 50.0, "s4": 3, "p_s4": 37.5, "s5": 0, "p_s5": 0.0, "media": 3.25, "stdev": 0.7071067811865476}, "CP": {"total": 11, "discordo": 8, "neutro": 3, "concordo": 0, "p_discordo": 72.72727272727273, "p_neutro": 27.27272727272727, "p_concordo": 0.0, "s1": 3, "p_s1": 27.27272727272727, "s2": 5, "p_s2": 45.45454545454545, "s3": 3, "p_s3": 27.27272727272727, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 2, "stdev": 0.7745966692414834}, "SC": {"total": 19, "discordo": 13, "neutro": 6, "concordo": 0, "p_discordo": 68.42105263157895, "p_neutro": 31.57894736842105, "p_concordo": 0.0, "s1": 8, "p_s1": 42.10526315789473, "s2": 5, "p_s2": 26.31578947368421, "s3": 6, "p_s3": 31.57894736842105, "s4": 0, "p_s4": 0.0, "s5": 0, "p_s5": 0.0, "media": 1.894736842105263, "stdev": 0.8752610304046612}}}, {"seq": 44, "col": 51, "id": "Q44", "bloco": "Competências", "keyword": "Capacidade autodidata (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Sinto-me mais preparado(a) para buscar novos conhecimentos por conta própria (autodidatismo) do que quando iniciei o curso.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto-me mais preparado(a) para buscar novos conhecimentos por conta própria (autodidatismo) do que quando iniciei o curso.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 3, "concordo": 5, "p_discordo": 0.0, "p_neutro": 37.5, "p_concordo": 62.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 3, "p_s3": 37.5, "s4": 3, "p_s4": 37.5, "s5": 2, "p_s5": 25.0, "media": 3.875, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 0, "neutro": 4, "concordo": 7, "p_discordo": 0.0, "p_neutro": 36.36363636363637, "p_concordo": 63.63636363636363, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 4, "p_s3": 36.36363636363637, "s4": 5, "p_s4": 45.45454545454545, "s5": 2, "p_s5": 18.181818181818183, "media": 3.8181818181818183, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 4, "neutro": 4, "concordo": 11, "p_discordo": 21.052631578947366, "p_neutro": 21.052631578947366, "p_concordo": 57.89473684210527, "s1": 1, "p_s1": 5.263157894736842, "s2": 3, "p_s2": 15.789473684210526, "s3": 4, "p_s3": 21.052631578947366, "s4": 7, "p_s4": 36.84210526315789, "s5": 4, "p_s5": 21.052631578947366, "media": 3.526315789473684, "stdev": 1.1722922015640782}}}, {"seq": 45, "col": 52, "id": "Q45", "bloco": "Competências", "keyword": "Postura profissional (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "A experiência deste semestre me deu uma visão clara das responsabilidades e da postura esperada de um estudante de Engenharia de Computação.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [A experiência deste semestre me deu uma visão clara das responsabilidades e da postura esperada de um estudante de Engenharia de Computação.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 2, "concordo": 6, "p_discordo": 0.0, "p_neutro": 25.0, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 25.0, "s4": 3, "p_s4": 37.5, "s5": 3, "p_s5": 37.5, "media": 4.125, "stdev": 0.8345229603962802}, "CP": {"total": 11, "discordo": 2, "neutro": 3, "concordo": 6, "p_discordo": 18.181818181818183, "p_neutro": 27.27272727272727, "p_concordo": 54.54545454545454, "s1": 0, "p_s1": 0.0, "s2": 2, "p_s2": 18.181818181818183, "s3": 3, "p_s3": 27.27272727272727, "s4": 6, "p_s4": 54.54545454545454, "s5": 0, "p_s5": 0.0, "media": 3.3636363636363638, "stdev": 0.8090398349558905}, "SC": {"total": 19, "discordo": 6, "neutro": 2, "concordo": 11, "p_discordo": 31.57894736842105, "p_neutro": 10.526315789473683, "p_concordo": 57.89473684210527, "s1": 1, "p_s1": 5.263157894736842, "s2": 5, "p_s2": 26.31578947368421, "s3": 2, "p_s3": 10.526315789473683, "s4": 7, "p_s4": 36.84210526315789, "s5": 4, "p_s5": 21.052631578947366, "media": 3.4210526315789473, "stdev": 1.261207070569223}}}, {"seq": 46, "col": 53, "id": "Q46", "bloco": "Integração social", "keyword": "Mentoria informal (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Assumi, frequentemente, um papel de \"mentor(a)\" informal, ajudando colegas com mais dificuldade nas listas e projetos.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Assumi, frequentemente, um papel de \"mentor(a)\" informal, ajudando colegas com mais dificuldade nas listas e projetos.]", "stats": {"EG": {"total": 8, "discordo": 3, "neutro": 1, "concordo": 4, "p_discordo": 37.5, "p_neutro": 12.5, "p_concordo": 50.0, "s1": 1, "p_s1": 12.5, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 2, "p_s5": 25.0, "media": 3.25, "stdev": 1.4880476182856899}, "CP": {"total": 11, "discordo": 4, "neutro": 5, "concordo": 2, "p_discordo": 36.36363636363637, "p_neutro": 45.45454545454545, "p_concordo": 18.181818181818183, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 5, "p_s3": 45.45454545454545, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.8181818181818183, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 14, "neutro": 2, "concordo": 3, "p_discordo": 73.68421052631578, "p_neutro": 10.526315789473683, "p_concordo": 15.789473684210526, "s1": 7, "p_s1": 36.84210526315789, "s2": 7, "p_s2": 36.84210526315789, "s3": 2, "p_s3": 10.526315789473683, "s4": 1, "p_s4": 5.263157894736842, "s5": 2, "p_s5": 10.526315789473683, "media": 2.1578947368421053, "stdev": 1.302269723501448}}}, {"seq": 47, "col": 54, "id": "Q47", "bloco": "Integração social", "keyword": "Colaboração da turma (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "Senti que a turma era colaborativa e que os colegas com mais experiência tinham paciência e abertura para ensinar.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Senti que a turma era colaborativa e que os colegas com mais experiência tinham paciência e abertura para ensinar.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 2, "concordo": 6, "p_discordo": 0.0, "p_neutro": 25.0, "p_concordo": 75.0, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 2, "p_s3": 25.0, "s4": 6, "p_s4": 75.0, "s5": 0, "p_s5": 0.0, "media": 3.75, "stdev": 0.4629100498862757}, "CP": {"total": 11, "discordo": 3, "neutro": 6, "concordo": 2, "p_discordo": 27.27272727272727, "p_neutro": 54.54545454545454, "p_concordo": 18.181818181818183, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 27.27272727272727, "s3": 6, "p_s3": 54.54545454545454, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.909090909090909, "stdev": 0.7006490497453707}, "SC": {"total": 19, "discordo": 5, "neutro": 9, "concordo": 5, "p_discordo": 26.31578947368421, "p_neutro": 47.368421052631575, "p_concordo": 26.31578947368421, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 26.31578947368421, "s3": 9, "p_s3": 47.368421052631575, "s4": 5, "p_s4": 26.31578947368421, "s5": 0, "p_s5": 0.0, "media": 3, "stdev": 0.7453559924999299}}}, {"seq": 48, "col": 55, "id": "Q48", "bloco": "Integração social", "keyword": "Inibição nas sessões (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Evitava dar opiniões ou sugerir soluções nas sessões tutoriais por medo de errar ou parecer \"atrasado(a)\" diante de colegas experientes.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Evitava dar opiniões ou sugerir soluções nas sessões tutoriais por medo de errar ou parecer \"atrasado(a)\" diante de colegas experientes.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 1, "concordo": 3, "p_discordo": 50.0, "p_neutro": 12.5, "p_concordo": 37.5, "s1": 2, "p_s1": 25.0, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 1, "p_s5": 12.5, "media": 2.75, "stdev": 1.4880476182856899}, "CP": {"total": 11, "discordo": 5, "neutro": 3, "concordo": 3, "p_discordo": 45.45454545454545, "p_neutro": 27.27272727272727, "p_concordo": 27.27272727272727, "s1": 0, "p_s1": 0.0, "s2": 5, "p_s2": 45.45454545454545, "s3": 3, "p_s3": 27.27272727272727, "s4": 3, "p_s4": 27.27272727272727, "s5": 0, "p_s5": 0.0, "media": 2.8181818181818183, "stdev": 0.873862897505303}, "SC": {"total": 19, "discordo": 4, "neutro": 7, "concordo": 8, "p_discordo": 21.052631578947366, "p_neutro": 36.84210526315789, "p_concordo": 42.10526315789473, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 21.052631578947366, "s3": 7, "p_s3": 36.84210526315789, "s4": 6, "p_s4": 31.57894736842105, "s5": 2, "p_s5": 10.526315789473683, "media": 3.3157894736842106, "stdev": 0.9459053029269173}}}, {"seq": 49, "col": 56, "id": "Q49", "bloco": "Integração social", "keyword": "Insegurança nas sessões (−)", "sentido": "−", "nao_aplica": [], "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "item_text": "Me sentia inseguro durante as sessões tutoriais.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Me sentia inseguro durante as sessões tutoriais.]", "stats": {"EG": {"total": 8, "discordo": 4, "neutro": 1, "concordo": 3, "p_discordo": 50.0, "p_neutro": 12.5, "p_concordo": 37.5, "s1": 2, "p_s1": 25.0, "s2": 2, "p_s2": 25.0, "s3": 1, "p_s3": 12.5, "s4": 2, "p_s4": 25.0, "s5": 1, "p_s5": 12.5, "media": 2.75, "stdev": 1.4880476182856899}, "CP": {"total": 11, "discordo": 4, "neutro": 5, "concordo": 2, "p_discordo": 36.36363636363637, "p_neutro": 45.45454545454545, "p_concordo": 18.181818181818183, "s1": 0, "p_s1": 0.0, "s2": 4, "p_s2": 36.36363636363637, "s3": 5, "p_s3": 45.45454545454545, "s4": 2, "p_s4": 18.181818181818183, "s5": 0, "p_s5": 0.0, "media": 2.8181818181818183, "stdev": 0.7507571935295483}, "SC": {"total": 19, "discordo": 3, "neutro": 7, "concordo": 9, "p_discordo": 15.789473684210526, "p_neutro": 36.84210526315789, "p_concordo": 47.368421052631575, "s1": 0, "p_s1": 0.0, "s2": 3, "p_s2": 15.789473684210526, "s3": 7, "p_s3": 36.84210526315789, "s4": 5, "p_s4": 26.31578947368421, "s5": 4, "p_s5": 21.052631578947366, "media": 3.526315789473684, "stdev": 1.0202625507753482}}}, {"seq": 50, "col": 57, "id": "Q50", "bloco": "Integração social", "keyword": "Importância das tutorias (+)", "sentido": "+", "nao_aplica": [], "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "item_text": "As sessões tutorais foram fundamentais para o desenvolvimento do problema.", "full_header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [As sessões tutorais foram fundamentais para o desenvolvimento do problema.]", "stats": {"EG": {"total": 8, "discordo": 0, "neutro": 1, "concordo": 7, "p_discordo": 0.0, "p_neutro": 12.5, "p_concordo": 87.5, "s1": 0, "p_s1": 0.0, "s2": 0, "p_s2": 0.0, "s3": 1, "p_s3": 12.5, "s4": 6, "p_s4": 75.0, "s5": 1, "p_s5": 12.5, "media": 4, "stdev": 0.5345224838248488}, "CP": {"total": 11, "discordo": 1, "neutro": 4, "concordo": 6, "p_discordo": 9.090909090909092, "p_neutro": 36.36363636363637, "p_concordo": 54.54545454545454, "s1": 1, "p_s1": 9.090909090909092, "s2": 0, "p_s2": 0.0, "s3": 4, "p_s3": 36.36363636363637, "s4": 4, "p_s4": 36.36363636363637, "s5": 2, "p_s5": 18.181818181818183, "media": 3.5454545454545454, "stdev": 1.1281521496355325}, "SC": {"total": 19, "discordo": 5, "neutro": 6, "concordo": 8, "p_discordo": 26.31578947368421, "p_neutro": 31.57894736842105, "p_concordo": 42.10526315789473, "s1": 1, "p_s1": 5.263157894736842, "s2": 4, "p_s2": 21.052631578947366, "s3": 6, "p_s3": 31.57894736842105, "s4": 6, "p_s4": 31.57894736842105, "s5": 2, "p_s5": 10.526315789473683, "media": 3.210526315789474, "stdev": 1.0841764600337105}}}];
+const CORES_5 = {"1": {"hex": "#b71c1c", "label": "1: Discordo Totalmente", "texto": "#ffffff"}, "2": {"hex": "#fb8c00", "label": "2: Discordo Parcialmente", "texto": "#ffffff"}, "3": {"hex": "#fdd835", "label": "3: Neutro / Indiferente", "texto": "#1a1a1a"}, "4": {"hex": "#81c784", "label": "4: Concordo Parcialmente", "texto": "#1a1a1a"}, "5": {"hex": "#2e7d32", "label": "5: Concordo Totalmente", "texto": "#ffffff"}};
+const BLOCOS_INFO = {"Adaptação": "Percepção sobre ritmo, hábitos de estudo, transição para o ensino superior e eficácia do método PBL.", "Dinâmica de grupo": "Trabalho em equipe no PBL, comunicação, liderança técnica, segurança psicológica e colaboração.", "Gestão do tempo": "Carga horária, concorrência entre disciplinas, impacto no rendimento acadêmico e desafios sintáticos.", "Uso de IA": "Adoção de LLMs (ChatGPT/Copilot), delegação vs. depuração, impacto cognitivo e postura ética no MI.", "Competências": "Evolução do pensamento computacional, leitura de código, autodidatismo e habilidades interpessoais.", "Integração social": "Mentoria informal entre pares, clima colaborativo da turma e segurança psicológica nas sessões."};
+
+let estado = {
+    escala: '3cat',       // '3cat' ou '5scale'
+    densidade: 'compact', // 'ultracompact', 'compact', 'comfortable'
+    rotulo: 'pct',        // 'pct', 'n', 'both'
+    temaFiltro: 'ALL',
+    termoBusca: '',
+    drawerAbertoId: null,
+};
+
+const tooltipEl = document.getElementById('interactive-tooltip');
+
+function init() {
+    renderizarLegenda();
+    renderizarTabela();
+    renderizarAnexo();
+}
+
+function setEscala(escala) {
+    estado.escala = escala;
+    document.querySelectorAll('#scale-toggle-group .btn-toggle').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scale === escala);
+    });
+    renderizarLegenda();
+    renderizarTabela();
+}
+
+function setDensidade(densidade) {
+    estado.densidade = densidade;
+    document.body.className = '';
+    if (densidade === 'ultracompact') document.body.classList.add('density-ultracompact');
+    if (densidade === 'comfortable') document.body.classList.add('density-comfortable');
+
+    document.querySelectorAll('#density-toggle-group .btn-toggle').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.density === densidade);
+    });
+}
+
+function setRotulo(rotulo) {
+    estado.rotulo = rotulo;
+    document.querySelectorAll('#label-toggle-group .btn-toggle').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.label === rotulo);
+    });
+    renderizarTabela();
+}
+
+function filtrarTema(tema) {
+    estado.temaFiltro = tema;
+    document.querySelectorAll('#theme-tabs .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === tema);
+    });
+    renderizarTabela();
+}
+
+function filtrarTexto(val) {
+    estado.termoBusca = val.toLowerCase().trim();
+    renderizarTabela();
+}
+
+function renderizarLegenda() {
+    const el = document.getElementById('legend-container');
+    if (estado.escala === '3cat') {
+        el.innerHTML = `
+            <span class="legend-title">Legenda:</span>
+            <div class="legend-items">
+                <div class="legend-pill"><span class="color-box" style="background:#e53935;"></span> <strong>Dificuldade</strong></div>
+                <div class="legend-pill"><span class="color-box" style="background:#fbc02d;"></span> <strong>Neutro (3)</strong></div>
+                <div class="legend-pill"><span class="color-box" style="background:#2e7d32;"></span> <strong>Facilidade</strong></div>
+                <span style="color:#cbd5e1;">|</span>
+                <span>Itens (+): concordar indica facilidade  |  Itens (−): concordar indica dificuldade</span>
+            </div>
+        `;
+    } else {
+        el.innerHTML = `
+            <span class="legend-title">Legenda (Escala de 1 a 5):</span>
+            <div class="legend-items">
+                <div class="legend-pill"><span class="color-box" style="background:${CORES_5[1].hex};"></span> Muita dificuldade</div>
+                <div class="legend-pill"><span class="color-box" style="background:${CORES_5[2].hex};"></span> Alguma dificuldade</div>
+                <div class="legend-pill"><span class="color-box" style="background:${CORES_5[3].hex};"></span> Neutro (3)</div>
+                <div class="legend-pill"><span class="color-box" style="background:${CORES_5[4].hex};"></span> Alguma facilidade</div>
+                <div class="legend-pill"><span class="color-box" style="background:${CORES_5[5].hex};"></span> Muita facilidade</div>
+                <span style="color:#cbd5e1;">|</span>
+                <span>Itens (+): concordar indica facilidade  |  Itens (−): concordar indica dificuldade</span>
+            </div>
+        `;
+    }
+}
+
+function formatarRotuloFatia(pct, n) {
+    if (estado.rotulo === 'pct') {
+        return pct >= 8 ? `${pct.toFixed(0)}%` : '';
+    }
+    if (estado.rotulo === 'n') {
+        return pct >= 6 ? `${n}` : '';
+    }
+    // estado.rotulo === 'both'
+    if (pct >= 20) {
+        return `${pct.toFixed(0)}% (${n})`;
+    } else if (pct >= 9) {
+        return `${pct.toFixed(0)}%`;
+    } else {
+        return '';
+    }
+}
+
+function renderizarTabela() {
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = '';
+
+    // Agrupar por tema
+    const perguntasFiltradas = PERGUNTAS.filter(p => {
+        const matchTema = estado.temaFiltro === 'ALL' || p.bloco === estado.temaFiltro;
+        const matchTexto = !estado.termoBusca ||
+                           p.keyword.toLowerCase().includes(estado.termoBusca) ||
+                           p.item_text.toLowerCase().includes(estado.termoBusca) ||
+                           p.id.toLowerCase().includes(estado.termoBusca);
+        return matchTema && matchTexto;
+    });
+
+    if (perguntasFiltradas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#64748b;">Nenhuma questão encontrada para os critérios selecionados.</td></tr>`;
+        return;
+    }
+
+    let blocoAtual = null;
+
+    perguntasFiltradas.forEach(p => {
+        // Separador de Bloco se mudou de tema
+        if (p.bloco !== blocoAtual && estado.temaFiltro === 'ALL') {
+            blocoAtual = p.bloco;
+            const desc = BLOCOS_INFO[blocoAtual] || '';
+            const trSep = document.createElement('tr');
+            trSep.className = 'theme-separator-row';
+            trSep.innerHTML = `
+                <td colspan="4">
+                    <div class="theme-separator-content">
+                        <div class="theme-separator-title">
+                            <span>📂 Tema: <strong>${blocoAtual}</strong></span>
+                            <span class="theme-desc">${desc}</span>
+                        </div>
+                        <span class="theme-tag">Bloco Temático</span>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(trSep);
+        }
+
+        // Linha da pergunta
+        const tr = document.createElement('tr');
+        tr.className = 'question-row';
+        tr.id = `row_${p.id}`;
+        tr.onclick = (e) => {
+            if (!e.target.closest('.info-btn')) {
+                toggleDrawer(p.id);
+            }
+        };
+
+        // Célula 1: Pergunta / Palavra-Chave
+        const tdQ = document.createElement('td');
+        tdQ.className = 'td-question';
+        tdQ.innerHTML = `
+            <div class="question-cell-wrap" title="${p.id}: ${p.keyword} | Clique para ver detalhes">
+                <span class="q-badge">${p.id}</span>
+                <span class="q-keyword">${p.keyword}</span>
+                <button class="info-btn" title="Ver texto completo da pergunta" onclick="event.stopPropagation(); abrirModalTexto('${p.id}')">ℹ️</button>
+            </div>
+        `;
+        tr.appendChild(tdQ);
+
+        // Células 2, 3, 4: Subgrupos (EG, CP, SC)
+        ['EG', 'CP', 'SC'].forEach(sg => {
+            const tdSub = document.createElement('td');
+            tdSub.className = 'td-subgroup';
+            tdSub.appendChild(criarBarraEmpilhada(p, sg));
+            tr.appendChild(tdSub);
+        });
+
+        tbody.appendChild(tr);
+
+        // Se a gaveta estiver aberta para esta pergunta, insere a linha de detalhe
+        if (estado.drawerAbertoId === p.id) {
+            const trDrawer = criarLinhaDrawer(p);
+            tbody.appendChild(trDrawer);
+        }
+    });
+}
+
+function criarBarraEmpilhada(p, sg) {
+    const st = p.stats[sg];
+    const tot = st.total > 0 ? st.total : 1;
+
+    const container = document.createElement('div');
+    container.className = 'bar-container';
+
+    if (p.nao_aplica.includes(sg)) {
+        const slice = document.createElement('div');
+        slice.className = 'bar-slice dark-text';
+        slice.style.width = '100%';
+        slice.style.background = '#e2e8f0';
+        slice.textContent = 'Não se aplica';
+        container.appendChild(slice);
+        return container;
+    }
+
+    if (estado.escala === '3cat') {
+        const cats = [
+            { chave: 'discordo', rotulo: 'Discordo (1 e 2)', n: st.discordo, pct: st.p_discordo, cor: p.cores.discordo, isLight: p.sentido === '0' },
+            { chave: 'neutro', rotulo: 'Neutro (3)', n: st.neutro, pct: st.p_neutro, cor: p.cores.neutro, isLight: true },
+            { chave: 'concordo', rotulo: 'Concordo (4 e 5)', n: st.concordo, pct: st.p_concordo, cor: p.cores.concordo, isLight: p.sentido === '0' },
+        ];
+
+        cats.forEach(c => {
+            if (c.n > 0) {
+                const slice = document.createElement('div');
+                slice.className = `bar-slice ${c.isLight ? 'dark-text' : ''}`;
+                slice.style.width = `${c.pct}%`;
+                slice.style.background = c.cor;
+
+                const textoFatia = formatarRotuloFatia(c.pct, c.n);
+                if (textoFatia) {
+                    slice.textContent = textoFatia;
+                }
+
+                slice.onmouseenter = (e) => mostrarTooltip(e, p, sg, c.rotulo, c.n, c.pct);
+                slice.onmousemove = moverTooltip;
+                slice.onmouseleave = esconderTooltip;
+
+                container.appendChild(slice);
+            }
+        });
+    } else {
+        // Escala 1 a 5
+        // Em itens (−), concordar indica dificuldade: a escala de cores é espelhada.
+        const corNivel = (n) => CORES_5[p.sentido === '0' ? 3 : (p.sentido === '−' ? 6 - n : n)];
+        const niveis = [
+            { nivel: 1, rotulo: '1: Discordo Totalmente', n: st.s1, pct: st.p_s1 },
+            { nivel: 2, rotulo: '2: Discordo Parcialmente', n: st.s2, pct: st.p_s2 },
+            { nivel: 3, rotulo: '3: Neutro / Indiferente', n: st.s3, pct: st.p_s3 },
+            { nivel: 4, rotulo: '4: Concordo Parcialmente', n: st.s4, pct: st.p_s4 },
+            { nivel: 5, rotulo: '5: Concordo Totalmente', n: st.s5, pct: st.p_s5 },
+        ].map(nv => ({ ...nv, cor: corNivel(nv.nivel).hex, isLight: corNivel(nv.nivel).texto !== '#ffffff' }));
+
+        niveis.forEach(nv => {
+            if (nv.n > 0) {
+                const slice = document.createElement('div');
+                slice.className = `bar-slice ${nv.isLight ? 'dark-text' : ''}`;
+                slice.style.width = `${nv.pct}%`;
+                slice.style.background = nv.cor;
+
+                const textoFatia = formatarRotuloFatia(nv.pct, nv.n);
+                if (textoFatia) {
+                    slice.textContent = textoFatia;
+                }
+
+                slice.onmouseenter = (e) => mostrarTooltip(e, p, sg, nv.rotulo, nv.n, nv.pct);
+                slice.onmousemove = moverTooltip;
+                slice.onmouseleave = esconderTooltip;
+
+                container.appendChild(slice);
+            }
+        });
+    }
+
+    return container;
+}
+
+function toggleDrawer(id) {
+    estado.drawerAbertoId = (estado.drawerAbertoId === id) ? null : id;
+    renderizarTabela();
+}
+
+function criarLinhaDrawer(p) {
+    const tr = document.createElement('tr');
+    tr.className = 'drawer-detail-row';
+    const td = document.createElement('td');
+    td.colSpan = 4;
+
+    const st = p.stats;
+    td.innerHTML = `
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <div class="drawer-title">📌 ${p.id} (Coluna ${p.col}) — ${p.keyword} [Bloco: ${p.bloco}]</div>
+                <div class="drawer-statement">“${p.item_text}”</div>
+            </div>
+            <div class="mini-stats-grid">
+                <div class="mini-stat-card">
+                    <div class="mini-card-title">1º Segmento: EG (Egressos UCE | n=${st.EG.total})</div>
+                    <div>• Discordo: <strong>${st.EG.discordo}</strong> (${st.EG.p_discordo.toFixed(1)}%)</div>
+                    <div>• Neutro: <strong>${st.EG.neutro}</strong> (${st.EG.p_neutro.toFixed(1)}%)</div>
+                    <div>• Concordo: <strong>${st.EG.concordo}</strong> (${st.EG.p_concordo.toFixed(1)}%)</div>
+                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.EG.media.toFixed(2)} (±${st.EG.stdev.toFixed(2)})</div>
+                </div>
+                <div class="mini-stat-card">
+                    <div class="mini-card-title">2º Segmento: CP (Conhec. Prévio | n=${st.CP.total})</div>
+                    <div>• Discordo: <strong>${st.CP.discordo}</strong> (${st.CP.p_discordo.toFixed(1)}%)</div>
+                    <div>• Neutro: <strong>${st.CP.neutro}</strong> (${st.CP.p_neutro.toFixed(1)}%)</div>
+                    <div>• Concordo: <strong>${st.CP.concordo}</strong> (${st.CP.p_concordo.toFixed(1)}%)</div>
+                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.CP.media.toFixed(2)} (±${st.CP.stdev.toFixed(2)})</div>
+                </div>
+                <div class="mini-stat-card">
+                    <div class="mini-card-title">3º Segmento: SC (Sem Conhec. | n=${st.SC.total})</div>
+                    <div>• Discordo: <strong>${st.SC.discordo}</strong> (${st.SC.p_discordo.toFixed(1)}%)</div>
+                    <div>• Neutro: <strong>${st.SC.neutro}</strong> (${st.SC.p_neutro.toFixed(1)}%)</div>
+                    <div>• Concordo: <strong>${st.SC.concordo}</strong> (${st.SC.p_concordo.toFixed(1)}%)</div>
+                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.SC.media.toFixed(2)} (±${st.SC.stdev.toFixed(2)})</div>
+                </div>
+            </div>
+        </div>
+    `;
+    tr.appendChild(td);
+    return tr;
+}
+
+function mostrarTooltip(e, p, sg, categoria, n, pct) {
+    const sgNome = sg === 'EG' ? 'Egressos UCE (EG)' : (sg === 'CP' ? 'Conhec. Prévio (CP)' : 'Sem Conhec. (SC)');
+    const totSg = p.stats[sg].total;
+
+    tooltipEl.innerHTML = `
+        <div class="tt-header">${p.id}: ${p.keyword}</div>
+        <div class="tt-row"><span>Subgrupo:</span> <strong>${sgNome}</strong></div>
+        <div class="tt-row"><span>Categoria:</span> <strong>${categoria}</strong></div>
+        <div class="tt-row"><span>Distribuição:</span> <strong>${n} de ${totSg} (${pct.toFixed(1)}%)</strong></div>
+        <div class="tt-statement">“${p.item_text}”</div>
+    `;
+    tooltipEl.style.display = 'block';
+    moverTooltip(e);
+}
+
+function moverTooltip(e) {
+    const x = e.clientX + 14;
+    const y = e.clientY + 14;
+    tooltipEl.style.left = `${Math.min(x, window.innerWidth - 330)}px`;
+    tooltipEl.style.top = `${y}px`;
+}
+
+function esconderTooltip() {
+    tooltipEl.style.display = 'none';
+}
+
+function abrirModalTexto(id) {
+    const p = PERGUNTAS.find(item => item.id === id);
+    if (!p) return;
+    alert(`[${p.id}] ${p.keyword}
+
+Tema: ${p.bloco}
+Coluna na Planilha: ${p.col}
+
+Afirmação do Item:
+"${p.item_text}"
+
+Texto Completo no Questionário:
+${p.full_header}`);
+}
+
+function renderizarAnexo() {
+    const tbody = document.getElementById('appendix-body');
+    tbody.innerHTML = '';
+
+    PERGUNTAS.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${p.id}</strong></td>
+            <td>Col. ${p.col}</td>
+            <td><span class="theme-tag" style="font-size:10.5px;">${p.bloco}</span></td>
+            <td><strong>${p.keyword}</strong></td>
+            <td>${p.item_text}</td>
+            <td style="color:#475569; font-size:12px;">${p.full_header}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+window.onload = init;
+</script>
+<button id="btn-topo" class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Voltar aos Controles e Filtros">
+    ⬆️ Filtros / Topo
+</button>
+</body>
+</html>

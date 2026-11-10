@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário dos Discentes (G2) — Gráficos de Barras Empilhadas por Pergunta</title>
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .top-banner {
+            max-width: 1100px;
+            margin: 0 auto 28px auto;
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 28px 36px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .top-banner h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            color: var(--text-title);
+        }
+        .top-banner p {
+            margin: 0 0 16px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .toggle-view {
+            display: inline-flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .toggle-link {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .toggle-link:hover {
+            background: #0f172a;
+            color: white;
+        }
+        .palette-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 12px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+        }
+        .palette-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .palette-group-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .color-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+        }
+        .color-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .nav-sticky {
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+            max-width: 1100px;
+            margin: 0 auto 24px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-sticky span {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin-right: 8px;
+        }
+        .nav-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .nav-btn:hover {
+            background: #0f172a;
+            color: white;
+            border-color: #0f172a;
+        }
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 28px 34px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            scroll-margin-top: 80px;
+        }
+        .question-header {
+            margin-bottom: 22px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .block-badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #e2e8f0;
+            color: #334155;
+            letter-spacing: 0.5px;
+        }
+        .q-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .question-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin: 0;
+            line-height: 1.45;
+        }
+        .segments-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .segment-row {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+        }
+        .segment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .segment-title {
+            font-weight: 700;
+            color: var(--text-title);
+        }
+        .segment-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .stacked-bar {
+            display: flex;
+            height: 38px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+        .bar-slice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: white;
+            transition: all 0.2s;
+            position: relative;
+            cursor: default;
+        }
+        .bar-slice.light-bg {
+            color: #1a1a1a;
+        }
+        .bar-slice:hover {
+            filter: brightness(1.08);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            margin-top: 10px;
+        }
+        .data-table th, .data-table td {
+            padding: 8px 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .data-table th {
+            background: #f8fafc;
+            color: var(--text-title);
+            font-weight: 600;
+        }
+        .data-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+        .row-total {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-banner">
+    <div class="toggle-view">
+        <a class="toggle-link" href="relatorio_graficos_pizza.html">🥧 Ver Relatório em Gráficos de Pizza</a>
+        <span style="padding: 8px 0; color:#64748b; font-weight:600;">| &nbsp; Modo Atual: 📊 Barras Empilhadas por Subgrupo</span>
+    </div>
+
+    <h1>Questionário dos Discentes (G2) — Barras Empilhadas por Subgrupo</h1>
+    <p>Para cada pergunta, o <strong>texto exato do questionário fica no topo</strong> e logo abaixo são apresentados os <strong>3 segmentos separados</strong> para os 3 subgrupos em barras empilhadas de 0% a 100%: <strong>1º EG</strong>, <strong>2º CP</strong> e <strong>3º SC</strong>.</p>
+    
+    <div class="palette-legend" style="display:flex; flex-wrap:wrap; gap:18px; align-items:center;">
+        <div class="color-pill"><span class="color-dot" style="background:#e53935;"></span> <strong>Dificuldade</strong></div>
+        <div class="color-pill"><span class="color-dot" style="background:#fbc02d;"></span> <strong>Neutro (3)</strong></div>
+        <div class="color-pill"><span class="color-dot" style="background:#2e7d32;"></span> <strong>Facilidade</strong></div>
+        <span>Itens (+): concordar indica facilidade  |  Itens (−): concordar indica dificuldade</span>
+    </div>
+</div>
+
+<div class="nav-sticky">
+    <span>Ir para o Bloco:</span>
+    <a class="nav-btn" href="#bloco_adaptacao">Adaptação</a>
+    <a class="nav-btn" href="#bloco_dinamica_de_grupo">Dinâmica de Grupo</a>
+    <a class="nav-btn" href="#bloco_gestao_do_tempo">Gestão do Tempo</a>
+    <a class="nav-btn" href="#bloco_uso_de_ia">Uso de IA</a>
+    <a class="nav-btn" href="#bloco_competencias">Competências</a>
+    <a class="nav-btn" href="#bloco_integracao_social">Integração Social</a>
+</div>
+
+<div class="main-container" id="questions-list"></div>
+
+<script>
+const PERGUNTAS = [{"seq": 1, "col": 7, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Senti que o ritmo da disciplina Algoritmos 1 era rápido demais.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 3, "concordo": 4, "total": 11}, "SC": {"discordo": 7, "neutro": 7, "concordo": 5, "total": 19}}}, {"seq": 2, "col": 8, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Meu desempenho poderia ter sido muito melhor se eu estivesse acostumado a estudar com afinco desde o Ensino Médio.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 5, "neutro": 3, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}}, {"seq": 3, "col": 9, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Sinto que meu nível de conhecimento prévio me levou a negligenciar a disciplina teórica de Algoritmos 1.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": ["SC"], "counts": {"EG": {"discordo": 3, "neutro": 4, "concordo": 1, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 0, "neutro": 0, "concordo": 0, "total": 0}}}, {"seq": 4, "col": 10, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Eu saía das sessões tutoriais achando que entendi a lógica, mas \"travava\" ao codar sozinho(a) em casa.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 5, "neutro": 1, "concordo": 2, "total": 8}, "CP": {"discordo": 7, "neutro": 1, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}}, {"seq": 5, "col": 11, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Tive dificuldade em seguir os padrões de documentação exigidos pelos professores devidos a \"vícios de programação\".]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": ["SC"], "counts": {"EG": {"discordo": 2, "neutro": 6, "concordo": 0, "total": 8}, "CP": {"discordo": 2, "neutro": 5, "concordo": 4, "total": 11}, "SC": {"discordo": 0, "neutro": 0, "concordo": 0, "total": 0}}}, {"seq": 6, "col": 12, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Senti dificuldade em me adaptar ao PBL por estar acostumado(a) a métodos tradicionais (aulas expositivas ou tutoriais \"passo a passo\").]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 3, "neutro": 3, "concordo": 2, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 8, "neutro": 7, "concordo": 4, "total": 19}}}, {"seq": 7, "col": 13, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Me senti confortável em debater soluções, explicar meu código e participar ativamente das sessões tutoriais com meu grupo.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 1, "concordo": 5, "total": 8}, "CP": {"discordo": 2, "neutro": 4, "concordo": 5, "total": 11}, "SC": {"discordo": 9, "neutro": 5, "concordo": 5, "total": 19}}}, {"seq": 8, "col": 14, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Consegui identificar rapidamente quais conteúdos eu precisava estudar por conta própria para resolver os problemas propostos no MI (Módulo Integrador).]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 2, "concordo": 5, "total": 8}, "CP": {"discordo": 1, "neutro": 3, "concordo": 7, "total": 11}, "SC": {"discordo": 5, "neutro": 5, "concordo": 9, "total": 19}}}, {"seq": 9, "col": 15, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [As metodologias ativas aplicadas (PBL) foram mais eficazes para o meu aprendizado do que o modelo tradicional de aulas expositivas.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 1, "concordo": 6, "total": 8}, "CP": {"discordo": 0, "neutro": 7, "concordo": 4, "total": 11}, "SC": {"discordo": 6, "neutro": 3, "concordo": 10, "total": 19}}}, {"seq": 10, "col": 16, "bloco": "Adaptação", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia sua adaptação às metodologias aplicadas e o impacto emocional no início do curso? [Acredito que me dediquei bastante aos meus estudos neste semestre.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 2, "concordo": 4, "total": 8}, "CP": {"discordo": 3, "neutro": 1, "concordo": 7, "total": 11}, "SC": {"discordo": 7, "neutro": 3, "concordo": 9, "total": 19}}}, {"seq": 11, "col": 17, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A troca de conhecimentos com meus colegas de grupo foi essencial para meu aprendizado e aprovação na disciplina.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 0, "neutro": 2, "concordo": 9, "total": 11}, "SC": {"discordo": 5, "neutro": 3, "concordo": 11, "total": 19}}}, {"seq": 12, "col": 18, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A metodologia PBL exigiu de mim habilidades de comunicação, escuta e debate que eu ainda não dominava completamente.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 4, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 5, "neutro": 4, "concordo": 10, "total": 19}}}, {"seq": 13, "col": 19, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que o grupo funcionou de forma equilibrada, onde todos contribuíram igualmente para a solução dos problemas.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 6, "concordo": 0, "total": 8}, "CP": {"discordo": 4, "neutro": 6, "concordo": 1, "total": 11}, "SC": {"discordo": 4, "neutro": 10, "concordo": 5, "total": 19}}}, {"seq": 14, "col": 20, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que assumi naturalmente o papel de orientar, tirar dúvidas técnicas ou liderar a lógica de programação dos meus colegas.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 3, "neutro": 1, "concordo": 4, "total": 8}, "CP": {"discordo": 5, "neutro": 5, "concordo": 1, "total": 11}, "SC": {"discordo": 15, "neutro": 1, "concordo": 3, "total": 19}}}, {"seq": 15, "col": 21, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti receio de expor minhas dúvidas ou erros no grupo para não parecer \"atrasado(a)\" em relação aos colegas mais experientes.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 2, "neutro": 3, "concordo": 6, "total": 11}, "SC": {"discordo": 5, "neutro": 7, "concordo": 7, "total": 19}}}, {"seq": 16, "col": 22, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Percebi que o grupo recorria a mim como uma \"referência técnica\" quando surgiam travamentos no código.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 2, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 12, "neutro": 4, "concordo": 3, "total": 19}}}, {"seq": 17, "col": 23, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Muitas vezes, preferi seguir a lógica proposta por um colega mais avançado do que tentar propor a minha própria solução por falta de confiança.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 3, "concordo": 4, "total": 11}, "SC": {"discordo": 5, "neutro": 3, "concordo": 11, "total": 19}}}, {"seq": 18, "col": 24, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [Senti que a disparidade de conhecimento técnico entre os membros do grupo gerou situações de desequilíbrio durante as sessões tutoriais.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 0, "neutro": 2, "concordo": 9, "total": 11}, "SC": {"discordo": 1, "neutro": 3, "concordo": 15, "total": 19}}}, {"seq": 19, "col": 25, "bloco": "Dinâmica de grupo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as afirmações abaixo sobre sua experiência nos grupos de estudo/tutoria:   [A necessidade de explicar conceitos para meus colegas ajudou a consolidar meu próprio entendimento sobre a lógica de programação.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 3, "neutro": 7, "concordo": 1, "total": 11}, "SC": {"discordo": 12, "neutro": 4, "concordo": 3, "total": 19}}}, {"seq": 20, "col": 26, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O tempo que dediquei à Programação impactou diretamente o tempo disponível para Introdução ao Cálculo e Eletrônica.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 3, "neutro": 4, "concordo": 4, "total": 11}, "SC": {"discordo": 7, "neutro": 5, "concordo": 7, "total": 19}}}, {"seq": 21, "col": 27, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [A dificuldade em uma disciplina impactou também meu rendimento nas demais disciplinas.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 2, "concordo": 5, "total": 8}, "CP": {"discordo": 6, "neutro": 3, "concordo": 2, "total": 11}, "SC": {"discordo": 8, "neutro": 4, "concordo": 7, "total": 19}}}, {"seq": 22, "col": 28, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [Tive a sensação de que o volume de trabalho/estudo necessário nas disciplinas de Algoritmos I e MI de Algoritmos foi excessivo.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 3, "neutro": 4, "concordo": 4, "total": 11}, "SC": {"discordo": 9, "neutro": 4, "concordo": 6, "total": 19}}}, {"seq": 23, "col": 29, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O nível de exigência nas disciplinas é condizente com o que se espera para um curso de Engenharia de Computação.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 2, "neutro": 2, "concordo": 7, "total": 11}, "SC": {"discordo": 6, "neutro": 7, "concordo": 6, "total": 19}}}, {"seq": 24, "col": 30, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [Considero que ter uma base sólida de programação antes de ingressar no curso é um fator determinante para o rendimento acadêmico geral no 1º semestre.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 0, "concordo": 8, "total": 8}, "CP": {"discordo": 0, "neutro": 4, "concordo": 7, "total": 11}, "SC": {"discordo": 1, "neutro": 0, "concordo": 18, "total": 19}}}, {"seq": 25, "col": 31, "bloco": "Gestão do tempo", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia o impacto da carga horária de Programação no seu desempenho geral?   [O tempo gasto tentando entender a sintaxe da linguagem (Python) foi maior do que o tempo gasto pensando na solução lógica do problema.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 5, "neutro": 2, "concordo": 1, "total": 8}, "CP": {"discordo": 10, "neutro": 1, "concordo": 0, "total": 11}, "SC": {"discordo": 1, "neutro": 1, "concordo": 17, "total": 19}}}, {"seq": 26, "col": 33, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei ferramentas de IA principalmente para gerar códigos inteiros que eu não conseguia resolver por conta própria.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 7, "neutro": 0, "concordo": 1, "total": 8}, "CP": {"discordo": 1, "neutro": 5, "concordo": 5, "total": 11}, "SC": {"discordo": 8, "neutro": 6, "concordo": 5, "total": 19}}}, {"seq": 27, "col": 34, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei a IA como um suporte para \"debugar\" (encontrar erros), explicar mensagens de erro ou realizar tarefas repetitivas, mantendo o controle da lógica.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 0, "neutro": 3, "concordo": 8, "total": 11}, "SC": {"discordo": 3, "neutro": 8, "concordo": 8, "total": 19}}}, {"seq": 28, "col": 35, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Me senti confiante para criticar, validar e corrigir os códigos ou sugestões gerados pela IA quando eles estavam incorretos.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 3, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 2, "concordo": 5, "total": 11}, "SC": {"discordo": 7, "neutro": 5, "concordo": 7, "total": 19}}}, {"seq": 29, "col": 36, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei ferramentas de IA como recurso para adequar meu ritmo de aprendizado ao nível de exigência ou ao progresso da turma.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 2, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 5, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 7, "concordo": 5, "total": 19}}}, {"seq": 30, "col": 37, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Sinto que o uso frequente da IA acabou prejudicando meu desenvolvimento da base lógica e do raciocínio algorítmico.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 5, "neutro": 2, "concordo": 1, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 9, "neutro": 5, "concordo": 5, "total": 19}}}, {"seq": 31, "col": 38, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei mais ferramentas de IA para disciplinas teóricas (Cálculo/Eletrônica) do que para o MI de Algoritmos.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 5, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 7, "neutro": 9, "concordo": 3, "total": 19}}}, {"seq": 32, "col": 39, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Utilizei a IA para traduzir problemas escritos em linguagem natural para código, sem necessariamente compreender todas as etapas da conversão.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 7, "neutro": 0, "concordo": 1, "total": 8}, "CP": {"discordo": 7, "neutro": 2, "concordo": 2, "total": 11}, "SC": {"discordo": 15, "neutro": 2, "concordo": 2, "total": 19}}}, {"seq": 33, "col": 40, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Sinto que os códigos que entregamos no MI de Algoritmos não representam bem nosso conhecimento devido ao uso de IAs.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 5, "neutro": 1, "concordo": 2, "total": 8}, "CP": {"discordo": 2, "neutro": 5, "concordo": 4, "total": 11}, "SC": {"discordo": 9, "neutro": 4, "concordo": 6, "total": 19}}}, {"seq": 34, "col": 41, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Acredito que não é preciso saber tantos detalhes para ser um bom profissional, basta saber usar bem as IAs.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 7, "neutro": 1, "concordo": 0, "total": 8}, "CP": {"discordo": 10, "neutro": 1, "concordo": 0, "total": 11}, "SC": {"discordo": 18, "neutro": 0, "concordo": 1, "total": 19}}}, {"seq": 35, "col": 42, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Eu teria aprendido mais se não tivesse usado IAs generativas para fazer meu MI.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 3, "concordo": 1, "total": 8}, "CP": {"discordo": 5, "neutro": 2, "concordo": 4, "total": 11}, "SC": {"discordo": 8, "neutro": 6, "concordo": 5, "total": 19}}}, {"seq": 36, "col": 43, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Se eu tivesse procrastinado menos, dependeria menos das IAs.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 4, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 10, "neutro": 3, "concordo": 6, "total": 19}}}, {"seq": 37, "col": 44, "bloco": "Uso de IA", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como voce avalia seu uso de IA (ChatGPT, Claude, etc.) durante a disciplina? [Apenas tendo IAs como ferramenta de produtividade é possível dar conta de todo o volume de afazeres durante a graduação.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 2, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 2, "concordo": 6, "total": 11}, "SC": {"discordo": 8, "neutro": 7, "concordo": 4, "total": 19}}}, {"seq": 38, "col": 45, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto-me capaz de decompor um problema complexo em partes menores e resolvê-las logicamente, independentemente da linguagem de programação.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 2, "neutro": 2, "concordo": 7, "total": 11}, "SC": {"discordo": 4, "neutro": 8, "concordo": 7, "total": 19}}}, {"seq": 39, "col": 46, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Consigo ler e compreender códigos escritos por outras pessoas, identificando sua lógica e possíveis erros.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 3, "concordo": 7, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}}, {"seq": 40, "col": 47, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Minha confiança para enfrentar problemas técnicos novos e desconhecidos aumentou significativamente ao longo deste semestre.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 7, "concordo": 3, "total": 11}, "SC": {"discordo": 4, "neutro": 8, "concordo": 7, "total": 19}}}, {"seq": 41, "col": 48, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [A metodologia PBL contribuiu para que eu melhorasse minha capacidade de trabalhar em equipe e colaborar com pessoas de diferentes níveis de conhecimento.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 1, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 9, "concordo": 1, "total": 11}, "SC": {"discordo": 4, "neutro": 5, "concordo": 10, "total": 19}}}, {"seq": 42, "col": 49, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto que melhorei minha comunicação interpessoal ao ter que explicar e defender minhas soluções técnicas para o grupo ou para os professores.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 3, "concordo": 4, "total": 8}, "CP": {"discordo": 1, "neutro": 7, "concordo": 3, "total": 11}, "SC": {"discordo": 5, "neutro": 9, "concordo": 5, "total": 19}}}, {"seq": 43, "col": 50, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Desenvolvi uma melhor gestão de conflitos e negociação ao lidar com divergências de opiniões dentro das sessões tutoriais.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 1, "neutro": 4, "concordo": 3, "total": 8}, "CP": {"discordo": 8, "neutro": 3, "concordo": 0, "total": 11}, "SC": {"discordo": 13, "neutro": 6, "concordo": 0, "total": 19}}}, {"seq": 44, "col": 51, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [Sinto-me mais preparado(a) para buscar novos conhecimentos por conta própria (autodidatismo) do que quando iniciei o curso.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 0, "neutro": 4, "concordo": 7, "total": 11}, "SC": {"discordo": 4, "neutro": 4, "concordo": 11, "total": 19}}}, {"seq": 45, "col": 52, "bloco": "Competências", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), avalie as seguintes afirmações:   [A experiência deste semestre me deu uma visão clara das responsabilidades e da postura esperada de um estudante de Engenharia de Computação.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 2, "neutro": 3, "concordo": 6, "total": 11}, "SC": {"discordo": 6, "neutro": 2, "concordo": 11, "total": 19}}}, {"seq": 46, "col": 53, "bloco": "Integração social", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Assumi, frequentemente, um papel de \"mentor(a)\" informal, ajudando colegas com mais dificuldade nas listas e projetos.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 3, "neutro": 1, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 14, "neutro": 2, "concordo": 3, "total": 19}}}, {"seq": 47, "col": 54, "bloco": "Integração social", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Senti que a turma era colaborativa e que os colegas com mais experiência tinham paciência e abertura para ensinar.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 5, "neutro": 9, "concordo": 5, "total": 19}}}, {"seq": 48, "col": 55, "bloco": "Integração social", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Evitava dar opiniões ou sugerir soluções nas sessões tutoriais por medo de errar ou parecer \"atrasado(a)\" diante de colegas experientes.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 5, "neutro": 3, "concordo": 3, "total": 11}, "SC": {"discordo": 4, "neutro": 7, "concordo": 8, "total": 19}}}, {"seq": 49, "col": 56, "bloco": "Integração social", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [Me sentia inseguro durante as sessões tutoriais.]", "sentido": "−", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "nao_aplica": [], "counts": {"EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 3, "neutro": 7, "concordo": 9, "total": 19}}}, {"seq": 50, "col": 57, "bloco": "Integração social", "header": "Em uma escala de 1 (Discordo Totalmente) a 5 (Concordo Totalmente), como você avalia  a colaboração e o ambiente social da sua turma ? [As sessões tutorais foram fundamentais para o desenvolvimento do problema.]", "sentido": "+", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "nao_aplica": [], "counts": {"EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 1, "neutro": 4, "concordo": 6, "total": 11}, "SC": {"discordo": 5, "neutro": 6, "concordo": 8, "total": 19}}}];
+const fmtCelula = (n, t) => t > 0 ? `${n} (${(n / t * 100).toFixed(0)}%)` : 'Não se aplica';
+
+function slugify(text) {
+    return text.toString().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '_')
+        .replace(/[^\w\-]+/g, '');
+}
+
+const listContainer = document.getElementById('questions-list');
+let currentBloco = '';
+
+PERGUNTAS.forEach((q, idx) => {
+    if (q.bloco !== currentBloco) {
+        currentBloco = q.bloco;
+        const anchor = document.createElement('div');
+        anchor.id = 'bloco_' + slugify(currentBloco);
+        listContainer.appendChild(anchor);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q_card_${q.col}`;
+
+    const totalDiscordo = q.counts.EG.discordo + q.counts.CP.discordo + q.counts.SC.discordo;
+    const totalNeutro   = q.counts.EG.neutro   + q.counts.CP.neutro   + q.counts.SC.neutro;
+    const totalConcordo = q.counts.EG.concordo + q.counts.CP.concordo + q.counts.SC.concordo;
+    const totalGeral    = totalDiscordo + totalNeutro + totalConcordo;
+
+    const subgruposInfo = [
+        { key: 'EG', ordem: '1º Segmento', nome: 'Egressos da UCE (EG)', n: q.counts.EG.total },
+        { key: 'CP', ordem: '2º Segmento', nome: 'Conhecimento Prévio (CP)', n: q.counts.CP.total },
+        { key: 'SC', ordem: '3º Segmento', nome: 'Sem Conhecimento Prévio (SC)', n: q.counts.SC.total },
+    ];
+
+    let segmentsHtml = '';
+    subgruposInfo.forEach(sg => {
+        const c = q.counts[sg.key];
+        const tot = c.total > 0 ? c.total : 1;
+        const pDisc = (c.discordo / tot * 100);
+        const pNeut = (c.neutro / tot * 100);
+        const pConc = (c.concordo / tot * 100);
+
+        const corDisc = q.cores.discordo;
+        const corNeut = q.cores.neutro;
+        const corConc = q.cores.concordo;
+
+        if (q.nao_aplica.includes(sg.key)) {
+            segmentsHtml += `
+                <div class="segment-row">
+                    <div class="segment-header"><span class="segment-title">${sg.ordem}: ${sg.nome}</span></div>
+                    <div class="stacked-bar"><div class="bar-slice light-bg" style="width:100%; background:#e2e8f0;">Não se aplica</div></div>
+                </div>
+            `;
+            return;
+        }
+
+        segmentsHtml += `
+            <div class="segment-row">
+                <div class="segment-header">
+                    <span class="segment-title">${sg.ordem}: ${sg.nome}</span>
+                    <span class="segment-meta">Amostra: n = ${c.total}</span>
+                </div>
+                <div class="stacked-bar">
+                    ${c.discordo > 0 ? `
+                        <div class="bar-slice ${q.sentido === '0' ? 'light-bg' : ''}" style="width:${pDisc}%; background:${corDisc};" title="${sg.key} Discordo: ${c.discordo} (${pDisc.toFixed(1)}%)">
+                            ${pDisc >= 8 ? `${c.discordo} (${pDisc.toFixed(0)}%)` : `${c.discordo}`}
+                        </div>
+                    ` : ''}
+                    ${c.neutro > 0 ? `
+                        <div class="bar-slice light-bg" style="width:${pNeut}%; background:${corNeut};" title="${sg.key} Neutro: ${c.neutro} (${pNeut.toFixed(1)}%)">
+                            ${pNeut >= 8 ? `${c.neutro} (${pNeut.toFixed(0)}%)` : `${c.neutro}`}
+                        </div>
+                    ` : ''}
+                    ${c.concordo > 0 ? `
+                        <div class="bar-slice ${q.sentido === '0' ? 'light-bg' : ''}" style="width:${pConc}%; background:${corConc};" title="${sg.key} Concordo: ${c.concordo} (${pConc.toFixed(1)}%)">
+                            ${pConc >= 8 ? `${c.concordo} (${pConc.toFixed(0)}%)` : `${c.concordo}`}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    });
+
+    card.innerHTML = `
+        <div class="question-header">
+            <div class="question-meta">
+                <span class="block-badge">${q.bloco}</span>
+                <span class="q-num">Pergunta ${idx + 1} de ${PERGUNTAS.length} (Coluna ${q.col})</span>
+            </div>
+            <h2 class="question-text">${q.header} <span style="color:#64748b;">(${q.sentido})</span></h2>
+        </div>
+
+        <div class="segments-container">
+            ${segmentsHtml}
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Subgrupo</th>
+                    <th>Discordo (1 e 2)</th>
+                    <th>Neutro (3)</th>
+                    <th>Concordo (4 e 5)</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>EG</strong> (Egressos UCE)</td>
+                    <td>${fmtCelula(q.counts.EG.discordo, q.counts.EG.total)}</td>
+                    <td>${fmtCelula(q.counts.EG.neutro, q.counts.EG.total)}</td>
+                    <td>${fmtCelula(q.counts.EG.concordo, q.counts.EG.total)}</td>
+                    <td><strong>${q.counts.EG.total}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>CP</strong> (Conhecimento Prévio)</td>
+                    <td>${fmtCelula(q.counts.CP.discordo, q.counts.CP.total)}</td>
+                    <td>${fmtCelula(q.counts.CP.neutro, q.counts.CP.total)}</td>
+                    <td>${fmtCelula(q.counts.CP.concordo, q.counts.CP.total)}</td>
+                    <td><strong>${q.counts.CP.total}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>SC</strong> (Sem Conhecimento)</td>
+                    <td>${fmtCelula(q.counts.SC.discordo, q.counts.SC.total)}</td>
+                    <td>${fmtCelula(q.counts.SC.neutro, q.counts.SC.total)}</td>
+                    <td>${fmtCelula(q.counts.SC.concordo, q.counts.SC.total)}</td>
+                    <td><strong>${q.counts.SC.total}</strong></td>
+                </tr>
+                <tr class="row-total">
+                    <td>Total Geral</td>
+                    <td>${totalDiscordo} (${(totalDiscordo / totalGeral * 100).toFixed(0)}%)</td>
+                    <td>${totalNeutro} (${(totalNeutro / totalGeral * 100).toFixed(0)}%)</td>
+                    <td>${totalConcordo} (${(totalConcordo / totalGeral * 100).toFixed(0)}%)</td>
+                    <td><strong>${totalGeral} (100%)</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+
+    listContainer.appendChild(card);
+});
+</script>
+</body>
+</html>

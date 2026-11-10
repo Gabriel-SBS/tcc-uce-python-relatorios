@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatórios do G2 — UCE Python</title>
+<style>
+  :root { --bg: #f8fafc; --fg: #0f172a; --muted: #475569; --card: #ffffff; --line: #e2e8f0; --link: #1d4ed8; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f172a; --fg: #e2e8f0; --muted: #94a3b8; --card: #1e293b; --line: #334155; --link: #93c5fd; }
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 56px; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; }
+  p { color: var(--muted); margin: 0 0 24px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  li a { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; color: var(--link); text-decoration: none; font-weight: 600; }
+  li a span { display: block; color: var(--muted); font-weight: 400; font-size: .92rem; margin-top: 2px; }
+  li a:hover { border-color: var(--link); }
+  footer { margin-top: 32px; font-size: .85rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Relatórios do Questionário 2 (G2)</h1>
+  <p>Material complementar do artigo “Análise Trilateral do Impacto da UCE ‘Ensino de Programação em Python’:
+  Percepções de Mentores, Alunos Egressos e Professores” (Engenharia de Computação, UEFS). Respostas de 38
+  discentes, agregadas por subgrupo: egressos da UCE (EG, n = 8), com conhecimento prévio (CP, n = 11) e sem
+  conhecimento prévio (SC, n = 19).</p>
+  <ul>
+    <li><a href="relatorio_graficos_barras_resumido.html">Gráficos por tema<span>Os 50 itens Likert em seis temas, com sinal (+/−) e cores por sentido da resposta</span></a></li>
+    <li><a href="relatorio_graficos_barras.html">Gráficos de barras por item<span>Distribuição de cada item por subgrupo</span></a></li>
+    <li><a href="relatorio_graficos_pizza.html">Gráficos de pizza por item<span>A mesma distribuição em formato de pizza</span></a></li>
+    <li><a href="graficos_egressos.html">Egressos da UCE<span>Recorte do subgrupo EG</span></a></li>
+    <li><a href="Anexo_Questoes_G2_Dicionario.csv">Dicionário das questões (CSV)<span>Enunciado integral de cada item e o tema a que pertence</span></a></li>
+  </ul>
+  <footer>Gabriel Sena Barbosa Silva e Pâmela Michele Cândida Cortez — UEFS, 2026. Dados anonimizados e agregados, conforme protocolo aprovado pelo CEP/UEFS.</footer>
+</main>
+</body>
+</html>

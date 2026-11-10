@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Respostas por Subgrupo (G2 - Discentes)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --eg-color: #1e7e34;
+            --cp-color: #28a745;
+            --sc-color: #64748b;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px;
+        }
+        .header {
+            max-width: 1280px;
+            margin: 0 auto 24px auto;
+            background: var(--bg-card);
+            padding: 24px 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            color: #0f172a;
+        }
+        .header p {
+            margin: 0 0 16px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .legend-card {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+        .nav-tabs {
+            max-width: 1280px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+        .card-badge {
+            font-size: 12px;
+            background: #e2e8f0;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
+        .pizzas-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border);
+        }
+        .pizza-col {
+            text-align: center;
+        }
+        .pizza-col h4 {
+            font-size: 13px;
+            margin: 0 0 8px 0;
+            color: var(--text-muted);
+        }
+        .pizza-wrapper {
+            position: relative;
+            height: 140px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Questionário dos Discentes (G2) — Análise por Subgrupo</h1>
+    <p>Vermelho indica <strong>dificuldade</strong>, verde indica <strong>facilidade</strong> e amarelo indica <strong>neutro</strong>. Subgrupos: <strong>EG</strong> (Egressos UCE, n=8), <strong>CP</strong> (Conhecimento Prévio, n=11) e <strong>SC</strong> (Sem Conhecimento Prévio, n=19).</p>
+
+    <div class="legend-card">
+        <div class="legend-item"><span class="badge" style="background:#e53935;"></span> <strong>Dificuldade</strong></div>
+        <div class="legend-item"><span class="badge" style="background:#fbc02d;"></span> <strong>Neutro (3)</strong></div>
+        <div class="legend-item"><span class="badge" style="background:#2e7d32;"></span> <strong>Facilidade</strong></div>
+        <span>Itens (+): concordar indica facilidade  |  Itens (−): concordar indica dificuldade</span>
+    </div>
+</div>
+
+<div class="nav-tabs" id="tabs"></div>
+<div class="container"><div class="grid" id="charts-grid"></div></div>
+
+<script>
+const DADOS = {"Adaptação": {"7": {"item": "Ritmo de Algoritmos I rápido demais (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 3, "concordo": 4, "total": 11}, "SC": {"discordo": 7, "neutro": 7, "concordo": 5, "total": 19}}, "8": {"item": "Desempenho seria melhor com hábito de estudo (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 5, "neutro": 3, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}, "9": {"item": "Conhecimento prévio levou a negligenciar a teoria (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": ["SC"], "EG": {"discordo": 3, "neutro": 4, "concordo": 1, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 0, "neutro": 0, "concordo": 0, "total": 0}}, "10": {"item": "Entendia na sessão, mas ``travava'' sozinho (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 5, "neutro": 1, "concordo": 2, "total": 8}, "CP": {"discordo": 7, "neutro": 1, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}, "11": {"item": "Dificuldade com padrões de documentação (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": ["SC"], "EG": {"discordo": 2, "neutro": 6, "concordo": 0, "total": 8}, "CP": {"discordo": 2, "neutro": 5, "concordo": 4, "total": 11}, "SC": {"discordo": 0, "neutro": 0, "concordo": 0, "total": 0}}, "12": {"item": "Dificuldade de adaptação ao PBL (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 3, "neutro": 3, "concordo": 2, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 8, "neutro": 7, "concordo": 4, "total": 19}}, "13": {"item": "Confortável em debater e explicar código (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 1, "concordo": 5, "total": 8}, "CP": {"discordo": 2, "neutro": 4, "concordo": 5, "total": 11}, "SC": {"discordo": 9, "neutro": 5, "concordo": 5, "total": 19}}, "14": {"item": "Identificava o que estudar para o MI (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 2, "concordo": 5, "total": 8}, "CP": {"discordo": 1, "neutro": 3, "concordo": 7, "total": 11}, "SC": {"discordo": 5, "neutro": 5, "concordo": 9, "total": 19}}, "15": {"item": "PBL mais eficaz que aulas expositivas (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 1, "concordo": 6, "total": 8}, "CP": {"discordo": 0, "neutro": 7, "concordo": 4, "total": 11}, "SC": {"discordo": 6, "neutro": 3, "concordo": 10, "total": 19}}, "16": {"item": "Dediquei-me bastante aos estudos (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 2, "concordo": 4, "total": 8}, "CP": {"discordo": 3, "neutro": 1, "concordo": 7, "total": 11}, "SC": {"discordo": 7, "neutro": 3, "concordo": 9, "total": 19}}}, "Dinâmica de grupo": {"17": {"item": "Troca com colegas foi essencial (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 0, "neutro": 2, "concordo": 9, "total": 11}, "SC": {"discordo": 5, "neutro": 3, "concordo": 11, "total": 19}}, "18": {"item": "PBL exigiu comunicação que eu não dominava (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 4, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 5, "neutro": 4, "concordo": 10, "total": 19}}, "19": {"item": "Grupo funcionou de forma equilibrada (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 6, "concordo": 0, "total": 8}, "CP": {"discordo": 4, "neutro": 6, "concordo": 1, "total": 11}, "SC": {"discordo": 4, "neutro": 10, "concordo": 5, "total": 19}}, "20": {"item": "Assumi papel de orientar/liderar (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 3, "neutro": 1, "concordo": 4, "total": 8}, "CP": {"discordo": 5, "neutro": 5, "concordo": 1, "total": 11}, "SC": {"discordo": 15, "neutro": 1, "concordo": 3, "total": 19}}, "21": {"item": "Receio de expor dúvidas no grupo (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 2, "neutro": 3, "concordo": 6, "total": 11}, "SC": {"discordo": 5, "neutro": 7, "concordo": 7, "total": 19}}, "22": {"item": "Grupo me via como referência técnica (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 2, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 12, "neutro": 4, "concordo": 3, "total": 19}}, "23": {"item": "Segui lógica de colega por falta de confiança (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 3, "concordo": 4, "total": 11}, "SC": {"discordo": 5, "neutro": 3, "concordo": 11, "total": 19}}, "24": {"item": "Disparidade técnica gerou desequilíbrio (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 0, "neutro": 2, "concordo": 9, "total": 11}, "SC": {"discordo": 1, "neutro": 3, "concordo": 15, "total": 19}}, "25": {"item": "Explicar a colegas consolidou meu entendimento (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 3, "neutro": 7, "concordo": 1, "total": 11}, "SC": {"discordo": 12, "neutro": 4, "concordo": 3, "total": 19}}}, "Gestão do tempo": {"26": {"item": "Programação reduziu tempo para Cálculo/Eletrônica (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 3, "neutro": 4, "concordo": 4, "total": 11}, "SC": {"discordo": 7, "neutro": 5, "concordo": 7, "total": 19}}, "27": {"item": "Dificuldade em uma disciplina afetou as demais (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 2, "concordo": 5, "total": 8}, "CP": {"discordo": 6, "neutro": 3, "concordo": 2, "total": 11}, "SC": {"discordo": 8, "neutro": 4, "concordo": 7, "total": 19}}, "28": {"item": "Volume de Algoritmos I e MI foi excessivo (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 2, "neutro": 3, "concordo": 3, "total": 8}, "CP": {"discordo": 3, "neutro": 4, "concordo": 4, "total": 11}, "SC": {"discordo": 9, "neutro": 4, "concordo": 6, "total": 19}}, "29": {"item": "Exigência condizente com Eng. de Computação (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 2, "neutro": 2, "concordo": 7, "total": 11}, "SC": {"discordo": 6, "neutro": 7, "concordo": 6, "total": 19}}, "30": {"item": "Base prévia é determinante no 1º semestre (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 0, "concordo": 8, "total": 8}, "CP": {"discordo": 0, "neutro": 4, "concordo": 7, "total": 11}, "SC": {"discordo": 1, "neutro": 0, "concordo": 18, "total": 19}}, "31": {"item": "Mais tempo com sintaxe do que com lógica (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 5, "neutro": 2, "concordo": 1, "total": 8}, "CP": {"discordo": 10, "neutro": 1, "concordo": 0, "total": 11}, "SC": {"discordo": 1, "neutro": 1, "concordo": 17, "total": 19}}}, "Uso de IA": {"33": {"item": "Gerei códigos inteiros que não resolveria (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 7, "neutro": 0, "concordo": 1, "total": 8}, "CP": {"discordo": 1, "neutro": 5, "concordo": 5, "total": 11}, "SC": {"discordo": 8, "neutro": 6, "concordo": 5, "total": 19}}, "34": {"item": "Usei IA para depurar, mantendo a lógica (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 0, "neutro": 3, "concordo": 8, "total": 11}, "SC": {"discordo": 3, "neutro": 8, "concordo": 8, "total": 19}}, "35": {"item": "Confiante para criticar e corrigir a IA (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 3, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 2, "concordo": 5, "total": 11}, "SC": {"discordo": 7, "neutro": 5, "concordo": 7, "total": 19}}, "36": {"item": "Usei IA para acompanhar o ritmo da turma (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 2, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 5, "concordo": 3, "total": 11}, "SC": {"discordo": 7, "neutro": 7, "concordo": 5, "total": 19}}, "37": {"item": "Uso frequente prejudicou minha base lógica (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 5, "neutro": 2, "concordo": 1, "total": 8}, "CP": {"discordo": 4, "neutro": 4, "concordo": 3, "total": 11}, "SC": {"discordo": 9, "neutro": 5, "concordo": 5, "total": 19}}, "38": {"item": "Usei mais IA nas teóricas do que no MI (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 5, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 7, "neutro": 9, "concordo": 3, "total": 19}}, "39": {"item": "Traduzi enunciado em código sem compreender (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 7, "neutro": 0, "concordo": 1, "total": 8}, "CP": {"discordo": 7, "neutro": 2, "concordo": 2, "total": 11}, "SC": {"discordo": 15, "neutro": 2, "concordo": 2, "total": 19}}, "40": {"item": "Códigos do MI não representam nosso saber (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 5, "neutro": 1, "concordo": 2, "total": 8}, "CP": {"discordo": 2, "neutro": 5, "concordo": 4, "total": 11}, "SC": {"discordo": 9, "neutro": 4, "concordo": 6, "total": 19}}, "41": {"item": "Basta saber usar bem as IAs (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 7, "neutro": 1, "concordo": 0, "total": 8}, "CP": {"discordo": 10, "neutro": 1, "concordo": 0, "total": 11}, "SC": {"discordo": 18, "neutro": 0, "concordo": 1, "total": 19}}, "42": {"item": "Teria aprendido mais sem IA no MI (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 3, "concordo": 1, "total": 8}, "CP": {"discordo": 5, "neutro": 2, "concordo": 4, "total": 11}, "SC": {"discordo": 8, "neutro": 6, "concordo": 5, "total": 19}}, "43": {"item": "Procrastinando menos, dependeria menos da IA (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 4, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 10, "neutro": 3, "concordo": 6, "total": 19}}, "44": {"item": "Só com IA dá para dar conta do volume (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 2, "concordo": 2, "total": 8}, "CP": {"discordo": 3, "neutro": 2, "concordo": 6, "total": 11}, "SC": {"discordo": 8, "neutro": 7, "concordo": 4, "total": 19}}}, "Competências": {"45": {"item": "Decompor problemas complexos (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 2, "neutro": 2, "concordo": 7, "total": 11}, "SC": {"discordo": 4, "neutro": 8, "concordo": 7, "total": 19}}, "46": {"item": "Ler e compreender código alheio (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 3, "concordo": 7, "total": 11}, "SC": {"discordo": 7, "neutro": 6, "concordo": 6, "total": 19}}, "47": {"item": "Confiança diante de problemas novos aumentou (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 7, "concordo": 3, "total": 11}, "SC": {"discordo": 4, "neutro": 8, "concordo": 7, "total": 19}}, "48": {"item": "PBL melhorou o trabalho em equipe (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 1, "concordo": 6, "total": 8}, "CP": {"discordo": 1, "neutro": 9, "concordo": 1, "total": 11}, "SC": {"discordo": 4, "neutro": 5, "concordo": 10, "total": 19}}, "49": {"item": "Comunicação interpessoal melhorou (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 3, "concordo": 4, "total": 8}, "CP": {"discordo": 1, "neutro": 7, "concordo": 3, "total": 11}, "SC": {"discordo": 5, "neutro": 9, "concordo": 5, "total": 19}}, "50": {"item": "Gestão de conflitos melhorou (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 1, "neutro": 4, "concordo": 3, "total": 8}, "CP": {"discordo": 8, "neutro": 3, "concordo": 0, "total": 11}, "SC": {"discordo": 13, "neutro": 6, "concordo": 0, "total": 19}}, "51": {"item": "Mais preparado para o autodidatismo (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 3, "concordo": 5, "total": 8}, "CP": {"discordo": 0, "neutro": 4, "concordo": 7, "total": 11}, "SC": {"discordo": 4, "neutro": 4, "concordo": 11, "total": 19}}, "52": {"item": "Visão clara da postura esperada (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 2, "neutro": 3, "concordo": 6, "total": 11}, "SC": {"discordo": 6, "neutro": 2, "concordo": 11, "total": 19}}}, "Integração social": {"53": {"item": "Atuei como ``mentor'' informal (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 3, "neutro": 1, "concordo": 4, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 14, "neutro": 2, "concordo": 3, "total": 19}}, "54": {"item": "Turma colaborativa e paciente (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 2, "concordo": 6, "total": 8}, "CP": {"discordo": 3, "neutro": 6, "concordo": 2, "total": 11}, "SC": {"discordo": 5, "neutro": 9, "concordo": 5, "total": 19}}, "55": {"item": "Evitava opinar por medo de errar (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 5, "neutro": 3, "concordo": 3, "total": 11}, "SC": {"discordo": 4, "neutro": 7, "concordo": 8, "total": 19}}, "56": {"item": "Sentia-me inseguro nas sessões (−)", "cores": {"discordo": "#2e7d32", "neutro": "#fbc02d", "concordo": "#e53935"}, "negativo": true, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 4, "neutro": 1, "concordo": 3, "total": 8}, "CP": {"discordo": 4, "neutro": 5, "concordo": 2, "total": 11}, "SC": {"discordo": 3, "neutro": 7, "concordo": 9, "total": 19}}, "57": {"item": "Sessões tutoriais foram fundamentais (+)", "cores": {"discordo": "#e53935", "neutro": "#fbc02d", "concordo": "#2e7d32"}, "negativo": false, "sem_sentido": false, "nao_aplica": [], "EG": {"discordo": 0, "neutro": 1, "concordo": 7, "total": 8}, "CP": {"discordo": 1, "neutro": 4, "concordo": 6, "total": 11}, "SC": {"discordo": 5, "neutro": 6, "concordo": 8, "total": 19}}}};
+
+let blocoAtivo = Object.keys(DADOS)[0];
+
+function renderTabs() {
+    const tabsContainer = document.getElementById('tabs');
+    tabsContainer.innerHTML = '';
+    Object.keys(DADOS).forEach(bloco => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (bloco === blocoAtivo ? ' active' : '');
+        btn.innerText = bloco;
+        btn.onclick = () => {
+            blocoAtivo = bloco;
+            renderTabs();
+            renderCharts();
+        };
+        tabsContainer.appendChild(btn);
+    });
+}
+
+function renderCharts() {
+    const grid = document.getElementById('charts-grid');
+    grid.innerHTML = '';
+    const itens = DADOS[blocoAtivo];
+
+    Object.entries(itens).forEach(([col, d], idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="card-header">
+                <h3 class="card-title">${d.item}</h3>
+                <span class="card-badge">Item ${col}</span>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="bar_${col}"></canvas>
+            </div>
+            <div class="pizzas-row">
+                <div class="pizza-col">
+                    <h4>EG (n=8)</h4>
+                    <div class="pizza-wrapper"><canvas id="pie_EG_${col}"></canvas></div>
+                </div>
+                <div class="pizza-col">
+                    <h4>CP (n=11)</h4>
+                    <div class="pizza-wrapper"><canvas id="pie_CP_${col}"></canvas></div>
+                </div>
+                <div class="pizza-col">
+                    <h4>SC (n=${d.nao_aplica.includes("SC") ? "—, não se aplica" : 19})</h4>
+                    <div class="pizza-wrapper"><canvas id="pie_SC_${col}"></canvas></div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+
+        // Chart de Barras Empilhadas Triplas
+        const ctxBar = document.getElementById(`bar_${col}`).getContext('2d');
+        const sgs = ['EG', 'CP', 'SC'];
+        
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['EG (n=8)', 'CP (n=11)', d.nao_aplica.includes('SC') ? 'SC (não se aplica)' : 'SC (n=19)'],
+                datasets: [
+                    {
+                        label: 'Discordo',
+                        data: sgs.map(sg => d[sg].total ? (d[sg].discordo / d[sg].total * 100).toFixed(1) : 0),
+                        rawCounts: sgs.map(sg => d[sg].discordo),
+                        backgroundColor: d.cores.discordo,
+                    },
+                    {
+                        label: 'Neutro',
+                        data: sgs.map(sg => d[sg].total ? (d[sg].neutro / d[sg].total * 100).toFixed(1) : 0),
+                        rawCounts: sgs.map(sg => d[sg].neutro),
+                        backgroundColor: d.cores.neutro,
+                    },
+                    {
+                        label: 'Concordo',
+                        data: sgs.map(sg => d[sg].total ? (d[sg].concordo / d[sg].total * 100).toFixed(1) : 0),
+                        rawCounts: sgs.map(sg => d[sg].concordo),
+                        backgroundColor: d.cores.concordo,
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, max: 100, title: { display: true, text: 'Percentual (%)' } },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const cnt = ctx.dataset.rawCounts[ctx.dataIndex];
+                                return `${ctx.dataset.label}: ${cnt} discente(s) (${ctx.raw}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráficos de Pizza/Rosca
+        sgs.forEach(sg => {
+            const ctxPie = document.getElementById(`pie_${sg}_${col}`).getContext('2d');
+            new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Discordo', 'Neutro', 'Concordo'],
+                    datasets: [{
+                        data: [d[sg].discordo, d[sg].neutro, d[sg].concordo],
+                        backgroundColor: [d.cores.discordo, d.cores.neutro, d.cores.concordo],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const total = d[sg].total;
+                                    const val = ctx.raw;
+                                    const pct = ((val / total) * 100).toFixed(0);
+                                    return `${ctx.label}: ${val} (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+}
+
+renderTabs();
+renderCharts();
+</script>
+</body>
+</html>
