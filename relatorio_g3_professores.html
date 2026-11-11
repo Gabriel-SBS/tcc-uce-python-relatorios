@@ -124,9 +124,7 @@ justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-si
 
 const C3 = {d:'#e53935', n:'#fbc02d', c:'#2e7d32'};
 const C5 = ['#b71c1c','#fb8c00','#fdd835','#81c784','#2e7d32'];
-const IA3 = {d:'#64748b', n:'#fbc02d', c:'#1d4ed8'};
-const IA5 = ['#334155','#94a3b8','#fbc02d','#93c5fd','#1d4ed8'];
-const CLAROS = ['#fbc02d','#fdd835','#81c784','#93c5fd','#94a3b8'];
+const CLAROS = ['#fbc02d','#fdd835','#81c784'];
 const ROT5 = ['1: Discordo totalmente','2: Discordo parcialmente','3: Neutro','4: Concordo parcialmente','5: Concordo totalmente'];
 const est = {escala:'3cat', rotulo:'pct', bloco:'Todos', busca:''};
 
@@ -136,17 +134,17 @@ function texto(k, n){ const p = n ? 100*k/n : 0;
   return p>=9 ? p.toFixed(0)+'%' : ''; }
 function fatia(k, n, cor, rot){ if (!k) return ''; const p = 100*k/n;
   return `<div class="bar-slice" style="width:${p.toFixed(2)}%;background:${cor};color:${CLAROS.includes(cor)?'#1a1a1a':'#fff'}" title="${rot}: ${k} de ${n} (${p.toFixed(1)}%)">${texto(k,n)}</div>`; }
-function barra(v, n, neg, ia){
+function barra(v, n, neg){
   let h = '';
   if (est.escala==='3cat'){
     const d=v[0]+v[1], ne=v[2], c=v[3]+v[4];
-    const P = ia ? IA3 : C3;
-    const cd = ia ? P.d : (neg ? P.c : P.d), cc = ia ? P.c : (neg ? P.d : P.c);
-    const rd = ia ? 'Discorda' : (neg ? 'Discorda (favorável)' : 'Discorda (desfavorável)');
-    const rc = ia ? 'Concorda' : (neg ? 'Concorda (desfavorável)' : 'Concorda (favorável)');
+    const P = C3;
+    const cd = neg ? P.c : P.d, cc = neg ? P.d : P.c;
+    const rd = neg ? 'Discorda (favorável)' : 'Discorda (desfavorável)';
+    const rc = neg ? 'Concorda (desfavorável)' : 'Concorda (favorável)';
     h = fatia(d,n,cd,rd)+fatia(ne,n,P.n,'Neutro')+fatia(c,n,cc,rc);
   } else {
-    for (let i=0;i<5;i++){ const cor = ia ? IA5[i] : C5[neg ? 4-i : i]; h += fatia(v[i], n, cor, ROT5[i]); }
+    for (let i=0;i<5;i++){ const cor = C5[neg ? 4-i : i]; h += fatia(v[i], n, cor, ROT5[i]); }
   }
   return `<div class="bar-container">${h}</div>`;
 }
@@ -161,12 +159,12 @@ function renderLegenda(){
     : `<span class="legend-title">Escala Likert · nos itens (−) as cores são espelhadas</span><div class="legend-items">${pills(C5,ROT5)}</div>`;
   const ia = document.getElementById('legend-ia');
   if (ia) ia.innerHTML = est.escala==='3cat'
-    ? `<span class="legend-title">Bloco de opinião: as cores indicam concordância</span><div class="legend-items">${pills([IA3.d,IA3.n,IA3.c],['Discorda (1–2)','Neutro (3)','Concorda (4–5)'])}</div>`
-    : `<span class="legend-title">Bloco de opinião · escala Likert</span><div class="legend-items">${pills(IA5,ROT5)}</div>`;
+    ? `<span class="legend-title">Itens (+): concordar é favorável ao uso de IA | Itens (−): concordar é desfavorável</span><div class="legend-items">${pills([C3.d,C3.n,C3.c],['Desfavorável','Neutro (3)','Favorável'])}</div>`
+    : `<span class="legend-title">Escala Likert · nos itens (−) as cores são espelhadas</span><div class="legend-items">${pills(C5,ROT5)}</div>`;
 }
 
-function linhaItem(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo} (${it.neg?'−':'+'})</span></div></td><td class="td-bar">${barra(it.v,it.n,it.neg,false)}</td><td class="td-bar td-num">${media(it.v,it.n)}</td></tr>`; }
-function linhaIA(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo}</span></div></td><td class="td-bar">${barra(it.antes.v,it.antes.n,false,true)}</td><td class="td-bar">${barra(it.depois.v,it.depois.n,false,true)}</td></tr>`; }
+function linhaItem(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo} (${it.neg?'−':'+'})</span></div></td><td class="td-bar">${barra(it.v,it.n,it.neg)}</td><td class="td-bar td-num">${media(it.v,it.n)}</td></tr>`; }
+function linhaIA(it){ return `<tr class="question-row"><td class="td-question" title="${it.enunciado.replace(/"/g,'&quot;')}"><div class="question-cell-wrap"><span class="q-badge">${it.id}</span><span class="q-keyword">${it.rotulo} (${it.neg?'−':'+'})</span></div></td><td class="td-bar">${barra(it.antes.v,it.antes.n,it.neg)}</td><td class="td-bar">${barra(it.depois.v,it.depois.n,it.neg)}</td></tr>`; }
 const VAZIO = '<tr><td colspan="3" class="empty">Nenhum item encontrado.</td></tr>';
 
 function renderTabela(){
@@ -195,8 +193,8 @@ function baixarCSV(){
   const L = [['codigo','bloco','item','sinal','n','r1','r2','r3','r4','r5','media','enunciado']];
   for (const it of DADOS.itens) L.push([it.id,it.bloco,it.rotulo,it.neg?'-':'+',it.n,...it.v,media(it.v,it.n),it.enunciado]);
   for (const it of DADOS.ia){
-    L.push([it.id+'-antes','IA (antes)',it.rotulo,'',it.antes.n,...it.antes.v,media(it.antes.v,it.antes.n),it.enunciado]);
-    L.push([it.id+'-depois','IA (depois)',it.rotulo,'',it.depois.n,...it.depois.v,media(it.depois.v,it.depois.n),it.enunciado]); }
+    L.push([it.id+'-antes','IA (antes)',it.rotulo,it.neg?'-':'+',it.antes.n,...it.antes.v,media(it.antes.v,it.antes.n),it.enunciado]);
+    L.push([it.id+'-depois','IA (depois)',it.rotulo,it.neg?'-':'+',it.depois.n,...it.depois.v,media(it.depois.v,it.depois.n),it.enunciado]); }
   const csv = String.fromCharCode(0xFEFF) + L.map(l=>l.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   a.download = DADOS.arquivo; a.click();
