@@ -31,13 +31,32 @@
   background:none;box-shadow:none;margin:0;font-weight:600}
 .navtcc a:hover{background:#1e293b}
 .navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
+.navtcc .navtcc-dalt{margin-left:auto;display:flex;align-items:center;gap:8px}
+.navtcc button{font:inherit;color:#0f172a;background:#e2e8f0;border:0;border-radius:6px;padding:6px 11px;cursor:pointer}
+.navtcc button[aria-pressed=true]{background:#fbbf24}
+.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:12.5px}
+html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script){filter:url(#tcc-daltonismo)}
 </style>
-<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html" aria-current="page">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li></ul></nav>
+<svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="tcc-daltonismo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1.065420 -0.251138 0.316952 0 -0.131234  0.172219 0.758953 0.030938 0 0.037890  -0.399090 1.535197 -0.191053 0 0.054946  0 0 0 1 0"/></filter></svg>
+<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html" aria-current="page">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li><li class="navtcc-dalt"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span><button type="button" id="tcc-dalt-btn" aria-pressed="false" title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li></ul></nav>
+<script>
+(function(){
+  var K = 'tccDaltonismo', raiz = document.documentElement, b = document.getElementById('tcc-dalt-btn'), on = false;
+  function aplica(v){
+    raiz.classList.toggle('tcc-dalt', v);
+    if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? 'Modo daltonismo: ligado' : 'Modo daltonismo'; }
+  }
+  try { on = localStorage.getItem(K) === '1'; } catch (e) {}
+  aplica(on);
+  if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(K, on ? '1' : '0'); } catch (e) {} });
+})();
+</script>
 <!-- NAV-TCC:fim -->
 <main>
   <h1>Relatórios dos questionários</h1>
-  <p>Material complementar do artigo “Análise Trilateral do Impacto da UCE ‘Ensino de Programação em Python’:
-  Percepções de Mentores, Alunos Egressos e Professores” (Engenharia de Computação, UEFS). Respostas de 43
+  <p>Material complementar do artigo “Análise trilateral da UCE ‘Ensino de Programação em Python’:
+  percepções de mentores, ingressantes e docentes” (Engenharia de Computação, UEFS). Respostas de 43
   mentores (G1), 38 discentes (G2) e 2 docentes (G3). No G2, as respostas são agregadas por subgrupo: egressos
   da UCE (EG, n = 8), com conhecimento prévio (CP, n = 11) e sem conhecimento prévio (SC, n = 19).</p>
   <ul>
@@ -46,10 +65,10 @@
     <li><a href="relatorio_graficos_barras.html">Gráficos de barras por item<span>Distribuição de cada item por subgrupo</span></a></li>
     <li><a href="relatorio_graficos_pizza.html">Gráficos de pizza por item<span>A mesma distribuição em formato de pizza</span></a></li>
     <li><a href="graficos_egressos.html">Egressos da UCE<span>Recorte do subgrupo EG</span></a></li>
-    <li><a href="relatorio_g3_professores.html">G3 · Professores<span>Respostas dos docentes de Algoritmos e Programação I</span></a></li>
+    <li><a href="relatorio_g3_professores.html">G3 · Professores<span>Síntese das respostas dos dois docentes, sem dados por item, para preservar o anonimato</span></a></li>
     <li><a href="Anexo_Questoes_G2_Dicionario.csv">Dicionário das questões (CSV)<span>Enunciado integral de cada item e o tema a que pertence</span></a></li>
   </ul>
-  <footer>Gabriel Sena Barbosa Silva e Pâmela Michele Cândida Cortez — UEFS, 2026. Dados anonimizados e agregados, conforme protocolo aprovado pelo CEP/UEFS.</footer>
+  <footer>Gabriel Sena Barbosa Silva e Pâmela Michele Cândida Cortez, UEFS, 2026. Dados anonimizados e agregados, conforme protocolo aprovado pelo CEP/UEFS.</footer>
 </main>
 </body>
 </html>

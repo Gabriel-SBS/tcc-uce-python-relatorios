@@ -30,7 +30,43 @@ ESTILO = """<style>
   background:none;box-shadow:none;margin:0;font-weight:600}
 .navtcc a:hover{background:#1e293b}
 .navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
+.navtcc .navtcc-dalt{margin-left:auto;display:flex;align-items:center;gap:8px}
+.navtcc button{font:inherit;color:#0f172a;background:#e2e8f0;border:0;border-radius:6px;padding:6px 11px;cursor:pointer}
+.navtcc button[aria-pressed=true]{background:#fbbf24}
+.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:12.5px}
+html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script){filter:url(#tcc-daltonismo)}
 </style>"""
+
+# Modo daltonismo: um filtro de cor aplicado a toda a página (tabelas, gráficos em canvas e imagens).
+# É uma transformação afim em sRGB calculada para levar vermelho #e53935 -> laranja #d55e00,
+# verde #2e7d32 -> azul #0072b2, amarelo #fbc02d -> cinza #c8c8c8 e branco -> branco; o texto escuro
+# continua escuro. Laranja e azul são distinguíveis nos tipos mais comuns de daltonismo.
+MATRIZ_DALTONISMO = ("1.065420 -0.251138 0.316952 0 -0.131234  "
+                     "0.172219 0.758953 0.030938 0 0.037890  "
+                     "-0.399090 1.535197 -0.191053 0 0.054946  "
+                     "0 0 0 1 0")
+
+FILTRO = (f'<svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">'
+          f'<filter id="tcc-daltonismo" color-interpolation-filters="sRGB">'
+          f'<feColorMatrix type="matrix" values="{MATRIZ_DALTONISMO}"/></filter></svg>')
+
+BOTAO = ('<li class="navtcc-dalt"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span>'
+         '<button type="button" id="tcc-dalt-btn" aria-pressed="false" '
+         'title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li>')
+
+SCRIPT = """<script>
+(function(){
+  var K = 'tccDaltonismo', raiz = document.documentElement, b = document.getElementById('tcc-dalt-btn'), on = false;
+  function aplica(v){
+    raiz.classList.toggle('tcc-dalt', v);
+    if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? 'Modo daltonismo: ligado' : 'Modo daltonismo'; }
+  }
+  try { on = localStorage.getItem(K) === '1'; } catch (e) {}
+  aplica(on);
+  if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(K, on ? '1' : '0'); } catch (e) {} });
+})();
+</script>"""
 
 
 def barra(atual: str, existentes: set[str]) -> str:
@@ -40,8 +76,8 @@ def barra(atual: str, existentes: set[str]) -> str:
             continue
         cur = ' aria-current="page"' if arq == atual else ""
         itens.append(f'<li><a href="{arq}"{cur}>{rotulo}</a></li>')
-    return (f'{INICIO}\n{ESTILO}\n<nav class="navtcc" aria-label="Relatórios"><ul>'
-            + "".join(itens) + f"</ul></nav>\n{FIM}")
+    return (f'{INICIO}\n{ESTILO}\n{FILTRO}\n<nav class="navtcc" aria-label="Relatórios"><ul>'
+            + "".join(itens) + BOTAO + f"</ul></nav>\n{SCRIPT}\n{FIM}")
 
 
 def main() -> None:

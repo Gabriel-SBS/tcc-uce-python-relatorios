@@ -18,7 +18,7 @@ números.
 | [G2 · Barras por item](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_graficos_barras.html) | Um gráfico por pergunta, com o enunciado completo |
 | [G2 · Pizzas por item](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_graficos_pizza.html) | Os mesmos dados em pizza, com filtro por subgrupo |
 | [G2 · Por subgrupo](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/graficos_egressos.html) | Comparação entre os subgrupos |
-| [G3 · Professores](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_g3_professores.html) | Respostas dos 2 docentes, com contagem e percentual |
+| [G3 · Professores](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_g3_professores.html) | Síntese das respostas dos 2 docentes. Com dois respondentes, qualquer contagem por item mostraria a resposta de cada um, então não há gráficos por item |
 
 No G2, os calouros estão divididos em três subgrupos: quem fez a UCE (EG, 8), quem já sabia programar por
 outro caminho (CP, 11) e quem chegou sem saber (SC, 19). O arquivo `Anexo_Questoes_G2_Dicionario.csv` tem o
@@ -31,7 +31,11 @@ facilidade ("eu conseguia identificar o que estudar"). Por isso cada item tem um
 concordar é bom; nos itens (−), concordar é ruim. A cor segue esse sentido: verde para o lado favorável,
 vermelho para o desfavorável e amarelo para quem marcou 3.
 
-A exceção é o bloco de IA do G1. Ali não existe resposta certa, então azul é concordar e cinza é discordar.
+No bloco de IA do G1, a referência é o uso de IA por iniciantes: verde é visão favorável a esse uso e
+vermelho é visão crítica.
+
+Os itens do G1 aparecem com códigos I01, I02 etc. No artigo, os códigos M01 a M43 identificam as falas dos
+mentores, e não os itens.
 
 ## Sobre os dados
 
