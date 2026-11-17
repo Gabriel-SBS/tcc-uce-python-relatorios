@@ -34,6 +34,18 @@ vermelho para o desfavorável e amarelo para quem marcou 3.
 No bloco de IA do G1, a referência é o uso de IA por iniciantes: verde é visão favorável a esse uso e
 vermelho é visão crítica.
 
+## Acessibilidade
+
+Todas as páginas têm, na barra de navegação:
+- **Modo daltonismo**: troca verde por azul, vermelho por laranja e amarelo por cinza em tabelas, gráficos e imagens;
+- **Letra maior**: aumenta o texto e os gráficos da página;
+- **Pular para o conteúdo**: aparece no primeiro Tab, para quem navega pelo teclado.
+
+As duas escolhas ficam salvas no navegador. Os gráficos desenhados em canvas trazem uma descrição com os
+rótulos e os valores, lida por leitores de tela; o contorno de foco fica sempre visível; as tabelas largas
+rolam sozinhas no celular, sem empurrar a página para o lado; e quem pediu menos animação ao sistema
+operacional vê os gráficos sem animação.
+
 Os itens do G1 aparecem com códigos I01, I02 etc. No artigo, os códigos M01 a M43 identificam as falas dos
 mentores, e não os itens.
 

@@ -430,25 +430,114 @@
   background:none;box-shadow:none;margin:0;font-weight:600}
 .navtcc a:hover{background:#1e293b}
 .navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
-.navtcc .navtcc-dalt{margin-left:auto;display:flex;align-items:center;gap:8px}
+.navtcc .navtcc-acoes{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .navtcc button{font:inherit;color:#0f172a;background:#e2e8f0;border:0;border-radius:6px;padding:6px 11px;cursor:pointer}
 .navtcc button[aria-pressed=true]{background:#fbbf24}
-.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:12.5px}
+.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:13px}
 html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
-html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script){filter:url(#tcc-daltonismo)}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){filter:url(#tcc-daltonismo)}
+html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){zoom:1.2}
+.tcc-pular{position:absolute;left:-9999px;top:0;z-index:10000;background:#fbbf24;color:#0f172a;
+  padding:8px 12px;border-radius:6px;font:700 14px system-ui,sans-serif;text-decoration:none}
+.tcc-pular:focus{left:12px;top:8px}
+:focus-visible{outline:3px solid #f59e0b !important;outline-offset:2px !important}
+.grid>*,.pizzas-row>*,.chart-layout>*,.canvas-holder,.stats-side{min-width:0 !important}
+.tcc-rolagem{overflow-x:auto;max-width:100%}
+@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
 </style>
 <svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="tcc-daltonismo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1.065420 -0.251138 0.316952 0 -0.131234  0.172219 0.758953 0.030938 0 0.037890  -0.399090 1.535197 -0.191053 0 0.054946  0 0 0 1 0"/></filter></svg>
-<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html" aria-current="page">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li><li class="navtcc-dalt"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span><button type="button" id="tcc-dalt-btn" aria-pressed="false" title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li></ul></nav>
+<a class="tcc-pular" href="#tcc-conteudo">Pular para o conteúdo</a>
+<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html" aria-current="page">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li><li class="navtcc-acoes"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span><button type="button" id="tcc-letra-btn" aria-pressed="false" title="Aumenta o texto e os gráficos da página">Letra maior</button><button type="button" id="tcc-dalt-btn" aria-pressed="false" title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li></ul></nav>
 <script>
 (function(){
-  var K = 'tccDaltonismo', raiz = document.documentElement, b = document.getElementById('tcc-dalt-btn'), on = false;
-  function aplica(v){
-    raiz.classList.toggle('tcc-dalt', v);
-    if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? 'Modo daltonismo: ligado' : 'Modo daltonismo'; }
+  var raiz = document.documentElement;
+  function alternador(id, classe, chave, rotuloLigado, rotuloDesligado){
+    var b = document.getElementById(id), on = false;
+    function aplica(v){
+      raiz.classList.toggle(classe, v);
+      if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? rotuloLigado : rotuloDesligado; }
+    }
+    try { on = localStorage.getItem(chave) === '1'; } catch (e) {}
+    aplica(on);
+    if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(chave, on ? '1' : '0'); } catch (e) {} });
   }
-  try { on = localStorage.getItem(K) === '1'; } catch (e) {}
-  aplica(on);
-  if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(K, on ? '1' : '0'); } catch (e) {} });
+  alternador('tcc-dalt-btn', 'tcc-dalt', 'tccDaltonismo', 'Modo daltonismo: ligado', 'Modo daltonismo');
+  alternador('tcc-letra-btn', 'tcc-letra', 'tccLetraMaior', 'Letra maior: ligada', 'Letra maior');
+
+  var poucoMovimento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function tituloPerto(el){
+    var caixa = el.parentElement;
+    for (var i = 0; caixa && i < 6; i++, caixa = caixa.parentElement){
+      var h = caixa.querySelector('h1,h2,h3,h4,[class*=title],[class*=pergunta],[class*=question]');
+      if (h && h.textContent.trim()) return h.textContent.replace(/\s+/g, ' ').trim();
+    }
+    return '';
+  }
+  function numero(v){
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') v = (v.y !== undefined ? v.y : v.r);
+    return (typeof v === 'number' && !Number.isInteger(v)) ? v.toFixed(1).replace('.', ',') : String(v);
+  }
+  function descreve(c){
+    try {
+      var el = c.canvas, p = c.options && c.options.plugins, t = p && p.title && p.title.text;
+      if (Array.isArray(t)) t = t.join(' ');
+      t = t || tituloPerto(el);
+      var rotulos = (c.data && c.data.labels) || [], partes = [];
+      (c.data.datasets || []).forEach(function(ds){
+        var vals = rotulos.length
+          ? rotulos.map(function(r, i){ return r + ': ' + numero(ds.data[i]); })
+          : (ds.data || []).map(numero);
+        partes.push((ds.label ? ds.label + ', ' : '') + vals.join('; '));
+      });
+      var texto = 'Gráfico' + (t ? ' sobre ' + t : '') + '. ' + partes.join('. ');
+      el.setAttribute('role', 'img');
+      el.setAttribute('aria-label', texto.slice(0, 1500));
+    } catch (e) {}
+  }
+  if (window.Chart){
+    if (poucoMovimento) { try { Chart.defaults.animation = false; } catch (e) {} }
+    try { Chart.register({ id: 'tccAcessibilidade', afterRender: descreve }); } catch (e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var alvo = document.querySelector('main') || document.querySelector('h1');
+    if (alvo){ if (!alvo.id) alvo.id = 'tcc-conteudo'; else { var a = document.querySelector('.tcc-pular'); if (a) a.href = '#' + alvo.id; }
+               if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1'); }
+    document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(function(c){
+      var temRotulo = c.getAttribute('aria-label') || c.getAttribute('aria-labelledby') || (c.id && document.querySelector('label[for="' + c.id + '"]')) || c.closest('label');
+      if (!temRotulo) c.setAttribute('aria-label', c.getAttribute('placeholder') || c.getAttribute('title') || c.name || 'Campo');
+    });
+    document.querySelectorAll('[onclick]').forEach(function(el){
+      if (/^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/.test(el.tagName)) return;
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', function(ev){ if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); el.click(); } });
+    });
+    document.querySelectorAll('thead th:not([scope])').forEach(function(th){ th.setAttribute('scope', 'col'); });
+  });
+
+  // Tabela mais larga que o espaço disponível rola sozinha, sem empurrar a página para o lado.
+  function rolagemDasTabelas(){
+    document.querySelectorAll('table').forEach(function(tb){
+      var pai = tb.parentElement;
+      if (!pai || pai.classList.contains('tcc-rolagem')) return;
+      if (tb.getBoundingClientRect().width <= pai.clientWidth + 1) return;
+      var caixa = document.createElement('div');
+      caixa.className = 'tcc-rolagem';
+      caixa.setAttribute('role', 'region');
+      caixa.setAttribute('tabindex', '0');
+      caixa.setAttribute('aria-label', 'Tabela: role para o lado para ver todas as colunas');
+      pai.insertBefore(caixa, tb);
+      caixa.appendChild(tb);
+    });
+  }
+  window.addEventListener('load', rolagemDasTabelas);
+  var espera;
+  window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(rolagemDasTabelas, 200); });
+  document.addEventListener('click', function(ev){ if (ev.target && ev.target.id === 'tcc-letra-btn') setTimeout(rolagemDasTabelas, 100); });
 })();
 </script>
 <!-- NAV-TCC:fim -->
