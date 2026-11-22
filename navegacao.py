@@ -24,6 +24,8 @@ PAGINAS = [
     ("relatorio_graficos_pizza.html", "G2 · Pizzas por item"),
     ("graficos_egressos.html", "G2 · Por subgrupo"),
     ("relatorio_g3_professores.html", "G3 · Professores"),
+    ("relatorio_abertas.html", "Respostas abertas"),
+    ("relatorio_fase3_notas.html", "Fase 3 · Notas"),
 ]
 
 INICIO, FIM = "<!-- NAV-TCC:inicio -->", "<!-- NAV-TCC:fim -->"

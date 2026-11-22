@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análise de Conteúdo das Respostas Abertas e Livro de Códigos</title><style>
+:root{--bg-body:#f8fafc;--bg-card:#fff;--bg-subtle:#f1f5f9;--text-title:#0f172a;--text-body:#334155;
+--text-muted:#64748b;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0284c7}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg-body);
+color:var(--text-body);margin:0;padding:20px;line-height:1.5}
+.wrapper{max-width:1200px;margin:0 auto}
+.header-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 30px;
+margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+.header-title-box h1{margin:0 0 6px;font-size:22px;font-weight:800;color:var(--text-title);letter-spacing:-.3px}
+.header-title-box p{margin:0 0 16px;font-size:13.5px;color:var(--text-muted)}
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:14px 18px;
+background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border)}
+.stat-item{display:flex;flex-direction:column}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:700}
+.stat-val{font-size:15px;font-weight:800;color:var(--text-title)}
+.stat-val span{font-size:12px;font-weight:500;color:var(--text-muted)}
+.section-title{font-size:16px;font-weight:800;color:var(--text-title);margin:26px 0 8px}
+.note{font-size:12.5px;color:var(--text-muted);margin:0 0 14px}
+.table-container{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 6px -1px rgba(0,0,0,.03);
+margin-bottom:24px;overflow-x:auto}
+.data-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.data-table thead th{background:#0f172a;color:#fff;padding:10px 14px;text-align:left;font-weight:700;font-size:12px;
+letter-spacing:.3px;border-bottom:2px solid #334155}
+.data-table thead tr:first-child th:first-child{border-top-left-radius:11px}
+.data-table thead tr:first-child th:last-child{border-top-right-radius:11px}
+.data-table thead th.num,.data-table td.num{text-align:center}
+.data-table thead th.grp{text-align:center;border-left:1px solid #334155}
+.data-table tbody tr:nth-child(odd){background:#fafbfc}
+.data-table tbody tr:hover{background:#f0f7ff}
+.data-table td{padding:9px 14px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.data-table tr.subhead td{background:#f1f5f9;font-weight:800;color:#0f172a;border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
+.data-table tr.enunciado td{background:#f8fafc;font-style:italic;color:#475569;font-size:12.5px}
+.fig-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:24px;
+box-shadow:0 4px 6px -1px rgba(0,0,0,.03)}
+.fig-card img{width:100%;height:auto;display:block;border-radius:6px}
+.fig-caption{font-size:12.5px;color:var(--text-muted);margin-top:10px}
+.btn-action{background:#fff;border:1px solid var(--border-subtle);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;
+color:var(--text-title);cursor:pointer;text-decoration:none;display:inline-block}
+.btn-action:hover{background:#f1f5f9;border-color:#94a3b8}
+</style></head>
+<body>
+<!-- NAV-TCC:inicio -->
+<style>
+.navtcc{position:sticky;top:0;z-index:9999;background:#0f172a;padding:8px 16px;
+  font:600 13.5px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.navtcc ul{list-style:none;margin:0 auto;padding:0;max-width:1200px;display:flex;flex-wrap:wrap;gap:6px}
+.navtcc li{margin:0;padding:0;border:0;background:none}
+.navtcc a{display:block;color:#e2e8f0;text-decoration:none;padding:6px 11px;border-radius:6px;border:0;
+  background:none;box-shadow:none;margin:0;font-weight:600}
+.navtcc a:hover{background:#1e293b}
+.navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
+.navtcc .navtcc-acoes{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.navtcc button{font:inherit;color:#0f172a;background:#e2e8f0;border:0;border-radius:6px;padding:6px 11px;cursor:pointer}
+.navtcc button[aria-pressed=true]{background:#fbbf24}
+.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:13px}
+html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){filter:url(#tcc-daltonismo)}
+html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){zoom:1.2}
+.tcc-pular{position:absolute;left:-9999px;top:0;z-index:10000;background:#fbbf24;color:#0f172a;
+  padding:8px 12px;border-radius:6px;font:700 14px system-ui,sans-serif;text-decoration:none}
+.tcc-pular:focus{left:12px;top:8px}
+:focus-visible{outline:3px solid #f59e0b !important;outline-offset:2px !important}
+.grid>*,.pizzas-row>*,.chart-layout>*,.canvas-holder,.stats-side{min-width:0 !important}
+.tcc-rolagem{overflow-x:auto;max-width:100%}
+@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+</style>
+<svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="tcc-daltonismo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1.065420 -0.251138 0.316952 0 -0.131234  0.172219 0.758953 0.030938 0 0.037890  -0.399090 1.535197 -0.191053 0 0.054946  0 0 0 1 0"/></filter></svg>
+<a class="tcc-pular" href="#tcc-conteudo">Pular para o conteúdo</a>
+<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li><li><a href="relatorio_abertas.html" aria-current="page">Respostas abertas</a></li><li><a href="relatorio_fase3_notas.html">Fase 3 · Notas</a></li><li class="navtcc-acoes"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span><button type="button" id="tcc-letra-btn" aria-pressed="false" title="Aumenta o texto e os gráficos da página">Letra maior</button><button type="button" id="tcc-dalt-btn" aria-pressed="false" title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li></ul></nav>
+<script>
+(function(){
+  var raiz = document.documentElement;
+  function alternador(id, classe, chave, rotuloLigado, rotuloDesligado){
+    var b = document.getElementById(id), on = false;
+    function aplica(v){
+      raiz.classList.toggle(classe, v);
+      if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? rotuloLigado : rotuloDesligado; }
+    }
+    try { on = localStorage.getItem(chave) === '1'; } catch (e) {}
+    aplica(on);
+    if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(chave, on ? '1' : '0'); } catch (e) {} });
+  }
+  alternador('tcc-dalt-btn', 'tcc-dalt', 'tccDaltonismo', 'Modo daltonismo: ligado', 'Modo daltonismo');
+  alternador('tcc-letra-btn', 'tcc-letra', 'tccLetraMaior', 'Letra maior: ligada', 'Letra maior');
+
+  var poucoMovimento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function tituloPerto(el){
+    var caixa = el.parentElement;
+    for (var i = 0; caixa && i < 6; i++, caixa = caixa.parentElement){
+      var h = caixa.querySelector('h1,h2,h3,h4,[class*=title],[class*=pergunta],[class*=question]');
+      if (h && h.textContent.trim()) return h.textContent.replace(/\s+/g, ' ').trim();
+    }
+    return '';
+  }
+  function numero(v){
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') v = (v.y !== undefined ? v.y : v.r);
+    return (typeof v === 'number' && !Number.isInteger(v)) ? v.toFixed(1).replace('.', ',') : String(v);
+  }
+  function descreve(c){
+    try {
+      var el = c.canvas, p = c.options && c.options.plugins, t = p && p.title && p.title.text;
+      if (Array.isArray(t)) t = t.join(' ');
+      t = t || tituloPerto(el);
+      var rotulos = (c.data && c.data.labels) || [], partes = [];
+      (c.data.datasets || []).forEach(function(ds){
+        var vals = rotulos.length
+          ? rotulos.map(function(r, i){ return r + ': ' + numero(ds.data[i]); })
+          : (ds.data || []).map(numero);
+        partes.push((ds.label ? ds.label + ', ' : '') + vals.join('; '));
+      });
+      var texto = 'Gráfico' + (t ? ' sobre ' + t : '') + '. ' + partes.join('. ');
+      el.setAttribute('role', 'img');
+      el.setAttribute('aria-label', texto.slice(0, 1500));
+    } catch (e) {}
+  }
+  if (window.Chart){
+    if (poucoMovimento) { try { Chart.defaults.animation = false; } catch (e) {} }
+    try { Chart.register({ id: 'tccAcessibilidade', afterRender: descreve }); } catch (e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var alvo = document.querySelector('main') || document.querySelector('h1');
+    if (alvo){ if (!alvo.id) alvo.id = 'tcc-conteudo'; else { var a = document.querySelector('.tcc-pular'); if (a) a.href = '#' + alvo.id; }
+               if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1'); }
+    document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(function(c){
+      var temRotulo = c.getAttribute('aria-label') || c.getAttribute('aria-labelledby') || (c.id && document.querySelector('label[for="' + c.id + '"]')) || c.closest('label');
+      if (!temRotulo) c.setAttribute('aria-label', c.getAttribute('placeholder') || c.getAttribute('title') || c.name || 'Campo');
+    });
+    document.querySelectorAll('[onclick]').forEach(function(el){
+      if (/^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/.test(el.tagName)) return;
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', function(ev){ if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); el.click(); } });
+    });
+    document.querySelectorAll('thead th:not([scope])').forEach(function(th){ th.setAttribute('scope', 'col'); });
+  });
+
+  // Tabela mais larga que o espaço disponível rola sozinha, sem empurrar a página para o lado.
+  function rolagemDasTabelas(){
+    document.querySelectorAll('table').forEach(function(tb){
+      var pai = tb.parentElement;
+      if (!pai || pai.classList.contains('tcc-rolagem')) return;
+      if (tb.getBoundingClientRect().width <= pai.clientWidth + 1) return;
+      var caixa = document.createElement('div');
+      caixa.className = 'tcc-rolagem';
+      caixa.setAttribute('role', 'region');
+      caixa.setAttribute('tabindex', '0');
+      caixa.setAttribute('aria-label', 'Tabela: role para o lado para ver todas as colunas');
+      pai.insertBefore(caixa, tb);
+      caixa.appendChild(tb);
+    });
+  }
+  window.addEventListener('load', rolagemDasTabelas);
+  var espera;
+  window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(rolagemDasTabelas, 200); });
+  document.addEventListener('click', function(ev){ if (ev.target && ev.target.id === 'tcc-letra-btn') setTimeout(rolagemDasTabelas, 100); });
+})();
+</script>
+<!-- NAV-TCC:fim --><div class="wrapper">
+<div class="header-panel"><div class="header-title-box"><h1>Análise de Conteúdo das Respostas Abertas e Livro de Códigos</h1><p>Categorias temáticas definidas a partir das respostas abertas dos mentores (G1) e dos discentes ingressantes (G2), com contagem de participantes por categoria e o livro de códigos completo (Apêndice D do artigo).</p></div>
+<div class="stats-strip"><div class="stat-item"><span class="stat-label">Mentores (G1)</span><span class="stat-val">43 <span>3 questões abertas codificadas</span></span></div><div class="stat-item"><span class="stat-label">Discentes (G2)</span><span class="stat-val">38 <span>EG: 8 · CP: 11 · SC: 19</span></span></div><div class="stat-item"><span class="stat-label">Unidade de contagem</span><span class="stat-val">Participantes <span>1 vez por categoria</span></span></div><div class="stat-item"><span class="stat-label">Limiar de agrupamento</span><span class="stat-val">&lt; 3 pessoas <span>somadas em &quot;Outros&quot;</span></span></div></div></div>
+<div class="section-title">Mentores (G1, n = 43) — Categorias das respostas abertas</div><p class="note">n = número de mentores que mencionaram a categoria; cada resposta pode ter mais de um código, e a base dos percentuais é 43. Categorias citadas por menos de 3 mentores estão somadas em "Outros".</p><div class="table-container"><table class="data-table"><thead><tr><th>Categoria</th><th class="num" style="width:90px">n</th><th class="num" style="width:90px">%</th></tr></thead><tbody><tr class="subhead"><td colspan="3">Pontos mais positivos</td></tr><tr><td><strong>Reforço do próprio conhecimento</strong></td><td class='num'>13</td><td class='num'>30%</td></tr><tr><td><strong>Vínculo com os alunos e evolução deles</strong></td><td class='num'>12</td><td class='num'>28%</td></tr><tr><td><strong>Experiência de ensinar e didática</strong></td><td class='num'>10</td><td class='num'>23%</td></tr><tr><td><strong>Carreira, currículo e networking</strong></td><td class='num'>7</td><td class='num'>16%</td></tr><tr><td><strong>Liderança, gestão e posicionamento</strong></td><td class='num'>6</td><td class='num'>14%</td></tr><tr><td><strong>Interesse pela docência</strong></td><td class='num'>5</td><td class='num'>12%</td></tr><tr><td><strong>Comunicação e oratória</strong></td><td class='num'>4</td><td class='num'>9%</td></tr><tr><td>Outros</td><td class='num'>4</td><td class='num'>9%</td></tr><tr class="subhead"><td colspan="3">Pontos mais negativos ou desafios</td></tr><tr><td><strong>Evasão e baixo engajamento dos alunos</strong></td><td class='num'>11</td><td class='num'>26%</td></tr><tr><td><strong>Conflito de tempo com estágio, IC e disciplinas</strong></td><td class='num'>9</td><td class='num'>21%</td></tr><tr><td><strong>Insegurança, autoridade e autocobrança</strong></td><td class='num'>8</td><td class='num'>19%</td></tr><tr><td><strong>Desenho da UCE (projeto, nível, temática)</strong></td><td class='num'>7</td><td class='num'>16%</td></tr><tr><td><strong>Conectividade e ensino remoto</strong></td><td class='num'>4</td><td class='num'>9%</td></tr><tr><td><strong>Uso de IA pelos alunos</strong></td><td class='num'>3</td><td class='num'>7%</td></tr><tr><td>Outros</td><td class='num'>6</td><td class='num'>14%</td></tr><tr class="subhead"><td colspan="3">Estratégia proposta para a IA</td></tr><tr><td><strong>Ensinar o uso consciente e crítico</strong></td><td class='num'>19</td><td class='num'>44%</td></tr><tr><td><strong>Integrar a IA ao projeto ou mudar tarefa e avaliação</strong></td><td class='num'>15</td><td class='num'>35%</td></tr><tr><td><strong>Exigir que o aluno explique o código</strong></td><td class='num'>9</td><td class='num'>21%</td></tr><tr><td><strong>Restringir, proibir ou fiscalizar</strong></td><td class='num'>7</td><td class='num'>16%</td></tr><tr><td><strong>Sem vivência de IA na turma</strong></td><td class='num'>5</td><td class='num'>12%</td></tr><tr><td><strong>Sem proposta de estratégia</strong></td><td class='num'>4</td><td class='num'>9%</td></tr></tbody></table></div><div class="section-title">Discentes (G2, n = 38) — Categorias das respostas abertas por subgrupo</div><p class="note">Número de discentes que mencionaram a categoria em cada subgrupo (EG: 8; CP: 11; SC: 19). Categorias citadas por menos de 3 discentes estão somadas em "Outros".</p><div class="table-container"><table class="data-table"><thead><tr><th>Categoria</th><th class="num" style="width:90px">EG (n = 8)</th><th class="num" style="width:90px">CP (n = 11)</th><th class="num" style="width:90px">SC (n = 19)</th><th class="num" style="width:90px">Total (n = 38)</th></tr></thead><tbody><tr class="subhead"><td colspan="5">Maior desafio do 1º semestre</td></tr><tr><td><strong>Base anterior insuficiente, esquecida ou diferente do cobrado</strong></td><td class='num'>1</td><td class='num'>9</td><td class='num'>0</td><td class='num'><strong>10</strong></td></tr><tr><td><strong>Acompanhar sem base</strong></td><td class='num'>0</td><td class='num'>0</td><td class='num'>8</td><td class='num'><strong>8</strong></td></tr><tr><td><strong>Conciliar disciplinas, Cálculo, trabalho ou estágio</strong></td><td class='num'>3</td><td class='num'>2</td><td class='num'>2</td><td class='num'><strong>7</strong></td></tr><tr><td><strong>Lógica complexa e passar o raciocínio para o código</strong></td><td class='num'>0</td><td class='num'>0</td><td class='num'>5</td><td class='num'><strong>5</strong></td></tr><tr><td><strong>Dinâmica das sessões tutoriais</strong></td><td class='num'>2</td><td class='num'>0</td><td class='num'>3</td><td class='num'><strong>5</strong></td></tr><tr><td><strong>Desânimo, mau começo ou vontade de trancar</strong></td><td class='num'>0</td><td class='num'>1</td><td class='num'>3</td><td class='num'><strong>4</strong></td></tr><tr><td><strong>Outros</strong></td><td class='num'>2</td><td class='num'>0</td><td class='num'>2</td><td class='num'><strong>4</strong></td></tr><tr class="subhead"><td colspan="5">Conselho ao calouro sem base</td></tr><tr><td><strong>Estudar com constância e resolver sozinho</strong></td><td class='num'>4</td><td class='num'>0</td><td class='num'>6</td><td class='num'><strong>10</strong></td></tr><tr><td><strong>Não confiar só no que já sabe</strong></td><td class='num'>0</td><td class='num'>7</td><td class='num'>1</td><td class='num'><strong>8</strong></td></tr><tr><td><strong>Participar das sessões e pedir ajuda</strong></td><td class='num'>3</td><td class='num'>0</td><td class='num'>4</td><td class='num'><strong>7</strong></td></tr><tr><td><strong>Fazer um curso ou revisar a base antes de entrar</strong></td><td class='num'>2</td><td class='num'>2</td><td class='num'>2</td><td class='num'><strong>6</strong></td></tr><tr><td><strong>Não desistir nem se comparar</strong></td><td class='num'>0</td><td class='num'>0</td><td class='num'>5</td><td class='num'><strong>5</strong></td></tr><tr><td><strong>Usar a IA para entender, não para entregar</strong></td><td class='num'>2</td><td class='num'>0</td><td class='num'>1</td><td class='num'><strong>3</strong></td></tr><tr><td><strong>Outros</strong></td><td class='num'>0</td><td class='num'>2</td><td class='num'>0</td><td class='num'><strong>2</strong></td></tr></tbody></table></div><div class="section-title">Apêndice D — Livro de códigos das respostas abertas</div><p class="note">As categorias foram definidas após a leitura de todas as respostas de cada pergunta (Análise de Conteúdo, Bardin). Para preservar o anonimato, o livro não traz exemplos individuais de resposta.</p><div class="table-container"><table class="data-table"><thead><tr><th style="width:34%">Categoria</th><th>Definição e regra de inclusão</th></tr></thead><tbody><tr class="subhead"><td colspan="2">G1 — Pontos mais positivos</td></tr><tr class="enunciado"><td colspan="2">18. Em sua opinião, quais foram os pontos MAIS POSITIVOS em ser um mentor na UCE? (ex: realização pessoal, networking, reforço de conteúdo, etc.)</td></tr><tr><td><strong>Reforço do próprio conhecimento</strong></td><td>Diz ter revisto, aprofundado ou consolidado conteúdo (lógica, Python, algoritmos) ao preparar aulas ou explicar.</td></tr><tr><td><strong>Vínculo com os alunos e evolução deles</strong></td><td>Valoriza a relação com os alunos, o interesse deles ou ter visto algum aluno evoluir.</td></tr><tr><td><strong>Experiência de ensinar e didática</strong></td><td>Valoriza a prática de ensinar, aprender a explicar ou descobrir a própria didática.</td></tr><tr><td><strong>Carreira, currículo e networking</strong></td><td>Cita ganho profissional: currículo, entrevista, teste técnico, contatos, porta para IC.</td></tr><tr><td><strong>Liderança, gestão e posicionamento</strong></td><td>Cita conduzir equipe, gestão, impor-se diante da turma ou resolver divergências.</td></tr><tr><td><strong>Interesse pela docência</strong></td><td>Diz ter descoberto interesse por ensinar ou por seguir em atividades de ensino.</td></tr><tr><td><strong>Comunicação e oratória</strong></td><td>Cita comunicação, falar em público ou perder o medo de se expor.</td></tr><tr><td><strong>Outros</strong></td><td>Produção de material próprio, flexibilidade do formato remoto, mostrar o uso da programação no mercado.</td></tr><tr class="subhead"><td colspan="2">G1 — Pontos mais negativos ou desafios</td></tr><tr class="enunciado"><td colspan="2">19. Em sua opinião, quais foram os pontos MAIS NEGATIVOS (ou maiores desafios) em ser um mentor na UCE? (ex: realização pessoal, networking, reforço de conteúdo, etc.)</td></tr><tr><td><strong>Evasão e baixo engajamento dos alunos</strong></td><td>Alunos que faltam, desistem, não participam ou não se interessam.</td></tr><tr><td><strong>Conflito de tempo com estágio, IC e disciplinas</strong></td><td>Falta de tempo, horas extras não previstas ou prejuízo em outras atividades.</td></tr><tr><td><strong>Insegurança, autoridade e autocobrança</strong></td><td>Medo de errar, ansiedade, dificuldade de impor limites, falta de preparo prévio, cobrança excessiva de si.</td></tr><tr><td><strong>Desenho da UCE (projeto, nível, temática)</strong></td><td>Ausência de projeto ou de plano oficial, projeto fácil demais, temática, falta de dados sobre os vídeos.</td></tr><tr><td><strong>Conectividade e ensino remoto</strong></td><td>Contato pela tela, câmeras fechadas, falta de dados móveis.</td></tr><tr><td><strong>Uso de IA pelos alunos</strong></td><td>Alunos que copiam código da IA sem entender, ou a tensão sobre como lidar com isso.</td></tr><tr><td><strong>Outros</strong></td><td>Turma heterogênea, relação com outros mentores, resistência inicial do próprio mentor, nenhum ponto negativo.</td></tr><tr class="subhead"><td colspan="2">G1 — Estratégia proposta para a IA</td></tr><tr class="enunciado"><td colspan="2">14. Com base na sua experiência “no fronte” ensinando iniciantes, qual a melhor estratégia para lidar com a IA nas próximas turmas da UCE? (Ex: Proibir, ensinar a usar, integrar no projeto, mudar a avaliação?)</td></tr><tr><td><strong>Ensinar o uso consciente e crítico</strong></td><td>Propõe ensinar a usar a IA como apoio, com limites, mostrando onde ela erra.</td></tr><tr><td><strong>Integrar a IA ao projeto ou mudar tarefa e avaliação</strong></td><td>Propõe mudar o tipo de exercício, aumentar a dificuldade, integrar a IA ao projeto ou mudar a avaliação.</td></tr><tr><td><strong>Exigir que o aluno explique o código</strong></td><td>Propõe defesa oral, bate-bola ou explicação “sem a tela” do código entregue.</td></tr><tr><td><strong>Restringir, proibir ou fiscalizar</strong></td><td>Propõe proibir (total ou no início), desencorajar, fiscalizar ou liberar só depois do básico.</td></tr><tr><td><strong>Sem vivência de IA na turma</strong></td><td>Diz que a própria edição foi anterior à IA generativa (responde pensando nas próximas).</td></tr><tr><td><strong>Sem proposta de estratégia</strong></td><td>Comenta o uso de IA sem propor uma estratégia.</td></tr><tr class="subhead"><td colspan="2">G2 — Maior desafio do 1º semestre</td></tr><tr class="enunciado"><td colspan="2">Qual foi o seu maior desafio no 1º semestre (ex: lógica complexa, adaptação ao PBL, conciliar com Cálculo, pressão social) e como você lidou com ele?</td></tr><tr><td><strong>Base anterior insuficiente, esquecida ou diferente do cobrado</strong></td><td>A base que trazia era incompleta, enferrujada, de outra linguagem ou área, ou cheia de vícios.</td></tr><tr><td><strong>Acompanhar sem base</strong></td><td>Chegou sem saber programar e precisou correr atrás, inclusive por não ter tido Computação na escola.</td></tr><tr><td><strong>Conciliar disciplinas, Cálculo, trabalho ou estágio</strong></td><td>O desafio foi o volume do semestre, Cálculo ou o trabalho, e não a programação.</td></tr><tr><td><strong>Lógica complexa e passar o raciocínio para o código</strong></td><td>Entendia o problema, mas travava na lógica mais difícil ou ao escrever em Python.</td></tr><tr><td><strong>Dinâmica das sessões tutoriais</strong></td><td>Expor o raciocínio, entender que a sessão é para discutir, ou sessão com pouca discussão.</td></tr><tr><td><strong>Desânimo, mau começo ou vontade de trancar</strong></td><td>Desengajou, pensou em trancar, desistiu de uma disciplina ou começou mal e precisou virar.</td></tr><tr><td><strong>Dependência da IA</strong> <em>(na tabela, somada a "Outros")</em></td><td>Percebeu tarde que usava a IA no lugar de aprender.</td></tr><tr><td><strong>Outros</strong></td><td>Entender de verdade em vez de só fazer funcionar; equilibrar ajudar colegas e a própria entrega.</td></tr><tr class="subhead"><td colspan="2">G2 — Conselho ao calouro sem base</td></tr><tr class="enunciado"><td colspan="2">Que conselho você daria para um calouro que vai entrar em Engenharia de Computação na UEFS sem saber nada de programação?</td></tr><tr><td><strong>Estudar com constância e resolver sozinho</strong></td><td>Organizar o tempo, praticar todo dia, refazer sozinho o que viu na sessão.</td></tr><tr><td><strong>Não confiar só no que já sabe</strong></td><td>Saber a linguagem não basta: estudar a teoria, os padrões e a documentação cobrados.</td></tr><tr><td><strong>Participar das sessões e pedir ajuda</strong></td><td>Falar, perguntar e discutir nas sessões; estudar junto; pedir ajuda cedo.</td></tr><tr><td><strong>Fazer um curso ou revisar a base antes de entrar</strong></td><td>Fazer um curso (até o fim e perto do ingresso) ou revisar a base antiga antes do semestre.</td></tr><tr><td><strong>Não desistir nem se comparar</strong></td><td>As primeiras semanas são as piores; não se comparar com quem veio de curso técnico.</td></tr><tr><td><strong>Usar a IA para entender, não para entregar</strong></td><td>Resolver primeiro e usar a IA só para conferir ou entender.</td></tr><tr><td><strong>Outros</strong></td><td>Procurar extensão ou IC cedo; pensar bem antes de estagiar no 1º semestre.</td></tr><tr class="subhead"><td colspan="2">G2 (só SC) — Curso introdutório antes do ingresso</td></tr><tr class="enunciado"><td colspan="2">Se você teve contato prévio com programação, qual foi o maior benefício para sua graduação até aqui? Se você entrou sem saber nada, acredita que um curso introdutório (como o Curso de Python da UEFS) teria mudado seu desempenho em outras matérias, como Introdução ao Cálculo? (codificada só a segunda parte, para os 19 SC: 16 sim/teria ajudado, 2 não sabem/talvez, 1 não)</td></tr><tr><td><strong>Sim ou teria ajudado</strong></td><td>Responde que sim ou que teria ajudado, com ou sem ressalva.</td></tr><tr><td><strong>Não sabe ou talvez</strong></td><td>Diz não saber ou que talvez fizesse diferença.</td></tr><tr><td><strong>Não</strong></td><td>Diz que o curso não faria diferença.</td></tr></tbody></table></div>
+</div></body></html>

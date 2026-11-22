@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desempenho Acadêmico no 1º Semestre (Fase 3)</title><style>
+:root{--bg-body:#f8fafc;--bg-card:#fff;--bg-subtle:#f1f5f9;--text-title:#0f172a;--text-body:#334155;
+--text-muted:#64748b;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0284c7}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg-body);
+color:var(--text-body);margin:0;padding:20px;line-height:1.5}
+.wrapper{max-width:1200px;margin:0 auto}
+.header-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 30px;
+margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+.header-title-box h1{margin:0 0 6px;font-size:22px;font-weight:800;color:var(--text-title);letter-spacing:-.3px}
+.header-title-box p{margin:0 0 16px;font-size:13.5px;color:var(--text-muted)}
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:14px 18px;
+background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border)}
+.stat-item{display:flex;flex-direction:column}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:700}
+.stat-val{font-size:15px;font-weight:800;color:var(--text-title)}
+.stat-val span{font-size:12px;font-weight:500;color:var(--text-muted)}
+.section-title{font-size:16px;font-weight:800;color:var(--text-title);margin:26px 0 8px}
+.note{font-size:12.5px;color:var(--text-muted);margin:0 0 14px}
+.table-container{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 6px -1px rgba(0,0,0,.03);
+margin-bottom:24px;overflow-x:auto}
+.data-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.data-table thead th{background:#0f172a;color:#fff;padding:10px 14px;text-align:left;font-weight:700;font-size:12px;
+letter-spacing:.3px;border-bottom:2px solid #334155}
+.data-table thead tr:first-child th:first-child{border-top-left-radius:11px}
+.data-table thead tr:first-child th:last-child{border-top-right-radius:11px}
+.data-table thead th.num,.data-table td.num{text-align:center}
+.data-table thead th.grp{text-align:center;border-left:1px solid #334155}
+.data-table tbody tr:nth-child(odd){background:#fafbfc}
+.data-table tbody tr:hover{background:#f0f7ff}
+.data-table td{padding:9px 14px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.data-table tr.subhead td{background:#f1f5f9;font-weight:800;color:#0f172a;border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
+.data-table tr.enunciado td{background:#f8fafc;font-style:italic;color:#475569;font-size:12.5px}
+.fig-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:24px;
+box-shadow:0 4px 6px -1px rgba(0,0,0,.03)}
+.fig-card img{width:100%;height:auto;display:block;border-radius:6px}
+.fig-caption{font-size:12.5px;color:var(--text-muted);margin-top:10px}
+.btn-action{background:#fff;border:1px solid var(--border-subtle);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;
+color:var(--text-title);cursor:pointer;text-decoration:none;display:inline-block}
+.btn-action:hover{background:#f1f5f9;border-color:#94a3b8}
+</style></head>
+<body>
+<!-- NAV-TCC:inicio -->
+<style>
+.navtcc{position:sticky;top:0;z-index:9999;background:#0f172a;padding:8px 16px;
+  font:600 13.5px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.navtcc ul{list-style:none;margin:0 auto;padding:0;max-width:1200px;display:flex;flex-wrap:wrap;gap:6px}
+.navtcc li{margin:0;padding:0;border:0;background:none}
+.navtcc a{display:block;color:#e2e8f0;text-decoration:none;padding:6px 11px;border-radius:6px;border:0;
+  background:none;box-shadow:none;margin:0;font-weight:600}
+.navtcc a:hover{background:#1e293b}
+.navtcc a[aria-current=page]{background:#e2e8f0;color:#0f172a}
+.navtcc .navtcc-acoes{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.navtcc button{font:inherit;color:#0f172a;background:#e2e8f0;border:0;border-radius:6px;padding:6px 11px;cursor:pointer}
+.navtcc button[aria-pressed=true]{background:#fbbf24}
+.navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:13px}
+html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){filter:url(#tcc-daltonismo)}
+html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){zoom:1.2}
+.tcc-pular{position:absolute;left:-9999px;top:0;z-index:10000;background:#fbbf24;color:#0f172a;
+  padding:8px 12px;border-radius:6px;font:700 14px system-ui,sans-serif;text-decoration:none}
+.tcc-pular:focus{left:12px;top:8px}
+:focus-visible{outline:3px solid #f59e0b !important;outline-offset:2px !important}
+.grid>*,.pizzas-row>*,.chart-layout>*,.canvas-holder,.stats-side{min-width:0 !important}
+.tcc-rolagem{overflow-x:auto;max-width:100%}
+@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+</style>
+<svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="tcc-daltonismo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1.065420 -0.251138 0.316952 0 -0.131234  0.172219 0.758953 0.030938 0 0.037890  -0.399090 1.535197 -0.191053 0 0.054946  0 0 0 1 0"/></filter></svg>
+<a class="tcc-pular" href="#tcc-conteudo">Pular para o conteúdo</a>
+<nav class="navtcc" aria-label="Relatórios"><ul><li><a href="index.html">Início</a></li><li><a href="relatorio_g1_mentores.html">G1 · Mentores</a></li><li><a href="relatorio_graficos_barras_resumido.html">G2 · Por tema</a></li><li><a href="relatorio_graficos_barras.html">G2 · Barras por item</a></li><li><a href="relatorio_graficos_pizza.html">G2 · Pizzas por item</a></li><li><a href="graficos_egressos.html">G2 · Por subgrupo</a></li><li><a href="relatorio_g3_professores.html">G3 · Professores</a></li><li><a href="relatorio_abertas.html">Respostas abertas</a></li><li><a href="relatorio_fase3_notas.html" aria-current="page">Fase 3 · Notas</a></li><li class="navtcc-acoes"><span class="navtcc-legenda">verde → azul · vermelho → laranja · amarelo → cinza</span><button type="button" id="tcc-letra-btn" aria-pressed="false" title="Aumenta o texto e os gráficos da página">Letra maior</button><button type="button" id="tcc-dalt-btn" aria-pressed="false" title="Troca verde e vermelho por azul e laranja">Modo daltonismo</button></li></ul></nav>
+<script>
+(function(){
+  var raiz = document.documentElement;
+  function alternador(id, classe, chave, rotuloLigado, rotuloDesligado){
+    var b = document.getElementById(id), on = false;
+    function aplica(v){
+      raiz.classList.toggle(classe, v);
+      if (b){ b.setAttribute('aria-pressed', v ? 'true' : 'false'); b.textContent = v ? rotuloLigado : rotuloDesligado; }
+    }
+    try { on = localStorage.getItem(chave) === '1'; } catch (e) {}
+    aplica(on);
+    if (b) b.addEventListener('click', function(){ on = !on; aplica(on); try { localStorage.setItem(chave, on ? '1' : '0'); } catch (e) {} });
+  }
+  alternador('tcc-dalt-btn', 'tcc-dalt', 'tccDaltonismo', 'Modo daltonismo: ligado', 'Modo daltonismo');
+  alternador('tcc-letra-btn', 'tcc-letra', 'tccLetraMaior', 'Letra maior: ligada', 'Letra maior');
+
+  var poucoMovimento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function tituloPerto(el){
+    var caixa = el.parentElement;
+    for (var i = 0; caixa && i < 6; i++, caixa = caixa.parentElement){
+      var h = caixa.querySelector('h1,h2,h3,h4,[class*=title],[class*=pergunta],[class*=question]');
+      if (h && h.textContent.trim()) return h.textContent.replace(/\s+/g, ' ').trim();
+    }
+    return '';
+  }
+  function numero(v){
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') v = (v.y !== undefined ? v.y : v.r);
+    return (typeof v === 'number' && !Number.isInteger(v)) ? v.toFixed(1).replace('.', ',') : String(v);
+  }
+  function descreve(c){
+    try {
+      var el = c.canvas, p = c.options && c.options.plugins, t = p && p.title && p.title.text;
+      if (Array.isArray(t)) t = t.join(' ');
+      t = t || tituloPerto(el);
+      var rotulos = (c.data && c.data.labels) || [], partes = [];
+      (c.data.datasets || []).forEach(function(ds){
+        var vals = rotulos.length
+          ? rotulos.map(function(r, i){ return r + ': ' + numero(ds.data[i]); })
+          : (ds.data || []).map(numero);
+        partes.push((ds.label ? ds.label + ', ' : '') + vals.join('; '));
+      });
+      var texto = 'Gráfico' + (t ? ' sobre ' + t : '') + '. ' + partes.join('. ');
+      el.setAttribute('role', 'img');
+      el.setAttribute('aria-label', texto.slice(0, 1500));
+    } catch (e) {}
+  }
+  if (window.Chart){
+    if (poucoMovimento) { try { Chart.defaults.animation = false; } catch (e) {} }
+    try { Chart.register({ id: 'tccAcessibilidade', afterRender: descreve }); } catch (e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var alvo = document.querySelector('main') || document.querySelector('h1');
+    if (alvo){ if (!alvo.id) alvo.id = 'tcc-conteudo'; else { var a = document.querySelector('.tcc-pular'); if (a) a.href = '#' + alvo.id; }
+               if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1'); }
+    document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(function(c){
+      var temRotulo = c.getAttribute('aria-label') || c.getAttribute('aria-labelledby') || (c.id && document.querySelector('label[for="' + c.id + '"]')) || c.closest('label');
+      if (!temRotulo) c.setAttribute('aria-label', c.getAttribute('placeholder') || c.getAttribute('title') || c.name || 'Campo');
+    });
+    document.querySelectorAll('[onclick]').forEach(function(el){
+      if (/^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/.test(el.tagName)) return;
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', function(ev){ if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); el.click(); } });
+    });
+    document.querySelectorAll('thead th:not([scope])').forEach(function(th){ th.setAttribute('scope', 'col'); });
+  });
+
+  // Tabela mais larga que o espaço disponível rola sozinha, sem empurrar a página para o lado.
+  function rolagemDasTabelas(){
+    document.querySelectorAll('table').forEach(function(tb){
+      var pai = tb.parentElement;
+      if (!pai || pai.classList.contains('tcc-rolagem')) return;
+      if (tb.getBoundingClientRect().width <= pai.clientWidth + 1) return;
+      var caixa = document.createElement('div');
+      caixa.className = 'tcc-rolagem';
+      caixa.setAttribute('role', 'region');
+      caixa.setAttribute('tabindex', '0');
+      caixa.setAttribute('aria-label', 'Tabela: role para o lado para ver todas as colunas');
+      pai.insertBefore(caixa, tb);
+      caixa.appendChild(tb);
+    });
+  }
+  window.addEventListener('load', rolagemDasTabelas);
+  var espera;
+  window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(rolagemDasTabelas, 200); });
+  document.addEventListener('click', function(ev){ if (ev.target && ev.target.id === 'tcc-letra-btn') setTimeout(rolagemDasTabelas, 100); });
+})();
+</script>
+<!-- NAV-TCC:fim --><div class="wrapper">
+<div class="header-panel"><div class="header-title-box"><h1>Desempenho Acadêmico no 1º Semestre (Fase 3)</h1><p>Notas finais agregadas por subgrupo nas sete disciplinas do primeiro semestre de Engenharia de Computação (UEFS): média, desvio padrão, mediana, faixa observada (mín.–máx.) e reprovações por nota ou conceito.</p></div>
+<div class="stats-strip"><div class="stat-item"><span class="stat-label">Egressos UCE (EG)</span><span class="stat-val">n = 8 <span>0 reprovações por nota/conceito</span></span></div><div class="stat-item"><span class="stat-label">Conhec. Prévio (CP)</span><span class="stat-val">n = 9 nas médias <span>n = 11 no total (2 com RF em tudo)</span></span></div><div class="stat-item"><span class="stat-label">Sem Conhecimento (SC)</span><span class="stat-val">n = 17 nas médias <span>n = 19 no total (2 com RF em tudo)</span></span></div><div class="stat-item"><span class="stat-label">Fonte</span><span class="stat-val">Registros acadêmicos <span>agregados por subgrupo</span></span></div></div></div>
+
+<div class="section-title">Gráfico de desempenho nas sete disciplinas do 1º semestre</div>
+<div class="fig-card">
+  <img src="Graficos_PNG/Fase3_Notas.png" alt="Gráfico de notas finais do primeiro semestre nas sete disciplinas, por subgrupo (EG, CP e SC), mostrando mediana, média, desvio padrão e faixa mínimo-máximo.">
+  <div class="fig-caption">
+    <strong>Figura 5 do artigo:</strong> Notas finais do primeiro semestre (0–10) nas sete disciplinas, por subgrupo (Fase 3). O traço horizontal indica a mediana (Md), o ponto a média, a faixa sombreada um desvio padrão em torno da média (limitado ao intervalo observado) e as hastes a menor e a maior nota do subgrupo, sem os quatro alunos que reprovaram por falta em todas as disciplinas (CP: 2; SC: 2). *Sem as notas de 2026.1, semestre em que a disciplina não foi ministrada.
+    <a class="btn-action" style="margin-left:10px" href="Graficos_PNG/Fase3_Notas.png" target="_blank">Abrir PNG em alta resolução</a>
+  </div>
+</div>
+
+<div class="section-title">Tabela X — Desempenho no primeiro semestre por subgrupo (Fase 3)</div>
+<p class="note">
+  Médias, desvios padrão (DP), medianas (Md) e faixas (Mín.–Máx.) calculados sem os alunos que reprovaram por falta em todas as disciplinas (CP: 2; SC: 2). As reprovações contam todos os respondentes (EG: 8; CP: 11; SC: 19). RE = reprovado por nota; RP = reprovado por conceito; a reprovação por falta (RF) entra nas médias, medianas e faixas como nota zero, exceto nos quatro alunos retirados, e não é contada em RE/RP; trancamentos não constam da base. *Sem as notas de 2026.1, semestre em que a disciplina não foi ministrada.
+</p>
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th rowspan="2">Disciplina</th>
+        <th colspan="3" class="grp">EG (n = 8)</th>
+        <th colspan="3" class="grp">CP (n = 9)</th>
+        <th colspan="3" class="grp">SC (n = 17)</th>
+        <th colspan="3" class="grp">Reprovações (RE/RP)</th>
+      </tr>
+      <tr>
+        <th class="num grp">Média (DP)</th><th class="num">Md</th><th class="num">Mín.–Máx.</th>
+        <th class="num grp">Média (DP)</th><th class="num">Md</th><th class="num">Mín.–Máx.</th>
+        <th class="num grp">Média (DP)</th><th class="num">Md</th><th class="num">Mín.–Máx.</th>
+        <th class="num grp">EG (n=8)</th><th class="num">CP (n=11)</th><th class="num">SC (n=19)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Introdução ao Cálculo</strong></td><td class='num'>7,19 (1,25)</td><td class='num'><strong>7,3</strong></td><td class='num'>5,0–8,7</td><td class='num'>5,03 (3,45)</td><td class='num'><strong>7,0</strong></td><td class='num'>0,0–9,2</td><td class='num'>5,48 (3,20)</td><td class='num'><strong>6,6</strong></td><td class='num'>0,0–9,7</td><td class='num'>0</td><td class='num'>2</td><td class='num'>6</td></tr><tr><td><strong>Tópicos de Formação Humanística</strong></td><td class='num'>7,36 (3,04)</td><td class='num'><strong>8,2</strong></td><td class='num'>0,0–9,3</td><td class='num'>8,08 (0,66)</td><td class='num'><strong>8,0</strong></td><td class='num'>7,1–9,4</td><td class='num'>8,15 (0,65)</td><td class='num'><strong>8,2</strong></td><td class='num'>7,0–9,3</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><strong>Algoritmos e Programação I</strong></td><td class='num'>8,86 (0,47)</td><td class='num'><strong>8,9</strong></td><td class='num'>7,9–9,5</td><td class='num'>5,38 (2,70)</td><td class='num'><strong>6,7</strong></td><td class='num'>0,4–8,4</td><td class='num'>6,58 (2,77)</td><td class='num'><strong>7,8</strong></td><td class='num'>1,1–9,9</td><td class='num'>0</td><td class='num'>4</td><td class='num'>4</td></tr><tr><td><strong>MI – Algoritmos</strong></td><td class='num'>9,13 (0,44)</td><td class='num'><strong>9,2</strong></td><td class='num'>8,3–9,6</td><td class='num'>5,92 (3,07)</td><td class='num'><strong>7,3</strong></td><td class='num'>0,0–8,6</td><td class='num'>7,62 (2,09)</td><td class='num'><strong>8,4</strong></td><td class='num'>3,3–9,8</td><td class='num'>0</td><td class='num'>2</td><td class='num'>2</td></tr><tr><td><strong>Introdução à Eng. de Computação</strong></td><td class='num'>8,73 (0,94)</td><td class='num'><strong>9,0</strong></td><td class='num'>7,2–10,0</td><td class='num'>8,68 (0,88)</td><td class='num'><strong>8,7</strong></td><td class='num'>7,2–9,7</td><td class='num'>8,65 (0,75)</td><td class='num'><strong>8,6</strong></td><td class='num'>7,1–9,8</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><strong>Introdução à Eletrônica</strong></td><td class='num'>8,40 (0,99)</td><td class='num'><strong>8,6</strong></td><td class='num'>6,2–9,3</td><td class='num'>7,79 (1,28)</td><td class='num'><strong>7,7</strong></td><td class='num'>5,0–9,5</td><td class='num'>8,09 (1,47)</td><td class='num'><strong>8,4</strong></td><td class='num'>3,3–9,3</td><td class='num'>0</td><td class='num'>0</td><td class='num'>1</td></tr><tr><td><strong>Prod. de Textos Técn. e Acad.*</strong></td><td class='num'>9,24 (0,54)</td><td class='num'><strong>9,6</strong></td><td class='num'>8,6–9,7</td><td class='num'>8,98 (0,64)</td><td class='num'><strong>9,1</strong></td><td class='num'>8,0–9,7</td><td class='num'>8,83 (0,78)</td><td class='num'><strong>9,0</strong></td><td class='num'>7,0–9,8</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div></body></html>

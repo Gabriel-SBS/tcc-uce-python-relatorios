@@ -19,6 +19,8 @@ números.
 | [G2 · Pizzas por item](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_graficos_pizza.html) | Os mesmos dados em pizza, com filtro por subgrupo |
 | [G2 · Por subgrupo](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/graficos_egressos.html) | Comparação entre os subgrupos |
 | [G3 · Professores](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_g3_professores.html) | Síntese das respostas dos 2 docentes. Com dois respondentes, qualquer contagem por item mostraria a resposta de cada um, então não há gráficos por item |
+| [Respostas abertas](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_abertas.html) | Categorias das respostas abertas dos mentores (G1) e dos calouros (G2) e o livro de códigos completo (Apêndice D) |
+| [Fase 3 · Notas](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_fase3_notas.html) | Desempenho agregado no 1º semestre por subgrupo nas sete disciplinas (média, DP, mediana, mín.–máx., reprovações e gráfico) |
 
 No G2, os calouros estão divididos em três subgrupos: quem fez a UCE (EG, 8), quem já sabia programar por
 outro caminho (CP, 11) e quem chegou sem saber (SC, 19). O arquivo `Anexo_Questoes_G2_Dicionario.csv` tem o
