@@ -72,6 +72,8 @@ border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
 .question-cell-wrap{display:flex;align-items:center;gap:8px;overflow:hidden}
 .q-badge{font-size:10.5px;font-weight:800;background:#e2e8f0;color:#1e293b;padding:2px 6px;border-radius:4px;flex-shrink:0}
 .q-keyword{font-weight:600;color:var(--text-title);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.info-btn{margin-left:auto;flex-shrink:0;background:none;border:0;border-radius:4px;padding:2px 4px;font-size:13px;cursor:pointer;line-height:1}
+.info-btn:hover{background:#e2e8f0}
 .td-bar{padding:4px 10px;border-right:1px solid var(--border);border-bottom:1px solid #f1f5f9;vertical-align:middle}
 .td-num{text-align:center;font-weight:700;color:var(--text-title);font-size:12.5px}
 .bar-container{display:flex;width:100%;height:var(--bar-height);border-radius:4px;overflow:hidden;background:#e2e8f0;
@@ -80,7 +82,7 @@ box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
 .empty{padding:18px;text-align:center;color:var(--text-muted)}
 .png-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;
 justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:600;margin-bottom:10px}
-@media print{.controls-toolbar,.navtcc,.png-card,.png{display:none}body{padding:0}}
+@media print{.controls-toolbar,.navtcc,.png-card,.png,.info-btn{display:none}body{padding:0}}
 
 .sintese{max-width:760px;font-size:15px;line-height:1.6;color:var(--text-title)}
 .sintese p{margin:0 0 14px}</style></head>
@@ -205,7 +207,8 @@ html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(scrip
   document.addEventListener('click', function(ev){ if (ev.target && ev.target.id === 'tcc-letra-btn') setTimeout(rolagemDasTabelas, 100); });
 })();
 </script>
-<!-- NAV-TCC:fim --><div class="wrapper">
+<!-- NAV-TCC:fim -->
+<div class="wrapper">
 <div class="header-panel"><div class="header-title-box"><h1>Questionário dos Docentes (G3): síntese</h1><p>Percepção dos docentes de Algoritmos e Programação I sobre os egressos da UCE.</p></div>
 <div class="stats-strip"><div class="stat-item"><span class="stat-label">Amostra</span><span class="stat-val">2 <span>docentes</span></span></div><div class="stat-item"><span class="stat-label">Itens Likert</span><span class="stat-val">15 <span>apresentados só em síntese</span></span></div></div></div>
 <div class="section-title">Síntese das respostas</div>

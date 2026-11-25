@@ -418,6 +418,17 @@
             display: none;
         }
     </style>
+    <style>
+.busca-site{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.busca-site input{padding:7px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;min-width:240px;
+  font-family:inherit;background:#fff}
+.busca-site .busca-total{font-size:12px;color:#64748b;font-weight:600}
+.btn-topo{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;border:1px solid #334155;
+  padding:9px 15px;border-radius:24px;font-size:12px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.2);
+  cursor:pointer;z-index:99}
+.btn-topo:hover{background:#0284c7}
+@media print{.busca-site,.btn-topo{display:none!important}}
+</style>
 </head>
 <body>
 <!-- NAV-TCC:inicio -->
@@ -611,6 +622,43 @@ html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(scrip
         <a class="nav-btn" href="#bloco_uso_de_ia">Uso de IA</a>
         <a class="nav-btn" href="#bloco_competencias">Competências</a>
         <a class="nav-btn" href="#bloco_integracao_social">Integração Social</a>
+        <div style="margin-left:auto"><div class="busca-site"><input type="search" id="busca-site" placeholder="Filtrar por palavra-chave..." aria-label="Filtrar por palavra-chave..."><span class="busca-total" id="busca-total" aria-live="polite"></span></div><script>
+(function () {
+  var CFG = {"itens": ".question-card", "texto": ".question-header", "grupo": null, "nome": "perguntas"};
+  var campo = document.getElementById('busca-site'), total = document.getElementById('busca-total');
+  function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function aplicar() {
+    var termo = norm(campo.value.trim());
+    var itens = Array.prototype.slice.call(document.querySelectorAll(CFG.itens));
+    itens.forEach(function (el) {
+      var alvo = (CFG.texto && el.querySelector(CFG.texto)) || el;
+      el.style.display = !termo || norm(alvo.textContent).indexOf(termo) !== -1 ? '' : 'none';
+    });
+    // Em tabelas com subtítulos, o subtítulo some quando nada abaixo dele aparece; se o termo
+    // estiver no próprio subtítulo (ou no enunciado logo abaixo), o grupo inteiro aparece.
+    if (CFG.grupo) document.querySelectorAll(CFG.grupo).forEach(function (cab) {
+      var irmaos = [], n = cab.nextElementSibling;
+      while (n && !n.matches(CFG.grupo)) { irmaos.push(n); n = n.nextElementSibling; }
+      var fixos = irmaos.filter(function (x) { return !x.matches(CFG.itens); });
+      var bateCab = termo && norm(cab.textContent + ' ' + fixos.map(function (x) { return x.textContent; }).join(' ')).indexOf(termo) !== -1;
+      if (bateCab) irmaos.forEach(function (x) { x.style.display = ''; });
+      var algum = !termo || bateCab || irmaos.some(function (x) { return x.matches(CFG.itens) && x.style.display !== 'none'; });
+      cab.style.display = algum ? '' : 'none';
+      fixos.forEach(function (x) { x.style.display = algum ? '' : 'none'; });
+    });
+    var vis = itens.filter(function (el) { return el.style.display !== 'none'; }).length;
+    var msg = termo ? vis + ' de ' + itens.length + ' ' + CFG.nome : '';
+    if (total.textContent !== msg) total.textContent = msg;
+  }
+  campo.addEventListener('input', aplicar);
+  // Páginas que redesenham os cartões (filtro de subgrupo das pizzas) mantêm a busca ativa.
+  // Mudanças no próprio contador são ignoradas; sem isso o observador dispara a si mesmo sem parar.
+  new MutationObserver(function (muts) {
+    if (!campo.value.trim() || muts.every(function (m) { return total.contains(m.target); })) return;
+    aplicar();
+  }).observe(document.body, {childList: true, subtree: true});
+})();
+</script></div>
     </div>
 </div>
 
@@ -1011,5 +1059,6 @@ function toggleFilterCollapse() {
 // Inicializa tudo quando o DOM carregar
 window.addEventListener('DOMContentLoaded', initCharts);
 </script>
+<button type="button" class="btn-topo" title="Voltar ao topo da página" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️ Topo</button>
 </body>
 </html>
