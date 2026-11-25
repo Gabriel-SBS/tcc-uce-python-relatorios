@@ -970,6 +970,7 @@ html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(scrip
             <!-- Botões de Ação Rápida -->
             <div class="ctrl-group">
                 <button class="btn-action" onclick="window.print()">🖨️ Imprimir / PDF</button>
+                <button class="btn-action" onclick="baixarCSV()">Baixar dados (CSV)</button>
                 <a class="btn-action" href="Anexo_Questoes_G2_Dicionario.xlsx" download>📥 Baixar Excel (XLSX)</a>
             </div>
         </div>
@@ -1088,6 +1089,27 @@ let estado = {
 };
 
 const tooltipEl = document.getElementById('interactive-tooltip');
+
+// Mesmo formato do CSV do G1 (separador ";" e BOM para o Excel), com uma linha por item e subgrupo.
+function baixarCSV() {
+    const L = [['codigo', 'bloco', 'item', 'sinal', 'subgrupo', 'n', 'r1', 'r2', 'r3', 'r4', 'r5', 'media', 'afirmacao']];
+    PERGUNTAS.forEach(p => {
+        ['EG', 'CP', 'SC'].forEach(sg => {
+            const s = p.stats[sg], r = [s.s1, s.s2, s.s3, s.s4, s.s5];
+            const n = p.nao_aplica.includes(sg) ? 0 : s.total;
+            // Meio exato (3,125 com n = 8) vai para o par, como o Python de analise_resultados.py: o CSV bate com as tabelas do artigo.
+            const v = r.reduce((a, k, i) => a + (i + 1) * k, 0) * 100 / n, base = Math.floor(v);
+            const centesimos = v - base > 0.5 || (v - base === 0.5 && base % 2 === 1) ? base + 1 : base;
+            const media = n ? (centesimos / 100).toFixed(2).replace('.', ',') : '--';
+            L.push([p.id, p.bloco, p.keyword, p.sentido || '', sg, n, ...(n ? r : ['', '', '', '', '']), media, p.item_text]);
+        });
+    });
+    const csv = String.fromCharCode(0xFEFF) + L.map(l => l.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(';')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
+    a.download = 'g2_discentes_distribuicao.csv';
+    a.click();
+}
 
 function init() {
     renderizarLegenda();
