@@ -1090,6 +1090,14 @@ let estado = {
 
 const tooltipEl = document.getElementById('interactive-tooltip');
 
+// Duas casas com o meio exato (3,125 com n = 8) indo para o par, como o Python de analise_resultados.py.
+// O toFixed do JavaScript arredondaria para cima (3,13), e a página não bateria com as tabelas do artigo (3,12).
+function fmt2(x) {
+    const v = x * 100, base = Math.floor(v);
+    const centesimos = v - base > 0.5 || (v - base === 0.5 && base % 2 === 1) ? base + 1 : base;
+    return (centesimos / 100).toFixed(2);
+}
+
 // Mesmo formato do CSV do G1 (separador ";" e BOM para o Excel), com uma linha por item e subgrupo.
 function baixarCSV() {
     const L = [['codigo', 'bloco', 'item', 'sinal', 'subgrupo', 'n', 'r1', 'r2', 'r3', 'r4', 'r5', 'media', 'afirmacao']];
@@ -1097,10 +1105,7 @@ function baixarCSV() {
         ['EG', 'CP', 'SC'].forEach(sg => {
             const s = p.stats[sg], r = [s.s1, s.s2, s.s3, s.s4, s.s5];
             const n = p.nao_aplica.includes(sg) ? 0 : s.total;
-            // Meio exato (3,125 com n = 8) vai para o par, como o Python de analise_resultados.py: o CSV bate com as tabelas do artigo.
-            const v = r.reduce((a, k, i) => a + (i + 1) * k, 0) * 100 / n, base = Math.floor(v);
-            const centesimos = v - base > 0.5 || (v - base === 0.5 && base % 2 === 1) ? base + 1 : base;
-            const media = n ? (centesimos / 100).toFixed(2).replace('.', ',') : '--';
+            const media = n ? fmt2(r.reduce((a, k, i) => a + (i + 1) * k, 0) / n).replace('.', ',') : '--';
             L.push([p.id, p.bloco, p.keyword, p.sentido || '', sg, n, ...(n ? r : ['', '', '', '', '']), media, p.item_text]);
         });
     });
@@ -1374,6 +1379,20 @@ function criarLinhaDrawer(p) {
     td.colSpan = 4;
 
     const st = p.stats;
+    // Item que não se aplica ao subgrupo (Q03 e Q05 no SC) não mostra números: a planilha tem respostas
+    // ali, mas a análise e o artigo as descartam.
+    const cartao = (sg, ordem, nome) => p.nao_aplica.includes(sg)
+        ? `<div class="mini-stat-card">
+                <div class="mini-card-title">${ordem}: ${sg} (${nome})</div>
+                <div>Não se aplica a este subgrupo.</div>
+           </div>`
+        : `<div class="mini-stat-card">
+                <div class="mini-card-title">${ordem}: ${sg} (${nome} | n=${st[sg].total})</div>
+                <div>• Discordo: <strong>${st[sg].discordo}</strong> (${st[sg].p_discordo.toFixed(1)}%)</div>
+                <div>• Neutro: <strong>${st[sg].neutro}</strong> (${st[sg].p_neutro.toFixed(1)}%)</div>
+                <div>• Concordo: <strong>${st[sg].concordo}</strong> (${st[sg].p_concordo.toFixed(1)}%)</div>
+                <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${fmt2(st[sg].media)} (±${fmt2(st[sg].stdev)})</div>
+           </div>`;
     td.innerHTML = `
         <div class="drawer-content">
             <div class="drawer-header">
@@ -1381,27 +1400,9 @@ function criarLinhaDrawer(p) {
                 <div class="drawer-statement">“${p.item_text}”</div>
             </div>
             <div class="mini-stats-grid">
-                <div class="mini-stat-card">
-                    <div class="mini-card-title">1º Segmento: EG (Egressos UCE | n=${st.EG.total})</div>
-                    <div>• Discordo: <strong>${st.EG.discordo}</strong> (${st.EG.p_discordo.toFixed(1)}%)</div>
-                    <div>• Neutro: <strong>${st.EG.neutro}</strong> (${st.EG.p_neutro.toFixed(1)}%)</div>
-                    <div>• Concordo: <strong>${st.EG.concordo}</strong> (${st.EG.p_concordo.toFixed(1)}%)</div>
-                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.EG.media.toFixed(2)} (±${st.EG.stdev.toFixed(2)})</div>
-                </div>
-                <div class="mini-stat-card">
-                    <div class="mini-card-title">2º Segmento: CP (Conhec. Prévio | n=${st.CP.total})</div>
-                    <div>• Discordo: <strong>${st.CP.discordo}</strong> (${st.CP.p_discordo.toFixed(1)}%)</div>
-                    <div>• Neutro: <strong>${st.CP.neutro}</strong> (${st.CP.p_neutro.toFixed(1)}%)</div>
-                    <div>• Concordo: <strong>${st.CP.concordo}</strong> (${st.CP.p_concordo.toFixed(1)}%)</div>
-                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.CP.media.toFixed(2)} (±${st.CP.stdev.toFixed(2)})</div>
-                </div>
-                <div class="mini-stat-card">
-                    <div class="mini-card-title">3º Segmento: SC (Sem Conhec. | n=${st.SC.total})</div>
-                    <div>• Discordo: <strong>${st.SC.discordo}</strong> (${st.SC.p_discordo.toFixed(1)}%)</div>
-                    <div>• Neutro: <strong>${st.SC.neutro}</strong> (${st.SC.p_neutro.toFixed(1)}%)</div>
-                    <div>• Concordo: <strong>${st.SC.concordo}</strong> (${st.SC.p_concordo.toFixed(1)}%)</div>
-                    <div style="margin-top:4px; font-size:11px; color:#64748b;">Média Likert: ${st.SC.media.toFixed(2)} (±${st.SC.stdev.toFixed(2)})</div>
-                </div>
+                ${cartao('EG', '1º Segmento', 'Egressos UCE')}
+                ${cartao('CP', '2º Segmento', 'Conhec. Prévio')}
+                ${cartao('SC', '3º Segmento', 'Sem Conhec.')}
             </div>
         </div>
     `;
