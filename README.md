@@ -18,7 +18,7 @@ números.
 | [G2 · Barras por item](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_graficos_barras.html) | Um gráfico por pergunta, com o enunciado completo |
 | [G2 · Pizzas por item](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_graficos_pizza.html) | Os mesmos dados em pizza, com filtro por subgrupo |
 | [G2 · Por subgrupo](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/graficos_egressos.html) | Comparação entre os subgrupos |
-| [G3 · Professores](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_g3_professores.html) | Síntese das respostas dos 2 docentes. Com dois respondentes, qualquer contagem por item mostraria a resposta de cada um, então não há gráficos por item |
+| [G3 · Professores](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_g3_professores.html) | Síntese das respostas dos 2 docentes: resumo dos itens fechados, falas das respostas abertas e o cruzamento com as notas. Com dois respondentes, qualquer contagem por item mostraria a resposta de cada um, então não há gráficos por item |
 | [Respostas abertas](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_abertas.html) | Categorias das respostas abertas dos mentores (G1) e dos calouros (G2) e o livro de códigos completo (Apêndice D) |
 | [Fase 3 · Notas](https://gabriel-sbs.github.io/tcc-uce-python-relatorios/relatorio_fase3_notas.html) | Desempenho agregado no 1º semestre por subgrupo nas sete disciplinas (média, DP, mediana, mín.–máx., reprovações e gráfico) |
 
@@ -28,13 +28,20 @@ texto integral de cada pergunta.
 
 ## Como ler as cores
 
-Algumas perguntas descrevem uma dificuldade ("o ritmo de Algoritmos I era rápido demais") e outras uma
-facilidade ("eu conseguia identificar o que estudar"). Por isso cada item tem um sinal. Nos itens (+),
-concordar é bom; nos itens (−), concordar é ruim. A cor segue esse sentido: verde para o lado favorável,
-vermelho para o desfavorável e amarelo para quem marcou 3.
+Amarelo é sempre quem marcou 3. Verde e vermelho seguem duas regras.
 
-No bloco de IA do G1, a referência é o uso de IA por iniciantes: verde é visão favorável a esse uso e
-vermelho é visão crítica.
+**Concordância (todo o G1 e, no G2, Uso de IA e Competências).** Verde é concordar com a frase (4 ou 5)
+e vermelho é discordar (1 ou 2), seja a frase positiva ou crítica. Esses itens não têm sinal. Exemplo:
+em "Sou totalmente contra IA", o vermelho mostra os mentores que discordam.
+
+**Facilidade e dificuldade (no G2, Adaptação, Dinâmica de grupo, Gestão do tempo e Integração social).**
+Algumas perguntas descrevem uma dificuldade ("o ritmo de Algoritmos I era rápido demais") e outras uma
+facilidade ("identificava sozinho o que estudar"). Por isso cada item tem um sinal. Nos itens (+),
+concordar indica facilidade; nos itens (−), concordar indica dificuldade. Verde é facilidade e vermelho
+é dificuldade, então, nos itens (−), o verde fica do lado do "discordo".
+
+Cada item aparece resumido numa frase. O enunciado completo aparece ao passar o mouse sobre o item e
+está no arquivo `Anexo_Questoes_G2_Dicionario.csv`.
 
 ## Acessibilidade
 
