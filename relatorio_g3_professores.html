@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Questionário dos Docentes (G3): síntese</title><style>
 :root{--bg-body:#f8fafc;--bg-card:#fff;--bg-subtle:#f1f5f9;--text-title:#0f172a;--text-body:#334155;
---text-muted:#64748b;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0284c7;
+--text-muted:#475569;--border:#e2e8f0;--border-subtle:#cbd5e1;--primary:#0369a1;
 --row-height:34px;--bar-height:20px;--font-size-row:13px;--font-size-bar:11px}
 body.density-ultracompact{--row-height:25px;--bar-height:15px;--font-size-row:11.5px;--font-size-bar:9.5px}
 body.density-comfortable{--row-height:46px;--bar-height:26px;--font-size-row:14px;--font-size-bar:12px}
@@ -15,7 +15,7 @@ margin-bottom:16px;box-shadow:0 2px 6px rgba(0,0,0,.03)}
 .header-title-box h1{margin:0 0 6px;font-size:22px;font-weight:800;color:var(--text-title);letter-spacing:-.3px}
 .header-title-box p{margin:0 0 16px;font-size:13.5px;color:var(--text-muted)}
 .stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:14px 18px;
-background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border)}
+background:var(--bg-subtle);border-radius:8px;border:0}
 .stat-item{display:flex;flex-direction:column}
 .stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:700}
 .stat-val{font-size:15px;font-weight:800;color:var(--text-title)}
@@ -36,13 +36,13 @@ color:var(--text-title);cursor:pointer;text-decoration:none}
 .tabs-theme-container{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #f1f5f9;padding-top:12px}
 .tab-btn{background:#f8fafc;border:1px solid var(--border);padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;
 color:var(--text-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.tab-btn span{background:#e2e8f0;color:#475569;font-size:10.5px;padding:1px 6px;border-radius:10px;font-weight:700}
+.tab-btn span{background:#e2e8f0;color:#475569;font-size:11px;padding:1px 6px;border-radius:10px;font-weight:700}
 .tab-btn:hover{background:#e2e8f0}
 .tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.tab-btn.active span{background:rgba(255,255,255,.25);color:#fff}
+.tab-btn.active span{background:rgba(0,0,0,.28);color:#fff}
 .search-box{display:flex;align-items:center;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:6px;
 padding:5px 10px;max-width:320px}
-.search-box input{border:none;background:transparent;outline:none;font-size:12.5px;color:var(--text-title);width:100%}
+.search-box input{border:none;background:transparent;outline:none;font-size:12.5px;color:var(--text-title);width:100%;min-height:32px}
 .legend-bar{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:16px;
 display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px}
 .legend-title{font-weight:700;color:var(--text-title);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
@@ -69,10 +69,10 @@ border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
 .question-row:nth-child(odd){background:#fafbfc}
 .question-row:hover{background:#f0f7ff}
 .td-question{padding:4px 12px;border-right:1px solid var(--border);border-bottom:1px solid #f1f5f9;vertical-align:middle}
-.question-cell-wrap{display:flex;align-items:center;gap:8px;overflow:hidden}
-.q-badge{font-size:10.5px;font-weight:800;background:#e2e8f0;color:#1e293b;padding:2px 6px;border-radius:4px;flex-shrink:0}
-.q-keyword{font-weight:600;color:var(--text-title);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.info-btn{margin-left:auto;flex-shrink:0;background:none;border:0;border-radius:4px;padding:2px 4px;font-size:13px;cursor:pointer;line-height:1}
+.question-cell-wrap{display:flex;align-items:center;gap:8px}
+.q-badge{font-size:11px;font-weight:800;background:#e2e8f0;color:#1e293b;padding:2px 6px;border-radius:4px;flex-shrink:0}
+.q-keyword{font-weight:600;color:var(--text-title);white-space:normal;line-height:1.3;padding:2px 0;min-width:0}
+.info-btn{margin-left:auto;flex-shrink:0;background:none;border:0;border-radius:4px;padding:2px 4px;font-size:13px;cursor:pointer;line-height:1;min-width:24px;min-height:24px;display:inline-flex;align-items:center;justify-content:center}
 .info-btn:hover{background:#e2e8f0}
 .td-bar{padding:4px 10px;border-right:1px solid var(--border);border-bottom:1px solid #f1f5f9;vertical-align:middle}
 .td-num{text-align:center;font-weight:700;color:var(--text-title);font-size:12.5px}
@@ -80,7 +80,7 @@ border-top:2px solid #cbd5e1;border-bottom:1px solid #cbd5e1}
 box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
 .bar-slice{display:flex;align-items:center;justify-content:center;font-size:var(--font-size-bar);font-weight:700;white-space:nowrap;overflow:hidden}
 .empty{padding:18px;text-align:center;color:var(--text-muted)}
-.png-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;
+.png-card{background:var(--bg-subtle);border:0;border-radius:10px;padding:12px 16px;display:flex;
 justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:600;margin-bottom:10px}
 @media print{.controls-toolbar,.navtcc,.png-card,.png,.info-btn{display:none}body{padding:0}}
 
@@ -102,16 +102,38 @@ justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-si
 .navtcc button[aria-pressed=true]{background:#fbbf24}
 .navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:13px}
 html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
-html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){filter:url(#tcc-daltonismo)}
-html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular){zoom:1.2}
+html.tcc-dalt body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular):not(main),html.tcc-dalt main#tcc-conteudo > *{filter:url(#tcc-daltonismo)}
+html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular):not(main),html.tcc-letra main#tcc-conteudo > *{zoom:1.2}
+main#tcc-conteudo{display:block;outline:none}
 .tcc-pular{position:absolute;left:-9999px;top:0;z-index:10000;background:#fbbf24;color:#0f172a;
   padding:8px 12px;border-radius:6px;font:700 14px system-ui,sans-serif;text-decoration:none}
 .tcc-pular:focus{left:12px;top:8px}
 :focus-visible{outline:3px solid #f59e0b !important;outline-offset:2px !important}
 .grid>*,.pizzas-row>*,.chart-layout>*,.canvas-holder,.stats-side{min-width:0 !important}
 .tcc-rolagem{overflow-x:auto;max-width:100%}
-@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}
+  .navtcc{position:static}}
+/* Largura de leitura: parágrafos de no máximo 75 caracteres por linha. */
+main p,main li{max-width:65ch;text-wrap:pretty}
+main h1,main h2,main h3{text-wrap:balance}
+input::placeholder{color:#475569;opacity:1}
+/* Telas de toque: todo controle com pelo menos 44 px de altura (WCAG 2.5.5). */
+@media (pointer:coarse){
+  button,[role=button]:not(tr),.btn-action,.btn-toggle,.tab-btn,.nav-btn,.toggle-link,.navtcc a,
+  input[type=search],input[type=text],select{min-height:44px}
+  .info-btn{min-width:44px}
+}
+/* Botões e links de controle respondem ao toque e ao clique com um leve afundamento. */
+button,.btn-action,.btn-toggle,.tab-btn,.nav-btn,.toggle-link,.navtcc a{
+  transition-property:background-color,color,border-color,box-shadow,transform;
+  transition-duration:160ms;transition-timing-function:cubic-bezier(.23,1,.32,1)}
+button:active,.btn-action:active,.btn-toggle:active,.tab-btn:active,.nav-btn:active,.toggle-link:active,
+.navtcc a:active{transform:scale(.97)}
+/* Pouco movimento: sem deslocamentos e sem animação; as mudanças de cor continuam suaves. */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;scroll-behavior:auto !important;
+  transition-property:color,background-color,border-color,opacity !important}
+  button:active,.btn-action:active,.btn-toggle:active,.tab-btn:active,.nav-btn:active,.toggle-link:active,
+  .navtcc a:active{transform:none}}
 </style>
 <svg class="tcc-filtros" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="tcc-daltonismo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1.065420 -0.251138 0.316952 0 -0.131234  0.172219 0.758953 0.030938 0 0.037890  -0.399090 1.535197 -0.191053 0 0.054946  0 0 0 1 0"/></filter></svg>
 <a class="tcc-pular" href="#tcc-conteudo">Pular para o conteúdo</a>
@@ -201,6 +223,19 @@ html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(scrip
       caixa.appendChild(tb);
     });
   }
+  // Em telas de toque, o hover "gruda" depois do toque: as regras :hover das folhas da página saem.
+  function semHoverNoToque(){
+    if (!window.matchMedia || window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    function limpa(regras, dono){
+      for (var i = regras.length - 1; i >= 0; i--){
+        var r = regras[i];
+        if (r.selectorText && r.selectorText.indexOf(':hover') !== -1) dono.deleteRule(i);
+        else if (r.cssRules) limpa(r.cssRules, r);
+      }
+    }
+    Array.prototype.forEach.call(document.styleSheets, function(f){ try { limpa(f.cssRules, f); } catch (e) {} });
+  }
+  window.addEventListener('load', semHoverNoToque);
   window.addEventListener('load', rolagemDasTabelas);
   var espera;
   window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(rolagemDasTabelas, 200); });
@@ -208,9 +243,10 @@ html.tcc-letra body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(scrip
 })();
 </script>
 <!-- NAV-TCC:fim -->
-<div class="wrapper">
+<main id="tcc-conteudo" tabindex="-1"><!-- NAV-TCC:main --><div class="wrapper">
 <div class="header-panel"><div class="header-title-box"><h1>Questionário dos Docentes (G3): síntese</h1><p>Percepção dos docentes de Algoritmos e Programação I sobre os egressos da UCE.</p></div>
 <div class="stats-strip"><div class="stat-item"><span class="stat-label">Amostra</span><span class="stat-val">2 <span>docentes</span></span></div><div class="stat-item"><span class="stat-label">Itens Likert</span><span class="stat-val">15 <span>apresentados só em síntese</span></span></div></div></div>
 <div class="section-title">Síntese das respostas</div>
 <div class="sintese"><p>Com dois respondentes, qualquer média ou contagem por item revelaria a resposta de cada docente, e o registro de consentimento garante que as respostas não serão atribuídas a quem as deu. Por isso, esta página traz só uma síntese, a mesma do artigo.</p><p>Os dois docentes disseram ter noção de quem eram alguns dos egressos da UCE, mas não de todos.</p><p><strong>Itens fechados.</strong> Os dois concordam que a UCE contribui para o raciocínio lógico e o pensamento computacional, que os egressos têm autonomia para resolver problemas e se dispõem a colaborar com os colegas, e rejeitam que a UCE não agregue valor à formação. Somados os 15 itens fechados, as 30 respostas dos dois ficam assim: 18 a favor da UCE (concordar com as afirmações positivas ou discordar das negativas), 9 neutras e 3 contrárias, e em nenhum item os dois ficam contra ela.</p><p>Em oito itens, um docente se posiciona a favor e o outro fica neutro, como no interesse nas aulas, na resiliência diante dos erros e na liderança nos grupos. As respostas só se opõem em dois itens, e ambos dependem de comparar os egressos com o resto da turma: o tempo de adaptação menor e a confirmação dos benefícios pelos resultados acadêmicos. A outra resposta contrária está no rendimento global da turma: um docente concorda que a UCE não muda as médias, e o outro fica neutro.</p><p><strong>Respostas abertas.</strong> Um docente descreve egressos que “já chegam com o conteúdo” e “passam pela disciplina com facilidade”. Aparece também a percepção de que, “por eles já terem vivenciado a metodologia PBL anteriormente”, esses alunos se comportam melhor no MI de Algoritmos. Sobre permanência, há a percepção de que a UCE “influencia na escolha pelo curso e no desejo de permanência”, com a ressalva de que “é apenas uma percepção de alguém de fora”.</p><p>Sobre IA, a percepção é de uso generalizado: “o uso da IA Generativa tem sido feito por todos(as) indiscriminadamente. O que difere é a forma mais consciente de alguns poucos em relação aos demais”.</p><p><strong>Limites dessa visão.</strong> Sobre maturidade acadêmica, monitoria informal e postura diante da IA, os dois disseram não ter conseguido observar diferença entre os egressos e os demais alunos. Um deles recebeu “poucos alunos que já tenham feito o curso”, e o outro não conseguiu identificá-los, porque “apenas 1 ou 2” disseram ter feito a UCE; com tão poucos egressos por turma, é de esperar que um deles não veja mudança nas médias da turma. Embora os dois concordem, nos itens fechados, que os egressos se dispõem a colaborar, nenhum viu essa ajuda em sala, e um deles chegou a sugerir grupos de estudo sem perceber adesão.</p><p><strong>O que as notas mostram.</strong> Quando perguntados se os resultados acadêmicos confirmam os benefícios da UCE, os docentes se dividem. As notas do primeiro semestre, que vêm de outro registro, trazem os oito egressos com a maior média em Algoritmos e Programação I e sem reprovação por nota ou conceito (veja a página <a href="relatorio_fase3_notas.html">Fase 3 · Notas</a>). Como os docentes não sabiam quem eram todos os egressos, essa divisão não precisa ser lida como contradição com as notas.</p></div>
-</div></body></html>
+</div><!-- NAV-TCC:main-fim --></main>
+</body></html>

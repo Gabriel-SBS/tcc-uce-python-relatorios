@@ -30,8 +30,15 @@ PAGINAS = [
 
 INICIO, FIM = "<!-- NAV-TCC:inicio -->", "<!-- NAV-TCC:fim -->"
 
-# Elementos da página que recebem o filtro de cor e o aumento de letra (tudo menos a barra).
-CONTEUDO = "body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular)"
+# Elementos da página que recebem o filtro de cor e o aumento de letra (tudo menos a barra). O filtro vai em
+# cada filho do <main>, e não no <main> inteiro: num ancestral, ele tiraria a posição fixa do botão de topo.
+CONTEUDO = ("body > :not(nav.navtcc):not(svg.tcc-filtros):not(style):not(script):not(.tcc-pular):not(main), "
+            "main#tcc-conteudo > *")
+
+# Região principal (WCAG 1.3.1): o conteúdo de cada página vai dentro de um <main>. Os marcadores deixam
+# rodar o script de novo sem duplicar a tag.
+MAIN_ABRE = '<main id="tcc-conteudo" tabindex="-1"><!-- NAV-TCC:main -->'
+MAIN_FECHA = '<!-- NAV-TCC:main-fim --></main>'
 
 ESTILO = """<style>
 .navtcc{position:sticky;top:0;z-index:9999;background:#0f172a;padding:8px 16px;
@@ -47,20 +54,42 @@ ESTILO = """<style>
 .navtcc button[aria-pressed=true]{background:#fbbf24}
 .navtcc .navtcc-legenda{display:none;color:#e2e8f0;font-weight:500;font-size:13px}
 html.tcc-dalt .navtcc .navtcc-legenda{display:inline}
-html.tcc-dalt """ + CONTEUDO + """{filter:url(#tcc-daltonismo)}
-html.tcc-letra """ + CONTEUDO + """{zoom:1.2}
+""" + ",".join(f"html.tcc-dalt {s.strip()}" for s in CONTEUDO.split(",")) + """{filter:url(#tcc-daltonismo)}
+""" + ",".join(f"html.tcc-letra {s.strip()}" for s in CONTEUDO.split(",")) + """{zoom:1.2}
+main#tcc-conteudo{display:block;outline:none}
 .tcc-pular{position:absolute;left:-9999px;top:0;z-index:10000;background:#fbbf24;color:#0f172a;
   padding:8px 12px;border-radius:6px;font:700 14px system-ui,sans-serif;text-decoration:none}
 .tcc-pular:focus{left:12px;top:8px}
 :focus-visible{outline:3px solid #f59e0b !important;outline-offset:2px !important}
 .grid>*,.pizzas-row>*,.chart-layout>*,.canvas-holder,.stats-side{min-width:0 !important}
 .tcc-rolagem{overflow-x:auto;max-width:100%}
-@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+@media (max-width:700px){.pizzas-row{grid-template-columns:1fr !important}
+  .navtcc{position:static}}
+/* Largura de leitura: parágrafos de no máximo 75 caracteres por linha. */
+main p,main li{max-width:65ch;text-wrap:pretty}
+main h1,main h2,main h3{text-wrap:balance}
+input::placeholder{color:#475569;opacity:1}
+/* Telas de toque: todo controle com pelo menos 44 px de altura (WCAG 2.5.5). */
+@media (pointer:coarse){
+  button,[role=button]:not(tr),.btn-action,.btn-toggle,.tab-btn,.nav-btn,.toggle-link,.navtcc a,
+  input[type=search],input[type=text],select{min-height:44px}
+  .info-btn{min-width:44px}
+}
+/* Botões e links de controle respondem ao toque e ao clique com um leve afundamento. */
+button,.btn-action,.btn-toggle,.tab-btn,.nav-btn,.toggle-link,.navtcc a{
+  transition-property:background-color,color,border-color,box-shadow,transform;
+  transition-duration:160ms;transition-timing-function:cubic-bezier(.23,1,.32,1)}
+button:active,.btn-action:active,.btn-toggle:active,.tab-btn:active,.nav-btn:active,.toggle-link:active,
+.navtcc a:active{transform:scale(.97)}
+/* Pouco movimento: sem deslocamentos e sem animação; as mudanças de cor continuam suaves. */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;scroll-behavior:auto !important;
+  transition-property:color,background-color,border-color,opacity !important}
+  button:active,.btn-action:active,.btn-toggle:active,.tab-btn:active,.nav-btn:active,.toggle-link:active,
+  .navtcc a:active{transform:none}}
 </style>"""
 
 # Modo daltonismo: um filtro de cor aplicado a toda a página (tabelas, gráficos em canvas e imagens).
-# É uma transformação afim em sRGB calculada para levar vermelho #e53935 -> laranja #d55e00,
+# É uma transformação afim em sRGB calculada para levar vermelho #e53935 -> laranja #d55e00 (o vermelho atual, #d32f2f, vira um laranja um pouco mais escuro),
 # verde #2e7d32 -> azul #0072b2, amarelo #fbc02d -> cinza #c8c8c8 e branco -> branco; o texto escuro
 # continua escuro. Laranja e azul são distinguíveis nos tipos mais comuns de daltonismo.
 MATRIZ_DALTONISMO = ("1.065420 -0.251138 0.316952 0 -0.131234  "
@@ -168,6 +197,19 @@ SCRIPT = """<script>
       caixa.appendChild(tb);
     });
   }
+  // Em telas de toque, o hover "gruda" depois do toque: as regras :hover das folhas da página saem.
+  function semHoverNoToque(){
+    if (!window.matchMedia || window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    function limpa(regras, dono){
+      for (var i = regras.length - 1; i >= 0; i--){
+        var r = regras[i];
+        if (r.selectorText && r.selectorText.indexOf(':hover') !== -1) dono.deleteRule(i);
+        else if (r.cssRules) limpa(r.cssRules, r);
+      }
+    }
+    Array.prototype.forEach.call(document.styleSheets, function(f){ try { limpa(f.cssRules, f); } catch (e) {} });
+  }
+  window.addEventListener('load', semHoverNoToque);
   window.addEventListener('load', rolagemDasTabelas);
   var espera;
   window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(rolagemDasTabelas, 200); });
@@ -195,7 +237,12 @@ def main() -> None:
             continue
         html = caminho.read_text(encoding="utf-8")
         html = re.sub(re.escape(INICIO) + r".*?" + re.escape(FIM) + r"\n?", "", html, flags=re.S)
-        html = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + "\n" + barra(arq, existentes), html, count=1)
+        html = html.replace(MAIN_ABRE + "\n", "").replace(MAIN_ABRE, "").replace(MAIN_FECHA + "\n", "").replace(MAIN_FECHA, "")
+        tem_main = "<main" in html  # o index.html já tem o próprio <main>
+        abre = "" if tem_main else "\n" + MAIN_ABRE
+        html = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + "\n" + barra(arq, existentes) + abre, html, count=1)
+        if not tem_main:
+            html = html.replace("</body>", MAIN_FECHA + "\n</body>", 1)
         caminho.write_text(html, encoding="utf-8")
         print("ok", arq)
 
